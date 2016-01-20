@@ -1,0 +1,35 @@
+<h1>Yo</h1>
+
+<div>
+	<!-- ko if: error -->
+		<div data-bind="text: error"></div>
+	<!-- /ko -->
+	<div>Add more</div>
+	<table>
+		<thead>
+			<tr data-bind="foreach: fields">
+				<td>
+					<span data-bind="text: $parent.labels[$data]"></span>
+					<!-- ko if: $parent.sorters[$data] -->
+						<span data-bind="click: $parent.sorters[$data].asc">^</span>
+						<span data-bind="click: $parent.sorters[$data].reset">o</span>
+						<span data-bind="click: $parent.sorters[$data].desc">v</span>
+					<!-- /ko -->
+				</td>
+			</tr>
+		</thead>
+		<tbody data-bind="foreach: elements">
+			<tr>
+				<td data-bind="text: data.id"></td>
+				<td data-bind="text: data.email"></td>
+				<td data-bind="text: data.name"></td>
+				<td data-bind="text: data.title"></td>
+			</tr>
+		</tbody>
+	</table>
+	<div data-bind="visible: loading">Loading...</div>
+	<div data-bind="visible: !loading(), click: loadMore">Load more...</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+<script src="main.built.js"></script>
