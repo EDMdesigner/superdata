@@ -27,7 +27,7 @@ module.exports = function createModel(options) {
 
 			var data = [];
 
-			result.forEach(function(item) {
+			result.items.forEach(function(item) {
 				data.push(createModelObject({
 					fields: fields,
 					proxy: proxy,
@@ -37,7 +37,12 @@ module.exports = function createModel(options) {
 				}));
 			});
 
-			callback(null, data);
+			var resultObj = {
+				items: data,
+				count: result.count
+			};
+
+			callback(null, resultObj);
 		});
 	}
 

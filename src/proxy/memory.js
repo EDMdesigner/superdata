@@ -108,7 +108,14 @@ module.exports = function createMemoryProxy(config) {
 			limit = db.length;
 		}
 
-		callback(null, elements.slice(skip, skip + limit));
+
+
+		var response = {
+			items: elements.slice(skip, skip + limit),
+			count: elements.length
+		};
+
+		callback(null, response);
 	}
 
 	function createOne(data, callback) {

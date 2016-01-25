@@ -1,3 +1,7 @@
+/*jslint node: true */
+"use strict";
+
+var ko = require("knockout");
 var createSorter = require("./sorter");
 
 module.exports = function createSortersHandler(config) {
@@ -6,14 +10,12 @@ module.exports = function createSortersHandler(config) {
 	//filtersHandler can be implemented in a very similar way
 
 	for (var prop in config.sorters) {
-		sorters[prop] = sorter({
-			store: store,
+		sorters[prop] = createSorter({
 			sortBy: prop,
 			direction: config.sorters[prop],
 			callback: setOthersToZero
 		});
 	}
-
 
 
 	function setOthersToZero(sortBy, direction) {

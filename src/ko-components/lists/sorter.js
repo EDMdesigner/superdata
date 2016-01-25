@@ -4,7 +4,6 @@
 var ko = require("knockout");
 
 module.exports = function createSorter(config) {
-	var store = config.store;
 	var sortBy = config.sortBy;
 	var direction = ko.observable(config.direction || 0);
 

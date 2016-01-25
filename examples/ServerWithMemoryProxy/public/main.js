@@ -55,7 +55,7 @@ if (seed) {
 //*/
 
 
-var createInfiniteLoader = require("../../../src/ko-components/lists/infiniteLoader/vm.js");
+var createInfiniteLoader = require("../../../src/ko-components/lists/infiniteList.js");
 
 
 var infiniteLoader = createInfiniteLoader({

@@ -11,25 +11,33 @@ module.exports = function createInfiniteList(config) {
 	var numOfItemsToLoad = config.numOfItemsToLoad || 10;
 	var skip = 0;
 
-	//TODO: Find out a nice way to pass a callback which is responsible for automatically loading more data.
 
 	var list = createList(config);
+	//+sorters & filters
 
-	store.load.before = function(err, result) {
-	};
+	var loadMoreCalled = false;
 
-	store.load.after = function(err, result) {
+	store.load.before.add(function(err, result) {
+		if (!loadMoreCalled) {
+			//empty element array
+		}
+
+		loadMoreCalled = false;
+	});
+
+	//this should be in list.js
+	store.load.after.add(function(err, result) {
 		if (err) {
 			return list.error(err);
 		}
 		list.error(null);
 
-		result.forEach(function(item) {
+		result.items.forEach(function(item) {
 			list.elements.push(item);
 		});
 		numOfItems += numOfItemsToLoad;
 		list.loading(false);
-	};
+	});
 
 	load(0, numOfItems);
 	function load(skip, limit) {
@@ -40,6 +48,7 @@ module.exports = function createInfiniteList(config) {
 	}
 
 	function loadMore() {
+		loadMoreCalled = true;
 		load(numOfItems, numOfItemsToLoad);
 	}
 

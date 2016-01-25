@@ -16,6 +16,9 @@ module.exports = function createStore(options) {
 		model: model,
 		proxy: proxy,
 
+		items: [],
+		count: 0, 
+
 		query: query,
 		load: load,
 		add: add
@@ -124,10 +127,45 @@ module.exports = function createStore(options) {
 		}
 
 		query(queryObj, function(err, result) {
-			if (typeof load.after) {
-				load.after(err, result);
+			if (err) {
+				if (typeof load.after === "function") {
+					load.after(err);
+				}
+				return;
+			}
+
+			store.items.length = 0;
+			store.items.length = result.items.length;
+			for (var idx = 0; idx < result.items.length; idx += 1) {
+				store.items[idx] = result.items[idx];
+			}
+			store.count = result.count;
+
+			if (typeof load.after === "function") {
+				load.after(null, result);
 			}
 		});
+	}
+
+	load.before = createCallbackArrayCaller(store, []); //later we can add default callbacks
+	load.after = createCallbackArrayCaller(store, []);
+
+	function createCallbackArrayCaller(thisArg, array) {
+		function callbackArrayCaller(err) {
+			array.forEach(function(actFunction) {
+				actFunction(thisArg, err);
+			});
+		}
+
+		callbackArrayCaller.add = function(func) {
+			if (typeof func !== "function") {
+				return;
+			}
+
+			array.push(func);
+		};
+
+		return callbackArrayCaller;
 	}
 
 
