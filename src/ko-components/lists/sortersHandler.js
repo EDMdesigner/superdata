@@ -20,18 +20,23 @@ module.exports = function createSortersHandler(config) {
 
 	function setOthersToZero(sortBy, direction) {
 		for (var prop in sorters) {
-			if (prop === sortBy) {
+			if (prop === sortBy || prop === "sortComputed") {
 				continue;
 			}
+
 			sorters[prop].direction(0);
 		}
 	}
 
 	//enek kívülre kéne kerülnie, a listbe...
 	// a sorterst kell it publikálni.
-	var sortersComputed = ko.computed(function() {
+	var sortComputed = ko.computed(function() {
 		var sortersObj = {};
 		for (var prop in sorters) {
+			if (prop === "sortComputed") {
+				continue;
+			}
+			
 			var actDir = sorters[prop].direction();
 
 			if (actDir !== 0) {
@@ -42,5 +47,7 @@ module.exports = function createSortersHandler(config) {
 		return sortersObj;
 	}).extend({throttle: 1});
 
-	return sortersComputed;
+	sorters.sortComputed = sortComputed;
+
+	return sorters;
 };

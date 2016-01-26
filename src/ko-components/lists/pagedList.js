@@ -12,24 +12,18 @@ module.exports = function createPagedList(config) {
 	config.pagination.itemsPerPage = config.pagination.itemsPerPage || 0;
 
 	var store = config.store;
-
-	store.load.after.add(afterLoad);
+	store.load.before.add(afterLoad);
 
 	var list = createList(config);
 	var pagination = createPagination(config.pagination);
 	list.pagination = pagination;
 
-	function setSkipAndLimit() {
+
+	ko.computed(function() {
 		var currentPage = pagination.currentPage();
 		var itemsPerPage = pagination.itemsPerPage();
 		list.skip(currentPage * itemsPerPage);
 		list.limit(itemsPerPage);
-	}
-
-	//setSkipAndLimit();
-
-	ko.computed(function() {
-		setSkipAndLimit();
 	});
 
 	ko.computed(function() {
@@ -37,10 +31,10 @@ module.exports = function createPagedList(config) {
 		list.pagination.numOfItems(count);
 	});
 
+	
 	function afterLoad() {
 		list.items([]);
 	}
-
 
 	return list;
 };

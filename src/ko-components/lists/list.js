@@ -31,7 +31,7 @@ module.exports = function createList(config) {
 
 	ko.computed(function() {
 		//var filtersVal = filters();
-		var sortersVal = sorters();
+		var sortersVal = sorters.sortComputed();
 		var skipVal = skip();
 		var limitVal = limit();
 
