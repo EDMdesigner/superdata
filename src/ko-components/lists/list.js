@@ -5,6 +5,7 @@ var ko = require("knockout");
 
 var sortersHandler = require("./sortersHandler.js");
 
+
 module.exports = function createList(config) {
 	var store = config.store;
 
@@ -21,8 +22,10 @@ module.exports = function createList(config) {
 	var items = ko.observableArray([]);
 	var itemVm = config.itemVm;
 
-	var loading = ko.observable(false);
-	var error = ko.observable(false);
+	var count = ko.observable(0); //should be read-only
+
+	var loading = ko.observable(false); //should be read-only
+	var error = ko.observable(false); //should be read-only?
 
 
 
@@ -51,20 +54,34 @@ module.exports = function createList(config) {
 		if (err) {
 			return error(err);
 		}
+		error(null);
 
 		//paginatedList should remove all of the items before every load
 		//infiniteList should remove them only when sorters or finders have been changed.
-		store.items.forEach(function(item) {
+		store.items.forEach(function(item) { //store === this
 			if (typeof itemVm === "function") {
 				item = itemVm(item);
 			}
 			items.push(item);
 		});
+
+		count(store.count);
+	}
+
+	function readOnlyComputed(observable) {
+		return ko.computed({
+			read: function() {
+				return observable();
+			},
+			write: function() {
+				throw "This computed variable should not be written.";
+			}
+		});
 	}
 
 
-	store.before.add(beforeLoad);
-	store.after.add(afterLoad);
+	store.load.before.add(beforeLoad);
+	store.load.after.add(afterLoad);
 
 	return {
 		fields: fields, //should filter to the fields. (select)
@@ -72,13 +89,13 @@ module.exports = function createList(config) {
 
 		filters: filters,
 		sorters: sorters,
-
 		skip: skip,
 		limit: limit,
 
 		items: items,
+		count: readOnlyComputed(count),
 
-		loading: loading,
-		error: error
+		loading: readOnlyComputed(loading),
+		error: readOnlyComputed(error)
 	};
 };

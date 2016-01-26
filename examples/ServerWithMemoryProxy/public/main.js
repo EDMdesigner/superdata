@@ -56,9 +56,11 @@ if (seed) {
 
 
 var createInfiniteLoader = require("../../../src/ko-components/lists/infiniteList.js");
+var createPagedList = require("../../../src/ko-components/lists/pagedList.js");
 
 
-var infiniteLoader = createInfiniteLoader({
+//*
+var list = createInfiniteLoader({
 	store: store,
 
 	fields: ["id", "email", "name", "title"],
@@ -78,7 +80,39 @@ var infiniteLoader = createInfiniteLoader({
 	numOfItems: 10,
 	numOfItemsToLoad: 10
 });
+//*/
+
+/*
+var list = createPagedList({
+	store: store,
+
+	fields: ["id", "email", "name", "title"],
+
+	labels: {
+		email: "E-mail",
+		name: "Name",
+		title: "Very title"
+	},
+
+	sorters: {
+		id: 0,
+		email: 1
+	},
+
+	pagination: {
+		currentPage: 0,
+		itemsPerPage: 10,
+
+		afterHead: 1,
+		beforeTail: 1,
+		afterCurrent: 1,
+		beforeCurrent: 1
+	}
+});
+//*/
 
 
-ko.applyBindings(infiniteLoader);
+
+
+ko.applyBindings(list);
 

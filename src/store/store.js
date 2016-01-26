@@ -122,9 +122,7 @@ module.exports = function createStore(options) {
 			limit: store.limit
 		};
 
-		if (typeof load.before === "function") {
-			load.before(queryObj);
-		}
+		load.before(queryObj);
 
 		query(queryObj, function(err, result) {
 			if (err) {
@@ -141,9 +139,7 @@ module.exports = function createStore(options) {
 			}
 			store.count = result.count;
 
-			if (typeof load.after === "function") {
-				load.after(null, result);
-			}
+			load.after(null, result);
 		});
 	}
 
@@ -153,7 +149,7 @@ module.exports = function createStore(options) {
 	function createCallbackArrayCaller(thisArg, array) {
 		function callbackArrayCaller(err) {
 			array.forEach(function(actFunction) {
-				actFunction(thisArg, err);
+				actFunction.call(thisArg, err);
 			});
 		}
 

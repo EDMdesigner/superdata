@@ -4,28 +4,43 @@
 var ko = require("knockout");
 
 module.exports = function createPagination(config) {
-	var numOfItems = ko.observable(0);
-	var itemsPerPage = ko.observable(0);
+	config = config || {};
+	var numOfItems = ko.observable(config.numOfItems || 0);
+	var itemsPerPage = ko.observable(config.itemsPerPage || 10);
 
 	var numOfPages = ko.computed(function() {
-		return Math.ceil(numOfItems() / itemsPerPage());
+		var numOfItemsVal = numOfItems();
+		var itemsPerPageVal = itemsPerPage();
+
+		if (!itemsPerPageVal) {
+			return 0;
+		}
+
+		return Math.ceil(numOfItemsVal / itemsPerPageVal);
 	});
 
 	var currentPage = (function() {
-		var currentPage = ko.observable(0);
+		var currentPage = ko.observable(/*normalize*/(config.currentPage || 0)); //normalization might be problematic when we want to load the nth page right after loading.
+
+		function normalize(value) {
+			if (value < 0) {
+				value = 0;
+			}
+
+			var pagesNum = numOfPages();
+			if (value >= pagesNum) {
+				value = pagesNum - 1;
+			}
+
+			return value;
+		}
 
 		return ko.computed({
 			read: function() {
 				return currentPage();
 			},
 			write: function(value) {
-				if (value < 0) {
-					value = 0;
-				}
-
-				value %= numOfPages;
-
-				currentPage(value);
+				currentPage(normalize(value));
 			}
 		});
 	}());
@@ -70,7 +85,7 @@ module.exports = function createPagination(config) {
 
 			var nonClickableInserted = false;
 			for (var idx = 0; idx < numOfPagesVal; idx += 1) {
-				if (idx < afterHead || idx > numOfPagesVal - beforeTail || idx > currentPageVal - beforeCurrent || idx < currentPageVal + afterCurrent) {
+				if (idx <= afterHead || idx >= numOfPagesVal - beforeTail -1 || (idx >= currentPageVal - beforeCurrent && idx <= currentPageVal + afterCurrent)) {
 					var pageSelector;
 
 					if (idx === currentPageVal) {
