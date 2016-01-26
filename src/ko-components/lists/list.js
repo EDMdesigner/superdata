@@ -39,11 +39,11 @@ module.exports = function createList(config) {
 		store.sort = sortersVal;
 		store.skip = skipVal;
 		store.limit = limitVal;
-	}).extend({throttle: 1});
+	}).extend({throttle: 0});
 
 	function beforeLoad() {
 		if (loading()) {
-			throw "List is already loading..."; //this might be problematic if there are no good timeout settings.
+			console.log("List is already loading..."); //this might be problematic if there are no good timeout settings.
 		}
 
 		loading(true);
@@ -56,8 +56,6 @@ module.exports = function createList(config) {
 		}
 		error(null);
 
-		//paginatedList should remove all of the items before every load
-		//infiniteList should remove them only when sorters or finders have been changed.
 		store.items.forEach(function(item) { //store === this
 			if (typeof itemVm === "function") {
 				item = itemVm(item);

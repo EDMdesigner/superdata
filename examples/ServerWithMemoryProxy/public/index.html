@@ -10,10 +10,10 @@
 			<tr data-bind="foreach: fields">
 				<td>
 					<span data-bind="text: $parent.labels[$data]"></span>
-					<!-- ko if: $parent.sorters[$data] -->
-						<span data-bind="click: $parent.sorters[$data].asc">^</span>
-						<span data-bind="click: $parent.sorters[$data].reset">o</span>
-						<span data-bind="click: $parent.sorters[$data].desc">v</span>
+					<!-- ko if: $parent.sorters()[$data] -->
+						<span data-bind="click: $parent.sorters()[$data].asc">^</span>
+						<span data-bind="click: $parent.sorters()[$data].reset">o</span>
+						<span data-bind="click: $parent.sorters()[$data].desc">v</span>
 					<!-- /ko -->
 				</td>
 			</tr>

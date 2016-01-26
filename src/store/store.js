@@ -33,9 +33,8 @@ module.exports = function createStore(options) {
 
 			queryChanged = setTimeout(function() {
 				load();
-				console.log("QUERY CHANGED");
 				queryChanged = null;
-			}, 1);
+			}, 0);
 		};
 	}());
 
@@ -126,10 +125,7 @@ module.exports = function createStore(options) {
 
 		query(queryObj, function(err, result) {
 			if (err) {
-				if (typeof load.after === "function") {
-					load.after(err);
-				}
-				return;
+				return load.after(err);
 			}
 
 			store.items.length = 0;

@@ -59,7 +59,7 @@ var createInfiniteLoader = require("../../../src/ko-components/lists/infiniteLis
 var createPagedList = require("../../../src/ko-components/lists/pagedList.js");
 
 
-//*
+/*
 var list = createInfiniteLoader({
 	store: store,
 
@@ -82,7 +82,7 @@ var list = createInfiniteLoader({
 });
 //*/
 
-/*
+///*
 var list = createPagedList({
 	store: store,
 
@@ -95,13 +95,13 @@ var list = createPagedList({
 	},
 
 	sorters: {
-		id: 0,
-		email: 1
+		id: 1,
+		email: 0
 	},
 
 	pagination: {
 		currentPage: 0,
-		itemsPerPage: 10,
+		itemsPerPage: 5,
 
 		afterHead: 1,
 		beforeTail: 1,

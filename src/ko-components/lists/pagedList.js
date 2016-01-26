@@ -13,15 +13,23 @@ module.exports = function createPagedList(config) {
 
 	var store = config.store;
 
+	store.load.after.add(afterLoad);
 
 	var list = createList(config);
 	var pagination = createPagination(config.pagination);
 	list.pagination = pagination;
 
-	ko.computed(function() {
+	function setSkipAndLimit() {
 		var currentPage = pagination.currentPage();
 		var itemsPerPage = pagination.itemsPerPage();
 		list.skip(currentPage * itemsPerPage);
+		list.limit(itemsPerPage);
+	}
+
+	//setSkipAndLimit();
+
+	ko.computed(function() {
+		setSkipAndLimit();
 	});
 
 	ko.computed(function() {
@@ -29,11 +37,10 @@ module.exports = function createPagedList(config) {
 		list.pagination.numOfItems(count);
 	});
 
-	function beforeLoad() {
+	function afterLoad() {
 		list.items([]);
 	}
 
-	store.load.before.add(beforeLoad);
 
 	return list;
 };

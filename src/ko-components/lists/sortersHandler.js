@@ -27,6 +27,8 @@ module.exports = function createSortersHandler(config) {
 		}
 	}
 
+	//enek kívülre kéne kerülnie, a listbe...
+	// a sorterst kell it publikálni.
 	var sortersComputed = ko.computed(function() {
 		var sortersObj = {};
 		for (var prop in sorters) {
