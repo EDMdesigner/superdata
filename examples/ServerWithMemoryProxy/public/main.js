@@ -58,6 +58,15 @@ if (seed) {
 var createInfiniteLoader = require("../../../src/ko-components/lists/infiniteList.js");
 var createPagedList = require("../../../src/ko-components/lists/pagedList.js");
 
+ko.components.register("paged-list", {
+	viewModel: {
+		createViewModel: function(params, componentInfo) {
+			return createPagedList(params);
+		}
+	},
+	template: require("../../../src/ko-components/lists/pagedList.html")
+});
+
 
 /*
 var list = createInfiniteLoader({
@@ -82,8 +91,7 @@ var list = createInfiniteLoader({
 });
 //*/
 
-///*
-var list = createPagedList({
+var pagedListConfig = {
 	store: store,
 
 	fields: ["id", "email", "name", "title"],
@@ -92,6 +100,10 @@ var list = createPagedList({
 		email: "E-mail",
 		name: "Name",
 		title: "Very title"
+	},
+
+	filters: {
+		name: "regex"
 	},
 
 	sorters: {
@@ -108,11 +120,12 @@ var list = createPagedList({
 		afterCurrent: 1,
 		beforeCurrent: 1
 	}
-});
+};
+
+/*
+var list = createPagedList(pagedListConfig);
 //*/
 
 
-
-
-ko.applyBindings(list);
+ko.applyBindings(pagedListConfig);
 

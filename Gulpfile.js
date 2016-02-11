@@ -1,7 +1,9 @@
 var gulp = require("gulp");
 var browserify = require("browserify");
+var brfs = require("gulp-brfs");
 var stringify = require("stringify");
 var source = require("vinyl-source-stream");
+var partialify = require("partialify");
 
 function createBrowserifyTask(config) {
 	return function() {
@@ -15,7 +17,7 @@ function createBrowserifyTask(config) {
 
 		var bundle = function() {
 			return bundler
-				//.transform(stringify([".html"]))
+				.transform(partialify)
 				// Enable source maps!
 				.bundle()
 				// Use vinyl-source-stream to make the
@@ -33,7 +35,7 @@ function createBrowserifyTask(config) {
 function createWatchTask(config) {
 	var taskToRun = config.taskToRun;
 	return function () {
-		gulp.watch(["./src/**/*.js", "./examples/**/*.js"], [taskToRun])
+		gulp.watch(["./src/**/*.js", "./examples/**/*.js", "./src/**/*.html", "./examples/**/*.html"], [taskToRun])
 			.on("change", function (event) {
 				log(event);
 			});

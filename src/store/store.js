@@ -121,6 +121,8 @@ module.exports = function createStore(options) {
 			limit: store.limit
 		};
 
+		console.log(queryObj);
+
 		load.before(queryObj);
 
 		query(queryObj, function(err, result) {

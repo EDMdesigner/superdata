@@ -60,14 +60,10 @@ module.exports = function createMemoryProxy(config) {
 				for (var prop in find) {
 					var act = find[prop];
 
-					if (act instanceof RegExp) {
-						if (!act.test(item[prop])) {
-							return false;
-						}
-					} else {
-						if (act !== item[prop]) {
-							return false;
-						}
+					var regExp = new RegExp(act, "i");
+
+					if (!regExp.test(item[prop])) {
+						return false;
 					}
 				}
 				return true;

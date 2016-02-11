@@ -3,7 +3,8 @@
 
 var ko = require("knockout");
 
-var sortersHandler = require("./sortersHandler.js");
+var filtersHandler = require("./filtersHandler");
+var sortersHandler = require("./sortersHandler");
 
 
 module.exports = function createList(config) {
@@ -12,7 +13,7 @@ module.exports = function createList(config) {
 	var fields = config.fields;
 	var labels = config.labels;
 
-	var filters = null;
+	var filters = filtersHandler(config);
 	var sorters = sortersHandler(config);
 
 	var skip = ko.observable(0);
@@ -30,12 +31,12 @@ module.exports = function createList(config) {
 
 
 	ko.computed(function() {
-		//var filtersVal = filters();
+		var filtersVal = filters.filterComputed();
 		var sortersVal = sorters.sortComputed();
 		var skipVal = skip();
 		var limitVal = limit();
 
-		//store.find = filtersVal;
+		store.find = filtersVal;
 		store.sort = sortersVal;
 		store.skip = skipVal;
 		store.limit = limitVal;
