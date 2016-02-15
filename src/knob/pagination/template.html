@@ -1,0 +1,12 @@
+<div>
+	<div data-bind="foreach: pagination.pageSelectors">
+		<div data-bind="text: label, click: selectPage"></div>
+	</div>
+
+	<div data-bind="click: pagination.next">next</div>
+	<div data-bind="click: pagination.prev">prev</div>
+
+	<div data-bind="text: pagination.currentPage() + 1"></div>
+	<div data-bind="text: pagination.itemsPerPage"></div>
+	<div data-bind="text: pagination.numOfPages"></div>
+</div>

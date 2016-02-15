@@ -2,13 +2,8 @@
 
 
 
-<paged-list params="store: store, fields: fields, labels: labels, filters: filters, sorters: sorters">
-	<div>
-		<span data-bind="text: data.id"></span>
-		<span data-bind="text: data.email"></span>
-		<span data-bind="text: data.name"></span>
-		<span data-bind="text: data.title"></span>
-	</div>
+<paged-list params="store: store, fields: ['id', 'email', 'name', 'title'], search: 'name', sort: ['id', 'name']">
+	<div data-bind="component: {name: 'list-item', params: $data}"></div>
 </paged-list>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>

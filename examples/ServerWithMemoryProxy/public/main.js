@@ -55,6 +55,16 @@ if (seed) {
 //*/
 
 
+var createItemVm = require("./itemVm");
+ko.components.register("list-item", {
+	viewModel: {
+		createViewModel: function(params, componentInfo) {
+			return createItemVm(params);
+		}
+	},
+	template: require("./itemTemplate.html")
+});
+
 var createInfiniteLoader = require("../../../src/ko-components/lists/infiniteList.js");
 var createPagedList = require("../../../src/ko-components/lists/pagedList.js");
 
@@ -66,6 +76,7 @@ ko.components.register("paged-list", {
 	},
 	template: require("../../../src/ko-components/lists/pagedList.html")
 });
+
 
 
 /*

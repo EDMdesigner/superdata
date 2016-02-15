@@ -1,0 +1,27 @@
+<div>
+	<!-- ko if: error -->
+		<div data-bind="text: error"></div>
+	<!-- /ko -->
+	<div>
+		<div>
+			<knob-dropdown params="selected: sort, items: sortOptions"></knob-dropdown>
+
+			<!--
+			<span>
+				<button>grid</button>
+				<button>list</button>
+			</span>
+			-->
+		</div>
+		<div data-bind="foreach: items">
+			<!-- ko template: { nodes: $componentTemplateNodes, data: $data } --><!-- /ko -->
+		</div>
+	</div>
+	<div data-bind="visible: loading">Loading...</div>
+
+	<knob-pagination params="numOfItems: pagination.numOfItems, itemsPerPage: itemsPerPage"></knob-pagination>
+
+	<!-- ko if: $data.loadMore -->
+		<div data-bind="visible: !loading(), click: loadMore">Load more...</div>
+	<!-- /ko -->
+</div>

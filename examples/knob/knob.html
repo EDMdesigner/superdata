@@ -1,0 +1,17 @@
+
+<knob-dropdown params="items: [{label: 'id asc', value: {field: 'id desc', asc: true}}, {label: 'id desc', value: {field: 'id', asc: false}}, {label: 'name asc', value: {field: 'name', asc: true}}]"></knob-dropdown>
+
+<div data-bind="foreach: buttons">
+	<knob-button params="label: $data, variation: 'default'"></knob-button>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+<script src="../../src/knob/components.built.js"></script>
+<script>
+	var buttons = [];
+	for (var idx = 0; idx < 3; idx += 1) {
+		buttons.push("button" + idx);
+	}
+	ko.applyBindings({buttons: buttons});
+</script>

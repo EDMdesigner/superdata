@@ -4,24 +4,45 @@
 var ko = require("knockout");
 
 var filtersHandler = require("./filtersHandler");
-var sortersHandler = require("./sortersHandler");
+
+require("../../../src/ko-components/sortDropdown/component");
 
 
 module.exports = function createList(config) {
 	var store = config.store;
 
 	var fields = config.fields;
-	var labels = config.labels;
 
-	var filters = filtersHandler(config);
-	var sorters = sortersHandler(config);
+	var search = ko.observable("");
+	var sort = ko.observable({});
+
+	//config.sorters
+	// - label
+	// - prop
+	var sortOptions = [
+		{
+			label: "name asc",
+			value: {name: 1}
+		},
+		{
+			label: "name desc",
+			value: {name: -1}
+		},
+		{
+			label: "email asc",
+			value: {email: 1}
+		},
+		{
+			label: "email desc",
+			value: {email: -1}
+		}
+	];
 
 	var skip = ko.observable(0);
 	var limit = ko.observable(10);
 
 
 	var items = ko.observableArray([]);
-	var itemVm = config.itemVm;
 
 	var count = ko.observable(0); //should be read-only
 
@@ -31,13 +52,9 @@ module.exports = function createList(config) {
 
 
 	ko.computed(function() {
-		var filtersVal = filters.filterComputed();
-		var sortersVal = sorters.sortComputed();
 		var skipVal = skip();
 		var limitVal = limit();
 
-		store.find = filtersVal;
-		store.sort = sortersVal;
 		store.skip = skipVal;
 		store.limit = limitVal;
 	}).extend({throttle: 0});
@@ -58,9 +75,6 @@ module.exports = function createList(config) {
 		error(null);
 
 		store.items.forEach(function(item) { //store === this
-			if (typeof itemVm === "function") {
-				item = itemVm(item);
-			}
 			items.push(item);
 		});
 
@@ -84,10 +98,9 @@ module.exports = function createList(config) {
 
 	return {
 		fields: fields, //should filter to the fields. (select)
-		labels: labels,
 
-		filters: filters,
-		sorters: sorters,
+		sortOptions: sortOptions,
+
 		skip: skip,
 		limit: limit,
 

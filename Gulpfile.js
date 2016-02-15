@@ -4,6 +4,14 @@ var brfs = require("gulp-brfs");
 var stringify = require("stringify");
 var source = require("vinyl-source-stream");
 var partialify = require("partialify");
+var jsonlint	= require("gulp-jsonlint");
+
+
+gulp.task("jsonlint", function() {
+	return gulp.src(["src/featureConfigDefaults/**/*.json", "src/modules/**/*.json"])
+		.pipe(jsonlint())
+		.pipe(jsonlint.failOnError());
+});
 
 function createBrowserifyTask(config) {
 	return function() {
@@ -35,7 +43,7 @@ function createBrowserifyTask(config) {
 function createWatchTask(config) {
 	var taskToRun = config.taskToRun;
 	return function () {
-		gulp.watch(["./src/**/*.js", "./examples/**/*.js", "./src/**/*.html", "./examples/**/*.html"], [taskToRun])
+		gulp.watch(["./src/**/*.js", "./examples/**/*.js", "./src/**/*.html", "./examples/**/*.html", "./src/**/*.json"], [taskToRun])
 			.on("change", function (event) {
 				log(event);
 			});
@@ -62,6 +70,11 @@ var examplesConfigs = {
 		entries: ["./examples/ServerWithMemoryProxy/public/main.js"],
 		outputFileName: "main.built.js",
 		destFolder: "./examples/ServerWithMemoryProxy/public"
+	},
+	knob: {
+		entries: ["./src/knob/components.js"],
+		outputFileName: "components.built.js",
+		destFolder: "./src/knob"
 	}
 };
 
@@ -70,6 +83,6 @@ var examplesConfigs = {
 for (var prop in examplesConfigs) {
 	var actConfig = examplesConfigs[prop];
 	var actBrowserifyTaskName = "browserify-examples-" + prop;
-	gulp.task(actBrowserifyTaskName, createBrowserifyTask(actConfig));
+	gulp.task(actBrowserifyTaskName, ["jsonlint"], createBrowserifyTask(actConfig));
 	gulp.task("watch-examples-" + prop, createWatchTask({taskToRun: actBrowserifyTaskName}));
 }
