@@ -1,11 +1,3 @@
-<style>
-.icon {
-	display: inline-block;
-	width: 1em;
-	height: 1em;
-}
-</style>
-
 <svg style="position: absolute; width: 0; height: 0;" width="0" height="0" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <defs>
 <symbol id="icon-search" viewBox="0 0 1024 1024">
@@ -14,21 +6,3 @@
 </symbol>
 </defs>
 </svg>
-
-
-<knob-dropdown params="items: [{label: 'id asc', value: {field: 'id desc', asc: true}}, {label: 'id desc', value: {field: 'id', asc: false}}, {label: 'name asc', value: {field: 'name', asc: true}}]"></knob-dropdown>
-
-<div data-bind="foreach: buttons">
-	<knob-button params="label: $data, variation: 'default', icon: '#icon-search'"></knob-button>
-</div>
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
-<script src="../../src/knob/components.built.js"></script>
-<script>
-	var buttons = [];
-	for (var idx = 0; idx < 3; idx += 1) {
-		buttons.push("button" + idx);
-	}
-	ko.applyBindings({buttons: buttons});
-</script>

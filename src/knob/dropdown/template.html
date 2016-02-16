@@ -1,9 +1,4 @@
 <div class="knob-dropdown">
-	<style>
-		.knob-dropdown-menu button{
-			width: 150px;
-		}
-	</style>
 	<!-- with params, the selected().label won't be recalculated, when selected is changed... -->
 	<div data-bind="component: {name: 'knob-button', params: {label: selected().label, click: dropdownVisible.toggle}}"></div>
 	<div class="knob-dropdown-menu" data-bind="foreach: options, visible: dropdownVisible">

@@ -2,18 +2,27 @@ module.exports = {
 	"default": {
 		"default": {
 			"backgroundColor": "#eeeeee",
-			"color": "#000000"
+			"color": "#000000",
+			"fill": "#000000"
 		},
 		"hover": {
 			"backgroundColor": "#ff0000",
-			"color": "#000000"
+			"color": "#000000",
+			"fill": "#00ff00"
 		},
 		"active": {
-			"color": "yellow"
+			"color": "#1337aa",
+			"fill": "#abcdef"
 		},
 		"disabled": {
 			"backgroundColor": "#dddddd",
 			"color": "#aaaaaa"
+		},
+		"success": {
+
+		},
+		"error": {
+
 		}
 	},
 	"primary": {
