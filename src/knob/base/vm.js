@@ -22,6 +22,10 @@ function createBaseVm(config) {
 	function mouseOver() {
 		var actState = state();
 
+		if (actState === "disabled") {
+			return;
+		}
+
 		if (actState !== "hover") {
 			previousState = actState;
 		}
@@ -30,14 +34,32 @@ function createBaseVm(config) {
 	}
 
 	function mouseOut() {
+		var actState = state();
+
+		if (actState === "disabled") {
+			return;
+		}
+
 		state(previousState);
 	}
 
 	function mouseDown() {
+		var actState = state();
+
+		if (actState === "disabled") {
+			return;
+		}
+
 		state("active");
 	}
 
 	function mouseUp() {
+		var actState = state();
+
+		if (actState === "disabled") {
+			return;
+		}
+
 		state("hover");
 	}
 

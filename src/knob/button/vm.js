@@ -10,7 +10,8 @@ function createButton(config) {
 
 	var vm = base(config);
 
-	vm.icon = ko.observable(config.icon);
+	vm.leftIcon = ko.observable(ko.unwrap(config.leftIcon || config.icon));
+	vm.rightIcon = ko.observable(ko.unwrap(config.rightIcon));
 	vm.label = ko.observable(ko.unwrap(config.label));
 	vm.click = config.click || function() {};
 

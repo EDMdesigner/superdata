@@ -5,35 +5,29 @@ var ko = require("knockout");
 
 module.exports = function createPagination(config) {
 	config = config || {};
-	var numOfItems = ko.observable(config.numOfItems || 0);
-	var itemsPerPage = ko.observable(config.itemsPerPage || 10);
+	
+	var numOfPages;
+	if (ko.isObservable(config.numOfPages)) {
+		numOfPages = config.numOfPages;
+	} else {
+		numOfPages = ko.observable(config.numOfPages || 10);
+	}
 
-	var numOfPages = ko.computed(function() {
-		var numOfItemsVal = numOfItems();
-		var itemsPerPageVal = itemsPerPage();
-
-		if (!itemsPerPageVal) {
-			return 0;
+	function normalize(value) {
+		if (value < 0) {
+			value = 0;
 		}
 
-		return Math.ceil(numOfItemsVal / itemsPerPageVal);
-	});
+		var pagesNum = numOfPages();
+		if (value >= pagesNum) {
+			value = pagesNum - 1;
+		}
+
+		return value;
+	}
 
 	var currentPage = (function() {
 		var currentPage = ko.observable(/*normalize*/(config.currentPage || 0)); //normalization might be problematic when we want to load the nth page right after loading.
-
-		function normalize(value) {
-			if (value < 0) {
-				value = 0;
-			}
-
-			var pagesNum = numOfPages();
-			if (value >= pagesNum) {
-				value = pagesNum - 1;
-			}
-
-			return value;
-		}
 
 		return ko.computed({
 			read: function() {
@@ -46,15 +40,9 @@ module.exports = function createPagination(config) {
 	}());
 
 
-	function next() {
-		currentPage(currentPage() + 1);
-	}
+	
 
-	function prev() {
-		currentPage(currentPage() - 1);
-	}
-
-
+	var currentPageRealIdx;
 	var pageSelectors = (function(config) {
 		var afterHead = config.afterHead || 2;
 		var beforeTail = config.beforeTail || 2;
@@ -64,6 +52,7 @@ module.exports = function createPagination(config) {
 		function createPageSelector(idx, isCurrentPage) {
 			return {
 				label: idx + 1,
+				state: "default",
 				selectPage: function() {
 					currentPage(idx);
 				}
@@ -73,6 +62,7 @@ module.exports = function createPagination(config) {
 		function createNonClickableSelector(label) {
 			return {
 				label: label,
+				state: "disabled",
 				selectPage: function() {}
 			};
 		}
@@ -90,6 +80,7 @@ module.exports = function createPagination(config) {
 
 					if (idx === currentPageVal) {
 						pageSelector = createNonClickableSelector(idx + 1);
+						currentPageRealIdx = elements.length;
 					} else {
 						pageSelector = createPageSelector(idx);
 					}
@@ -108,16 +99,50 @@ module.exports = function createPagination(config) {
 		});
 	}(config));
 
+
+	var next = ko.computed(function() {
+		var idx = currentPageRealIdx + 1;
+
+		var pages = pageSelectors();
+
+		if (idx >= pages.length - 1) {
+			idx = pages.length - 1;
+		}
+
+		return pages[idx];
+	});
+
+	var prev = ko.computed(function() {
+		var idx = currentPageRealIdx - 1;
+
+		if (idx < 0) {
+			idx = 0;
+		}
+
+		return pageSelectors()[idx];
+	});
+
+	var first = ko.computed(function() {
+		return pageSelectors()[0];
+	});
+
+	var last = ko.computed(function() {
+		var pages = pageSelectors();
+		return pages[pages.length - 1];
+	});
+
+
 	return {
 		pageSelectors: pageSelectors,
+
+		first: first,
+		last: last,
 
 		next: next,
 		prev: prev,
 
 		currentPage: currentPage,
 
-		numOfItems: numOfItems,
-		itemsPerPage: itemsPerPage,
 		numOfPages: numOfPages
 	};
 };

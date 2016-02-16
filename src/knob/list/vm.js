@@ -3,9 +3,6 @@
 
 var ko = require("knockout");
 
-var filtersHandler = require("./filtersHandler");
-
-require("../../../src/ko-components/sortDropdown/component");
 
 
 module.exports = function createList(config) {

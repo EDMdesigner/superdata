@@ -2,8 +2,7 @@
 "use strict";
 
 var ko = require("knockout");
-var createList = require("./list");
-var createPagination = require("./pagination");
+var createList = require("../list/vm");
 
 module.exports = function createPagedList(config) {
 	config = config || {};
@@ -15,21 +14,23 @@ module.exports = function createPagedList(config) {
 	store.load.before.add(afterLoad);
 
 	var list = createList(config);
-	var pagination = createPagination(config.pagination);
-	list.pagination = pagination;
+	//var pagination = createPagination(config.pagination);
+	//list.pagination = pagination;
 
 
 	ko.computed(function() {
-		var currentPage = pagination.currentPage();
-		var itemsPerPage = pagination.itemsPerPage();
-		list.skip(currentPage * itemsPerPage);
-		list.limit(itemsPerPage);
+		//var currentPage = pagination.currentPage();
+		//var itemsPerPage = pagination.itemsPerPage();
+		//list.skip(currentPage * itemsPerPage);
+		//list.limit(itemsPerPage);
 	});
 
+	/*
 	ko.computed(function() {
 		var count = list.count();
 		list.pagination.numOfItems(count);
 	});
+	*/
 
 	
 	function afterLoad() {
