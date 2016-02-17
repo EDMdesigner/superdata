@@ -8,7 +8,7 @@
     "data layer",
     "model",
     "store",
-    "proxy",
+    "proxy"
   ],
   "license": "MIT",
   "repository": {
