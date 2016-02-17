@@ -6,9 +6,6 @@ var createList = require("../list/vm");
 
 module.exports = function createPagedList(config) {
 	config = config || {};
-	config.pagination = config.pagination || {};
-	config.pagination.currentPage = config.pagination.currentPage || 0;
-	config.pagination.itemsPerPage = config.pagination.itemsPerPage || 0;
 
 	var store = config.store;
 	store.load.before.add(afterLoad);
@@ -17,12 +14,20 @@ module.exports = function createPagedList(config) {
 	//var pagination = createPagination(config.pagination);
 	//list.pagination = pagination;
 
+	var numOfPages = ko.observable();
+	var itemsPerPage = ko.observable(10);
+	var currentPage = ko.observable(0);
+
+	list.numOfPages = numOfPages;
+	list.itemsPerPage = itemsPerPage;
+	list.currentPage = currentPage;
+
 
 	ko.computed(function() {
-		//var currentPage = pagination.currentPage();
-		//var itemsPerPage = pagination.itemsPerPage();
-		//list.skip(currentPage * itemsPerPage);
-		//list.limit(itemsPerPage);
+		var currentPageVal = currentPage();
+		var itemsPerPageVal = itemsPerPage();
+		list.skip(currentPageVal * itemsPerPageVal);
+		list.limit(itemsPerPageVal);
 	});
 
 	/*

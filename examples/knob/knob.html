@@ -95,15 +95,14 @@
 
 <h2>knob-paged-list</h2>
 
-<paged-list params="store: store, fields: ['id', 'email', 'name', 'title'], search: 'name', sort: ['id', 'name']">
-	<!--
-	<span data-bind="text: data.id"></span>
-	<span data-bind="text: data.email"></span>
-	<span data-bind="text: data.name"></span>
-	<span data-bind="text: data.title"></span>
-	-->
-	<span>yo</span>
-</paged-list>
+<knob-paged-list params="store: store, fields: ['id', 'email', 'name', 'title'], search: 'name', sort: ['id', 'name']">
+	<div>
+		<span data-bind="text: data.id"></span>
+		<span data-bind="text: data.email"></span>
+		<span data-bind="text: data.name"></span>
+		<span data-bind="text: data.title"></span>
+	</div>
+</knob-paged-list>
 
 
 

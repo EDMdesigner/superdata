@@ -27,7 +27,12 @@ module.exports = function createPagination(config) {
 	}
 
 	var currentPage = (function() {
-		var currentPage = ko.observable(/*normalize*/(config.currentPage || 0)); //normalization might be problematic when we want to load the nth page right after loading.
+		var currentPage = config.currentPage || ko.observable(0);
+
+		ko.computed(function() {
+			numOfPages();
+			currentPage(0);
+		});
 
 		return ko.computed({
 			read: function() {

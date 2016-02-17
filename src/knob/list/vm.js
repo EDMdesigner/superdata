@@ -11,35 +11,75 @@ module.exports = function createList(config) {
 	var fields = config.fields;
 
 	var search = ko.observable("");
-	var sort = ko.observable({});
 
 	//config.sorters
 	// - label
 	// - prop
-	var sortOptions = [
+
+	var sortOptions = [];
+	function createQureyObj(prop, asc) {
+		var obj = {};
+		obj[prop] = asc;
+		return obj;
+	}
+	if (config.sort) {
+		for(var idx = 0; idx < config.sort.length; idx += 1) {
+			var act = config.sort[idx];
+			sortOptions.push({
+				icon: "#icon-a-z",
+				label: act,
+				value: createQureyObj(act, 1)
+			});
+			sortOptions.push({
+				icon: "#icon-z-a",
+				label: act,
+				value: createQureyObj(act, -1)
+			});
+		}
+	}
+
+	var x = [
 		{
-			label: "name asc",
+			icon: "#icon-a-z",
+			label: "id",
+			value: {id: 1}
+		},
+		{
+			icon: "#icon-z-a",
+			label: "id",
+			value: {id: -1}
+		},
+		{
+			icon: "#icon-a-z",
+			label: "name",
 			value: {name: 1}
 		},
 		{
-			label: "name desc",
+			icon: "#icon-z-a",
+			label: "name",
 			value: {name: -1}
 		},
 		{
-			label: "email asc",
+			icon: "#icon-a-z",
+			label: "email",
 			value: {email: 1}
 		},
 		{
-			label: "email desc",
+			icon: "#icon-z-a",
+			label: "email",
 			value: {email: -1}
 		}
 	];
+	var sort = ko.observable(sortOptions[0]);
 
 	var skip = ko.observable(0);
-	var limit = ko.observable(10);
+	var limit = ko.observable(0);
 
 
 	var items = ko.observableArray([]);
+	store.items.forEach(function(item) { //store === this
+		items.push(item);
+	});
 
 	var count = ko.observable(0); //should be read-only
 
@@ -49,9 +89,11 @@ module.exports = function createList(config) {
 
 
 	ko.computed(function() {
+		var sortVal = sort().value;
 		var skipVal = skip();
 		var limitVal = limit();
 
+		store.sort = sortVal;
 		store.skip = skipVal;
 		store.limit = limitVal;
 	}).extend({throttle: 0});
@@ -96,6 +138,7 @@ module.exports = function createList(config) {
 	return {
 		fields: fields, //should filter to the fields. (select)
 
+		sort: sort,
 		sortOptions: sortOptions,
 
 		skip: skip,
