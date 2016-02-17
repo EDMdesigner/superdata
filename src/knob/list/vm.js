@@ -10,7 +10,7 @@ module.exports = function createList(config) {
 
 	var fields = config.fields;
 
-	var search = ko.observable("");
+	var search = ko.observable("").extend({throttle: 500});
 
 	//config.sorters
 	// - label
@@ -38,38 +38,6 @@ module.exports = function createList(config) {
 		}
 	}
 
-	var x = [
-		{
-			icon: "#icon-a-z",
-			label: "id",
-			value: {id: 1}
-		},
-		{
-			icon: "#icon-z-a",
-			label: "id",
-			value: {id: -1}
-		},
-		{
-			icon: "#icon-a-z",
-			label: "name",
-			value: {name: 1}
-		},
-		{
-			icon: "#icon-z-a",
-			label: "name",
-			value: {name: -1}
-		},
-		{
-			icon: "#icon-a-z",
-			label: "email",
-			value: {email: 1}
-		},
-		{
-			icon: "#icon-z-a",
-			label: "email",
-			value: {email: -1}
-		}
-	];
 	var sort = ko.observable(sortOptions[0]);
 
 	var skip = ko.observable(0);
@@ -89,10 +57,16 @@ module.exports = function createList(config) {
 
 
 	ko.computed(function() {
+		var searchVal = search();
 		var sortVal = sort().value;
 		var skipVal = skip();
 		var limitVal = limit();
 
+		var find = {};
+
+		find[config.search] = searchVal;
+
+		store.find = find;
 		store.sort = sortVal;
 		store.skip = skipVal;
 		store.limit = limitVal;
@@ -137,6 +111,8 @@ module.exports = function createList(config) {
 
 	return {
 		fields: fields, //should filter to the fields. (select)
+
+		search: search,
 
 		sort: sort,
 		sortOptions: sortOptions,

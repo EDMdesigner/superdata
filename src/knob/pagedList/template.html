@@ -4,6 +4,7 @@
 	<!-- /ko -->
 	<div>
 		<div>
+			<input type="text" data-bind="value: search, valueUpdate: 'afterkeydown'"/><knob-button params="label: '', variation: 'default', icon: '#icon-search'"></knob-button>
 			<!-- ko if: sortOptions.length > 0 -->
 				<knob-dropdown params="rightIcon: '#icon-down', selected: sort, items: sortOptions"></knob-dropdown>
 			<!-- /ko -->

@@ -1,4 +1,4 @@
-<button data-bind="css: cssClass, style: style, click: click, event: {mouseover: mouseOver, mouseout: mouseOut, mousedown: mouseDown, mouseup: mouseUp}">
+<button data-bind="css: cssClass, style: style, click: click, event: {mouseover: mouseOver, mouseout: mouseOut, mousedown: mouseDown, mouseup: mouseUp}, disable: state() === 'disabled'">
 	<span class="icon-wrapper" data-bind="if: leftIcon">
 		<svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" data-bind="attr: {'xlink:href': leftIcon}" xlink:href=""></use></svg>
 	</span>
