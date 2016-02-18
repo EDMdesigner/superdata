@@ -1,11 +1,11 @@
 /*jslint node: true */
 "use strict";
 
-var ko = require("knockout");
+var superdata = require("superdata");
 
-var createProxy = require("../../../src/proxy/rest");
-var createModel = require("../../../src/model/model");
-var createStore = require("../../../src/store/store");
+var createProxy = superdata.proxy.ajax;
+var createModel = superdata.model.model;
+var createStore = superdata.store.store;
 
 var proxy = createProxy({
 	idProperty: "id",
@@ -37,7 +37,7 @@ var store = createStore({
 //atom
 var seed = true;
 function handleResponse(err, result) {
-	//console.log(err, result);
+	// console.log(err, result);
 }
 if (seed) {
 	var names = ["Bob", "Rob", "Olga", "Helga"];
@@ -53,29 +53,32 @@ if (seed) {
 	}
 }
 //*/
-
-
-var createItemVm = require("./itemVm");
-ko.components.register("list-item", {
-	viewModel: {
-		createViewModel: function(params, componentInfo) {
-			return createItemVm(params);
-		}
-	},
-	template: require("./itemTemplate.html")
+store.load();
+store.query(null, function(err, response) {
+	console.log(err, response);
 });
 
-var createInfiniteLoader = require("../../../src/ko-components/lists/infiniteList.js");
-var createPagedList = require("../../../src/ko-components/lists/pagedList.js");
+// var createItemVm = require("./itemVm");
+// ko.components.register("list-item", {
+// 	viewModel: {
+// 		createViewModel: function(params, componentInfo) {
+// 			return createItemVm(params);
+// 		}
+// 	},
+// 	template: require("./itemTemplate.html")
+// });
 
-ko.components.register("paged-list", {
-	viewModel: {
-		createViewModel: function(params, componentInfo) {
-			return createPagedList(params);
-		}
-	},
-	template: require("../../../src/ko-components/lists/pagedList.html")
-});
+// var createInfiniteLoader = require("../../../src/ko-components/lists/infiniteList.js");
+// var createPagedList = require("../../../src/ko-components/lists/pagedList.js");
+
+// ko.components.register("paged-list", {
+// 	viewModel: {
+// 		createViewModel: function(params, componentInfo) {
+// 			return createPagedList(params);
+// 		}
+// 	},
+// 	template: require("../../../src/ko-components/lists/pagedList.html")
+// });
 
 
 
@@ -139,4 +142,3 @@ var list = createPagedList(pagedListConfig);
 
 
 ko.applyBindings(pagedListConfig);
-

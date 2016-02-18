@@ -168,7 +168,7 @@ module.exports = function createStore(options) {
 	}
 
 
-	
+
 
 	return store;
 };
