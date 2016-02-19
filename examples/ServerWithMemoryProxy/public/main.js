@@ -7,9 +7,31 @@ var createProxy = superdata.proxy.ajax;
 var createModel = superdata.model.model;
 var createStore = superdata.store.store;
 
+// queries: {
+// 	token: "34oirfgdsnTOKENawern4o",
+// 	user: "Lali"
+// }
 var proxy = createProxy({
-	idProperty: "id",
-	route: "/user"
+	read: {
+		route: "http://localhost:7357/user",
+		method: "GET"
+	},
+	createOne: {
+		route: "http://localhost:7357/user",
+		method: "POST"
+	},
+	readOneById: {
+		route: "http://localhost:7357/user/:id",
+		method: "GET"
+	},
+	updateOneById: {
+		route: "http://localhost:7357/user/:id",
+		method: "PUT"
+	},
+	destroyOneById: {
+		route: "http://localhost:7357/user/:id",
+		method: "DELETE"
+	},
 });
 var model = createModel({
 	fields: {
@@ -26,6 +48,7 @@ var model = createModel({
 			type: "string"
 		}
 	},
+	idField: "id",
 	proxy: proxy
 });
 var store = createStore({
@@ -35,6 +58,45 @@ var store = createStore({
 //*
 //seed
 //atom
+
+store.load.after.add(function() {
+	//Createone OK
+	// console.log(store.items);
+	//read OK
+	// store.model.list({},function (err, data) {
+	// 	console.log("(read):");
+	// 	console.log(err, data);
+	// });
+
+	//readOneById
+	// store.proxy.readOneById(0, function(err, res) {
+	// 	console.log("(readOneById)");
+	// 	console.log(err, res);
+	// });
+
+	//updateOneById OK
+	// console.log("Items 0:");
+	// console.log(store.items[1]);
+	// store.items[1].data.email = "asdfsadf";
+	// console.log("Items 0 after change:");
+	// store.items[1].save(function(err, data) {
+	// 	console.log("(updateOneById):");
+	// 	console.log(err, data);
+	// });
+	// console.log(store.items[1]);
+
+	//destroyOneById
+	store.items[3].destroy(function(err, res) {
+		console.log("(destroy)");
+		console.log(err, res);
+		store.proxy.readOneById(res.data.id, function(err, res) {
+			console.log("(readOneById)");
+			console.log(err, res);
+		});
+	});
+});
+
+
 var seed = true;
 function handleResponse(err, result) {
 	// console.log(err, result);
@@ -52,11 +114,10 @@ if (seed) {
 		}, handleResponse);
 	}
 }
+
+store.limit = 100;
 //*/
-store.load();
-store.query(null, function(err, response) {
-	console.log(err, response);
-});
+
 
 // var createItemVm = require("./itemVm");
 // ko.components.register("list-item", {

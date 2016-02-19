@@ -135,7 +135,7 @@ module.exports = function createMemoryProxy(config) {
 	function readOneById(id, callback) {
 		checkCallback(callback);
 
-		var dataIdx = findIndexById();
+		var dataIdx = findIndexById(id);
 		if (dataIdx === -1) {
 			return callback(messages.errorMessages.NOT_FOUND);
 		}

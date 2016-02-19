@@ -62,16 +62,16 @@ module.exports = function createCRUDRouter(config) {
 	});
 
 	router.get("/:id", function(req, res) {
-		var id = params.id;
+		var id = req.params.id;
 		proxy.readOneById(id, createResponseHandler(res));
 	});
 
 	router.put("/:id", function(req, res) {
-		proxy.updateOneById(params.id, req.data, createResponseHandler(res));
+		proxy.updateOneById(req.params.id, req.data, createResponseHandler(res));
 	});
 
 	router.delete("/:id", function(req, res) {
-		proxy.destroyOneById(params.id, createResponseHandler(res));
+		proxy.destroyOneById(req.params.id, createResponseHandler(res));
 	});
 
 	return router;

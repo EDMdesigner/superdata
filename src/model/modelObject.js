@@ -79,8 +79,8 @@ module.exports = function createModelObject(options) {
 
 	//deleted flag?
 	function destroy(callback) {
-		var id = fields[idField].get();
-		proxy.destroyOneById(id, data, function(err, result) {
+		var id = data[idField];
+		proxy.destroyOneById(id, function(err, result) {
 			if (err) {
 				return callback(err);
 			}

@@ -14,6 +14,12 @@ module.exports = function createRestProxy(config) {
 		if (options.sort) {
 			options.sort = JSON.stringify(options.sort);
 		}
+		if (options.skip) {
+			options.skip = JSON.stringify(options.skip);
+		}
+		if (options.limit) {
+			options.limit = JSON.stringify(options.limit);
+		}
 		request
 			.get(route)
 			.query(options)
