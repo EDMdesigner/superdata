@@ -69,10 +69,10 @@ store.load.after.add(function() {
 	// });
 
 	//readOneById
-	// store.proxy.readOneById(0, function(err, res) {
-	// 	console.log("(readOneById)");
-	// 	console.log(err, res);
-	// });
+	store.proxy.readOneById(0, function(err, res) {
+		console.log("(readOneById)");
+		console.log(err, res);
+	});
 
 	//updateOneById OK
 	// console.log("Items 0:");

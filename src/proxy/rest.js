@@ -4,7 +4,12 @@ var timeout = 10000;
 
 module.exports = function createRestProxy(config) {
 	var idProperty = config.idProperty;
-	var generateId = config.generateId;
+	var generateId = config.generateId || (function() {
+		var nextId = 0;
+		return function() {
+			return nextId++;
+		};
+	}());
 	var route = config.route;
 
 	function read(options, callback) {

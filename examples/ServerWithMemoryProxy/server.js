@@ -13,6 +13,7 @@ var testDelay = config.testDelay || 2000;
 
 var proxy = createProxy({
 	idProperty: "id",
+	idType: "number",
 	generateId: (function() {
 		var nextId = 0;
 		return function() {
