@@ -1,6 +1,6 @@
 {
   "name": "superdata",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A ligth weight data layer module motivated by extjs' data layer. It can be used with any client-side framework.",
   "main": "src/superData.js",
   "keywords": [
