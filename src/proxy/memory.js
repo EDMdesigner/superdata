@@ -39,7 +39,7 @@ module.exports = function createMemoryProxy(config) {
 				if (typeof castedId !== "string") {
 					castedId = castedId.toString();
 					if (typeof castedId !== "string") {
-						return console.log("Id " + id + " could not be parsed as " + type);
+						throw("Id " + id + " could not be parsed as " + type);
 					}
 				}
 				break;
@@ -47,7 +47,7 @@ module.exports = function createMemoryProxy(config) {
 				if (typeof castedId !== "number") {
 					castedId = parseInt(castedId);
 					if (isNaN(castedId)) {
-						return console.log("Id " + id + " could not be parsed as " + type);
+						throw("Id " + id + " could not be parsed as " + type);
 					}
 				}
 				break;
