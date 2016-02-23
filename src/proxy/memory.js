@@ -29,14 +29,32 @@ module.exports = function createMemoryProxy(config) {
 	}
 
 	function castId(type, id) {
+		if (type === undefined || id === undefined) {
+			return console.log("Missing cast parameters");
+		}
+
+		var castedId = id;
 		switch(type) {
 			case "string":
+				if (typeof castedId !== "string") {
+					castedId = castedId.toString();
+					if (typeof castedId !== "string") {
+						return console.log("Id " + id + " could not be parsed as " + type);
+					}
+				}
 				break;
 			case "number":
-				id = parseFloat(id);
+				if (typeof castedId !== "number") {
+					castedId = parseInt(castedId);
+					if (isNaN(castedId)) {
+						return console.log("Id " + id + " could not be parsed as " + type);
+					}
+				}
 				break;
+			default:
+				return console.log("Unrecognized id type", type);
 		}
-		return id;
+		return castedId;
 	}
 
 	function checkCallback(callback) {
