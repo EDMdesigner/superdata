@@ -1,6 +1,6 @@
 {
   "name": "superdata",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A ligth weight data layer module motivated by extjs' data layer. It can be used with any client-side framework.",
   "main": "src/superData.js",
   "keywords": [
@@ -58,7 +58,8 @@
     "jsonlint": "^1.6.2",
     "partialify": "^3.1.6",
     "stringify": "^3.2.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "knockout": "3.4.0"
   },
   "dependencies": {
     "grunt": "^0.4.5",

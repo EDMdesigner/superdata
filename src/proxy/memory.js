@@ -5,7 +5,8 @@ var messages = require("../errorMessages");
 
 module.exports = function createMemoryProxy(config) {
 	config = config || {};
-	var idProperty = config.idProperty || "id";
+	var idProperty = config.idField || "id";
+	var idType = config.idType.toLowerCase() || "string";
 	var generateId = config.generateId || (function() {
 		var nextId = 0;
 		return function() {
@@ -15,7 +16,8 @@ module.exports = function createMemoryProxy(config) {
 
 	var db = [];
 
-	function findIndexById(id) {
+	function findIndexById(originalId) {
+		var id = castId(config.idType, originalId);
 		for (var idx = 0; idx < db.length; idx += 1) {
 			var act = db[idx];
 			if (act[idProperty] === id) {
@@ -24,6 +26,35 @@ module.exports = function createMemoryProxy(config) {
 		}
 
 		return -1;
+	}
+
+	function castId(type, id) {
+		if (type === undefined || id === undefined) {
+			return console.log("Missing cast parameters");
+		}
+
+		var castedId = id;
+		switch(type) {
+			case "string":
+				if (typeof castedId !== "string") {
+					castedId = castedId.toString();
+					if (typeof castedId !== "string") {
+						throw "Id " + id + " could not be parsed as " + type;
+					}
+				}
+				break;
+			case "number":
+				if (typeof castedId !== "number") {
+					castedId = parseInt(castedId);
+					if (isNaN(castedId)) {
+						throw "Id " + id + " could not be parsed as " + type;
+					}
+				}
+				break;
+			default:
+				return console.log("Unrecognized id type", type);
+		}
+		return castedId;
 	}
 
 	function checkCallback(callback) {
@@ -135,7 +166,7 @@ module.exports = function createMemoryProxy(config) {
 	function readOneById(id, callback) {
 		checkCallback(callback);
 
-		var dataIdx = findIndexById();
+		var dataIdx = findIndexById(id);
 		if (dataIdx === -1) {
 			return callback(messages.errorMessages.NOT_FOUND);
 		}
