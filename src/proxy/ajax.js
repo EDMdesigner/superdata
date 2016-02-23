@@ -86,6 +86,9 @@ module.exports = function createAjaxProxy(config) {
 
 	function checkConfig(config) {
 		for (var prop in config) {
+			if (prop === "idProperty" || prop === "generateId") {
+				continue;
+			}
 			assert(config[prop], prop + " should be configured");
 			assert(config[prop].route, prop + " route should be configured");
 			assert(config[prop].method, prop + " method should be configured");
