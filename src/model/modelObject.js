@@ -7,6 +7,7 @@ module.exports = function createModelObject(options) {
 	var fields = options.model.fields;
 	var idField = options.model.idField;
 	var proxy = options.model.proxy;
+	var model = options.model;
 
 	var data = {};
 
@@ -23,7 +24,9 @@ module.exports = function createModelObject(options) {
 
 	var obj = {
 		data: data,
+		model: model,
 
+		read: read,
 		save: save,
 		destroy: destroy
 	};
@@ -61,6 +64,15 @@ module.exports = function createModelObject(options) {
 		}
 	}
 
+	function read(callback) {
+		var id = data[idField];
+		proxy.readOneById(id, function(err, result) {
+			if (err) {
+				return callback(err);
+			}
+			callback(null, result);
+		});
+	}
 
 	function save(callback) {
 		var id = data[idField];

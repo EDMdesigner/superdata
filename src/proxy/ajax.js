@@ -12,33 +12,41 @@ module.exports = function createAjaxProxy(config) {
 	var idProperty = config.idProperty;
 	var generateId = config.generateId;
 
-	checkConfig(config);
+	if (!checkConfig(config)) {
+		return console.log("Could notInittiate createAjaxProxy"); // TODO
+	}
 
 	function createOne(data, callback) {
 		checkCallback(callback);
 		var actConfig = config.createOne;
+
 		actConfig.data = data;
 		actConfig.method = actConfig.method.toLowerCase();
 		dispatchAjax(actConfig, callback);
 	}
-	
+
 	function read(options, callback) {
 		checkCallback(callback);
 		var actConfig = config.read;
+
 		actConfig.method = actConfig.method.toLowerCase();
 
+		var settings = {};
+
 		if (options.find) {
-			actConfig.queries.find = JSON.stringify(options.find);
+			settings.find = options.find;
 		}
 		if (options.sort) {
-			actConfig.queries.sort = JSON.stringify(options.sort);
+			settings.sort = options.sort;
 		}
 		if (options.skip) {
-			actConfig.queries.skip = JSON.stringify(options.skip);
+			settings.skip = options.skip;
 		}
 		if (options.limit) {
-			actConfig.queries.limit = JSON.stringify(options.limit);
+			settings.limit = options.limit;
 		}
+		// delete settings.find; //TODO
+		actConfig.queries.settings = JSON.stringify(settings);
 
 		dispatchAjax(actConfig, callback);
 	}
@@ -46,23 +54,26 @@ module.exports = function createAjaxProxy(config) {
 	function readOneById(id, callback) {
 		checkCallback(callback);
 		var actConfig = config.readOneById;
+
 		actConfig.route = actConfig.route.replace(/:id/g, id);
 		actConfig.method = actConfig.method.toLowerCase();
 		dispatchAjax(actConfig, callback);
 	}
-	
+
 	function updateOneById(id, newData, callback) {
 		checkCallback(callback);
 		var actConfig = config.updateOneById;
+
 		actConfig.data = newData;
 		actConfig.route = actConfig.route.replace(/:id/g, id);
 		actConfig.method = actConfig.method.toLowerCase();
 		dispatchAjax(actConfig, callback);
 	}
-	
+
 	function destroyOneById(id, callback) {
 		checkCallback(callback);
 		var actConfig = config.destroyOneById;
+
 		actConfig.route = actConfig.route.replace(/:id/g, id);
 		actConfig.method = actConfig.method.toLowerCase();
 		dispatchAjax(actConfig, callback);
@@ -80,21 +91,33 @@ module.exports = function createAjaxProxy(config) {
 				if (err) {
 					return callback(err);
 				}
+				if (result.body.totalCount !== undefined) {
+					result.body.count = result.body.totalCount;
+				}
+				if (result.body.result !== undefined) {
+					result.body.items = result.body.result;
+				}
 				callback(null, result.body);
 			});
 	}
 
 	function checkConfig(config) {
-		for (var prop in config) {
-			if (prop === "idProperty" || prop === "generateId") {
-				continue;
+		try {
+			for (var prop in config) {
+				if (prop === "idProperty" || prop === "generateId" || prop === "idType") {
+					continue;
+				}
+				assert(config[prop], prop + " should be configured");
+				assert(config[prop].route, prop + " route should be configured");
+				assert(config[prop].method, prop + " method should be configured");
+				config[prop].queries = config[prop].queries || {};
+				config[prop].type = config[prop].type || "application/json";
+				config[prop].accept = config[prop].accept || "application/json";
 			}
-			assert(config[prop], prop + " should be configured");
-			assert(config[prop].route, prop + " route should be configured");
-			assert(config[prop].method, prop + " method should be configured");
-			config[prop].queries = config[prop].queries || {};
-			config[prop].type = config[prop].type || "application/json";
-			config[prop].accept = config[prop].accept || "application/json";
+			return true;
+		} catch(e) {
+			console.log(e);
+			return false;
 		}
 	}
 
