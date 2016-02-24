@@ -29,9 +29,7 @@ module.exports = function createModel(options) {
 
 			result.items.forEach(function(item) {
 				data.push(createModelObject({
-					fields: fields,
-					proxy: proxy,
-					idField: idField,
+					model: model,
 
 					data: item
 				}));
@@ -53,9 +51,7 @@ module.exports = function createModel(options) {
 			}
 
 			var modelObject = createModelObject({
-				fields: fields,
-				proxy: proxy,
-				idField: idField,
+				model: model,
 
 				data: result
 			});
@@ -70,16 +66,14 @@ module.exports = function createModel(options) {
 			}
 
 			callback(null, createModelObject({
-				fields: fields,
-				proxy: proxy,
-				idField: idField,
+				model: model,
 
 				data: result
 			}));
 		});
 	}
 
-	return Object.freeze({
+	var model = Object.freeze({
 		fields: fields,
 		proxy: proxy,
 		idField: idField,
@@ -88,4 +82,6 @@ module.exports = function createModel(options) {
 		load: load,
 		create: create
 	});
+
+	return model;
 };
