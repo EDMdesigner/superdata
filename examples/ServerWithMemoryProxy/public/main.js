@@ -12,26 +12,28 @@ var createStore = superdata.store.store;
 // 	user: "Lali"
 // }
 var proxy = createProxy({
-	read: {
-		route: "http://localhost:7357/user",
-		method: "GET"
-	},
-	createOne: {
-		route: "http://localhost:7357/user",
-		method: "POST"
-	},
-	readOneById: {
-		route: "http://localhost:7357/user/:id",
-		method: "GET"
-	},
-	updateOneById: {
-		route: "http://localhost:7357/user/:id",
-		method: "PUT"
-	},
-	destroyOneById: {
-		route: "http://localhost:7357/user/:id",
-		method: "DELETE"
-	},
+	operations: {
+		read: {
+			route: "http://localhost:7357/user",
+			method: "GET"
+		},
+		createOne: {
+			route: "http://localhost:7357/user",
+			method: "POST"
+		},
+		readOneById: {
+			route: "http://localhost:7357/user/:id",
+			method: "GET"
+		},
+		updateOneById: {
+			route: "http://localhost:7357/user/:id",
+			method: "PUT"
+		},
+		destroyOneById: {
+			route: "http://localhost:7357/user/:id",
+			method: "DELETE"
+		}
+	}
 });
 var model = createModel({
 	fields: {

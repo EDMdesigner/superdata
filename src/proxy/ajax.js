@@ -12,7 +12,7 @@ module.exports = function createAjaxProxy(config) {
 	var idProperty = config.idProperty;
 	var generateId = config.generateId;
 
-	checkConfig(config);
+	checkOperationsConfig(config.operations);
 
 	function createOne(data, callback) {
 		checkCallback(callback);
@@ -84,17 +84,16 @@ module.exports = function createAjaxProxy(config) {
 			});
 	}
 
-	function checkConfig(config) {
+	function checkOperationsConfig(config) {
+		assert(typeof config === "object", "config.operations should be a config object");
 		for (var prop in config) {
-			if (prop === "idProperty" || prop === "generateId") {
-				continue;
-			}
-			assert(config[prop], prop + " should be configured");
-			assert(config[prop].route, prop + " route should be configured");
-			assert(config[prop].method, prop + " method should be configured");
-			config[prop].queries = config[prop].queries || {};
-			config[prop].type = config[prop].type || "application/json";
-			config[prop].accept = config[prop].accept || "application/json";
+			var act = config[prop];
+			assert(act, prop + " should be configured");
+			assert(act.route, prop + " route should be configured");
+			assert(act.method, prop + " method should be configured");
+			act.queries = act.queries || {};
+			act.type = act.type || "application/json";
+			act.accept = act.accept || "application/json";
 		}
 	}
 
