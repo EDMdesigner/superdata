@@ -49,31 +49,44 @@ module.exports = function createAjaxProxy(config) {
 		dispatchAjax(actConfig, callback);
 	}
 
+	function createOperationConfig(config, id, data) {
+		var newConfig = {};
+
+		for (var prop in config) {
+			newConfig[prop] = config[prop];
+		}
+
+		if (data) {
+			newConfig.data = data;
+		} else {
+			newConfig.data = {};
+		}
+
+		var idRegex = /:id/g;
+		if (idRegex.test(newConfig.route)) {
+			newConfig.route = newConfig.route.replace(idRegex, id);
+		} else {
+			newConfig.data[idProperty] = id;
+		}
+
+		return newConfig;
+	}
+
 	function readOneById(id, callback) {
 		checkCallback(callback);
-		var actConfig = config.readOneById;
-
-		actConfig.route = actConfig.route.replace(/:id/g, id);
-		actConfig.method = actConfig.method.toLowerCase();
+		var actConfig = createOperationConfig(config.readOneById, id);
 		dispatchAjax(actConfig, callback);
 	}
 
 	function updateOneById(id, newData, callback) {
 		checkCallback(callback);
-		var actConfig = config.updateOneById;
-
-		actConfig.data = newData;
-		actConfig.route = actConfig.route.replace(/:id/g, id);
-		actConfig.method = actConfig.method.toLowerCase();
+		var actConfig = createOperationConfig(config.updateOneById, id, newData);
 		dispatchAjax(actConfig, callback);
 	}
 
 	function destroyOneById(id, callback) {
 		checkCallback(callback);
-		var actConfig = config.destroyOneById;
-
-		actConfig.route = actConfig.route.replace(/:id/g, id);
-		actConfig.method = actConfig.method.toLowerCase();
+		var actConfig = createOperationConfig(config.destroyOneById, id);
 		dispatchAjax(actConfig, callback);
 	}
 
@@ -106,6 +119,7 @@ module.exports = function createAjaxProxy(config) {
 			assert(act, prop + " should be configured");
 			assert(act.route, prop + " route should be configured");
 			assert(act.method, prop + " method should be configured");
+			act.method = act.method.toLowerCase();
 			act.queries = act.queries || {};
 			act.type = act.type || "application/json";
 			act.accept = act.accept || "application/json";
