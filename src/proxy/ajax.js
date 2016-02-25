@@ -16,16 +16,14 @@ module.exports = function createAjaxProxy(config) {
 
 	function createOne(data, callback) {
 		checkCallback(callback);
-		var actConfig = config.createOne;
+		var actConfig = createOperationConfig(config.createOne, null, data);
 
-		actConfig.data = data;
-		actConfig.method = actConfig.method.toLowerCase();
 		dispatchAjax(actConfig, callback);
 	}
 
 	function read(options, callback) {
 		checkCallback(callback);
-		var actConfig = config.read;
+		var actConfig = createOperationConfig(config.operations.read);
 
 		actConfig.method = actConfig.method.toLowerCase();
 
@@ -65,7 +63,7 @@ module.exports = function createAjaxProxy(config) {
 		var idRegex = /:id/g;
 		if (idRegex.test(newConfig.route)) {
 			newConfig.route = newConfig.route.replace(idRegex, id);
-		} else {
+		} else if (id) {
 			newConfig.data[idProperty] = id;
 		}
 
@@ -74,19 +72,19 @@ module.exports = function createAjaxProxy(config) {
 
 	function readOneById(id, callback) {
 		checkCallback(callback);
-		var actConfig = createOperationConfig(config.readOneById, id);
+		var actConfig = createOperationConfig(config.operations.readOneById, id);
 		dispatchAjax(actConfig, callback);
 	}
 
 	function updateOneById(id, newData, callback) {
 		checkCallback(callback);
-		var actConfig = createOperationConfig(config.updateOneById, id, newData);
+		var actConfig = createOperationConfig(config.operations.updateOneById, id, newData);
 		dispatchAjax(actConfig, callback);
 	}
 
 	function destroyOneById(id, callback) {
 		checkCallback(callback);
-		var actConfig = createOperationConfig(config.destroyOneById, id);
+		var actConfig = createOperationConfig(config.operations.destroyOneById, id);
 		dispatchAjax(actConfig, callback);
 	}
 
