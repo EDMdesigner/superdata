@@ -17,28 +17,34 @@ module.exports = function createAjaxProxy(config) {
 	function createOne(data, callback) {
 		checkCallback(callback);
 		var actConfig = config.createOne;
+
 		actConfig.data = data;
 		actConfig.method = actConfig.method.toLowerCase();
 		dispatchAjax(actConfig, callback);
 	}
-	
+
 	function read(options, callback) {
 		checkCallback(callback);
 		var actConfig = config.read;
+
 		actConfig.method = actConfig.method.toLowerCase();
 
+		var settings = {};
+
 		if (options.find) {
-			actConfig.queries.find = JSON.stringify(options.find);
+			settings.find = options.find;
 		}
 		if (options.sort) {
-			actConfig.queries.sort = JSON.stringify(options.sort);
+			settings.sort = options.sort;
 		}
 		if (options.skip) {
-			actConfig.queries.skip = JSON.stringify(options.skip);
+			settings.skip = options.skip;
 		}
 		if (options.limit) {
-			actConfig.queries.limit = JSON.stringify(options.limit);
+			settings.limit = options.limit;
 		}
+		// delete settings.find; //TODO
+		actConfig.queries.settings = JSON.stringify(settings);
 
 		dispatchAjax(actConfig, callback);
 	}
@@ -46,23 +52,26 @@ module.exports = function createAjaxProxy(config) {
 	function readOneById(id, callback) {
 		checkCallback(callback);
 		var actConfig = config.readOneById;
+
 		actConfig.route = actConfig.route.replace(/:id/g, id);
 		actConfig.method = actConfig.method.toLowerCase();
 		dispatchAjax(actConfig, callback);
 	}
-	
+
 	function updateOneById(id, newData, callback) {
 		checkCallback(callback);
 		var actConfig = config.updateOneById;
+
 		actConfig.data = newData;
 		actConfig.route = actConfig.route.replace(/:id/g, id);
 		actConfig.method = actConfig.method.toLowerCase();
 		dispatchAjax(actConfig, callback);
 	}
-	
+
 	function destroyOneById(id, callback) {
 		checkCallback(callback);
 		var actConfig = config.destroyOneById;
+
 		actConfig.route = actConfig.route.replace(/:id/g, id);
 		actConfig.method = actConfig.method.toLowerCase();
 		dispatchAjax(actConfig, callback);
@@ -79,6 +88,12 @@ module.exports = function createAjaxProxy(config) {
 			.end(function(err, result) {
 				if (err) {
 					return callback(err);
+				}
+				if (result.body.totalCount !== undefined) {
+					result.body.count = result.body.totalCount;
+				}
+				if (result.body.result !== undefined) {
+					result.body.items = result.body.result;
 				}
 				callback(null, result.body);
 			});
