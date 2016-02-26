@@ -16,7 +16,7 @@ module.exports = function createAjaxProxy(config) {
 
 	function createOne(data, callback) {
 		checkCallback(callback);
-		var actConfig = createOperationConfig(config.createOne, null, data);
+		var actConfig = createOperationConfig(config.operations.createOne, null, data);
 
 		dispatchAjax(actConfig, callback);
 	}
