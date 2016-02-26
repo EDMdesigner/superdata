@@ -42,7 +42,14 @@ module.exports = function createAjaxProxy(config) {
 			settings.limit = options.limit;
 		}
 		// delete settings.find; //TODO
-		actConfig.queries.settings = JSON.stringify(settings);
+		function RegExpreplacer(name, val) {
+			if ( val && val.constructor === RegExp ) {
+				return val.toString();
+			} else {
+				return val;
+			}
+		}
+		actConfig.queries.settings = JSON.stringify(settings, RegExpreplacer);
 
 		dispatchAjax(actConfig, callback);
 	}
