@@ -6,13 +6,15 @@ var request = require("superagent");
 var timeout = 10000;
 
 var messages = require("../errorMessages");
+var createReader = require("../reader/json");
 
 module.exports = function createAjaxProxy(config) {
 	config = config || {};
 	var idProperty = config.idProperty;
 	var generateId = config.generateId;
+	var defaultReader = createReader({});
 
-	checkOperationsConfig(config.operations);
+	prepareOperationsConfig(config.operations);
 
 	function createOne(data, callback) {
 		checkCallback(callback);
@@ -23,6 +25,7 @@ module.exports = function createAjaxProxy(config) {
 
 	function read(options, callback) {
 		checkCallback(callback);
+
 		var actConfig = createOperationConfig(config.operations.read);
 
 		actConfig.method = actConfig.method.toLowerCase();
@@ -107,17 +110,11 @@ module.exports = function createAjaxProxy(config) {
 				if (err) {
 					return callback(err);
 				}
-				if (result.body.totalCount !== undefined) {
-					result.body.count = result.body.totalCount;
-				}
-				if (result.body.result !== undefined) {
-					result.body.items = result.body.result;
-				}
-				callback(null, result.body);
+				callback(null, actConfig.reader.read(result.body));
 			});
 	}
 
-	function checkOperationsConfig(config) {
+	function prepareOperationsConfig(config) {
 		assert(typeof config === "object", "config.operations should be a config object");
 		for (var prop in config) {
 			var act = config[prop];
@@ -128,6 +125,11 @@ module.exports = function createAjaxProxy(config) {
 			act.queries = act.queries || {};
 			act.type = act.type || "application/json";
 			act.accept = act.accept || "application/json";
+			act.reader = act.reader ? act.reader : {};
+			if (prop === "read") {
+				act.reader.out = "items";
+			}
+			act.reader = act.reader !== {} ? createReader(act.reader) : defaultReader;
 		}
 	}
 
