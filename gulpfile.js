@@ -2,6 +2,7 @@ var gulp = require("gulp");
 var jscs = require("gulp-jscs");
 var jshint = require("gulp-jshint");
 var stylish = require("gulp-jscs-stylish");
+var jasmine = require("gulp-jasmine");
 var jsonlint = require("gulp-jsonlint");
 var browserify = require("browserify");
 var partialify = require("partialify");
@@ -10,9 +11,9 @@ var source = require("vinyl-source-stream");
 var jsFiles = [
 	"./**/*.js",
 	"!node_modules/**/*",
-	"!examples/**/node_modules/**/*",
+	"spec/**/*",
 	"!specs/**/*",
-	"!deprecated*.js",
+	"!examples/**/node_modules/**/*",
 	"!./**/*.built.js"
 ];
 
@@ -23,6 +24,9 @@ var jsonFiles = [
 	"./**/*.json"
 ];
 
+var jasmineFiles = [
+	"spec/**/*.js"
+];
 
 gulp.task("jsonlint", function() {
 	return gulp.src(jsonFiles)
@@ -52,6 +56,13 @@ gulp.task("jscs", function() {
 		.pipe(stylish())
 		.pipe(jscs.reporter("fail"));
 });
+
+
+gulp.task("jasmine", function() {
+	return gulp.src(jasmineFiles)
+	.pipe(jasmine());
+});
+
 
 function createBrowserifyTask(config) {
 	return function() {
