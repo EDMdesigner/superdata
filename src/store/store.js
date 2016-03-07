@@ -17,7 +17,7 @@ module.exports = function createStore(options) {
 		proxy: proxy,
 
 		items: [],
-		count: 0, 
+		count: 0,
 
 		query: query,
 		load: load,
@@ -42,7 +42,7 @@ module.exports = function createStore(options) {
 	createProp(store, "find", {
 		//lastValue, value, newValue, initialValue
 		value: options.find || {},
-		beforeChange: function(values) {
+		beforeChange: function() {
 
 		},
 		afterChange: triggerQueryChanged
@@ -52,14 +52,14 @@ module.exports = function createStore(options) {
 	//that way their fields' changes would be triggered as well.
 	createProp(store, "sort", {
 		value: options.sort || {id: -1},
-		beforeChange: function(values) {
+		beforeChange: function() {
 		},
 		afterChange: triggerQueryChanged
 	});
 
 	createProp(store, "skip", {
 		value: options.skip || 0,
-		beforeChange: function(values) {
+		beforeChange: function() {
 
 		},
 		afterChange: triggerQueryChanged
@@ -67,7 +67,7 @@ module.exports = function createStore(options) {
 
 	createProp(store, "limit", {
 		value: options.limit || 10,
-		beforeChange: function(values) {
+		beforeChange: function() {
 
 		},
 		afterChange: triggerQueryChanged

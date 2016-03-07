@@ -5,7 +5,7 @@ var request = require("superagent");
 
 var timeout = 10000;
 
-var messages = require("../errorMessages");
+//var messages = require("../errorMessages");
 
 module.exports = function createAjaxProxy(config) {
 	config = config || {};
@@ -45,9 +45,10 @@ module.exports = function createAjaxProxy(config) {
 		function RegExpreplacer(name, val) {
 			if ( val && val.constructor === RegExp ) {
 				return val.toString();
-			} else {
-				return val;
 			}
+
+			return val;
+
 		}
 		actConfig.queries.settings = JSON.stringify(settings, RegExpreplacer);
 

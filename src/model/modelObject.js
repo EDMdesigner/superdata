@@ -35,24 +35,26 @@ module.exports = function createModelObject(options) {
 		return function beforeChange(values) {
 			validate(propName, values);
 
-			var field = fields[propName];
+			//var field = fields[propName];
 
+/*
 			if (field.beforeChange) {
 				if (typeof field.beforeChange === "function") {
 
 				}
 			}
+*/
 		};
 	}
 
-	function createAfterChangeFunction(propName) {
-		return function afterChange(values) {
+	function createAfterChangeFunction() {
+		return function afterChange() {
 			//call the onChange listeners
 		};
 	}
 
 
-	function validate(propName, values) {
+	function validate(propName) {
 		var field = fields[propName];
 
 		if (!field) {
@@ -92,7 +94,7 @@ module.exports = function createModelObject(options) {
 	//deleted flag?
 	function destroy(callback) {
 		var id = data[idField];
-		proxy.destroyOneById(id, function(err, result) {
+		proxy.destroyOneById(id, function(err) {
 			if (err) {
 				return callback(err);
 			}

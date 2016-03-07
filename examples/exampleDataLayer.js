@@ -11,7 +11,7 @@ var proxy = createProxy({
 	generateId: (function() {
 		var nextId = 0;
 		return function() {
-			return nextId++;
+			return nextId+=1;
 		};
 	}())
 });

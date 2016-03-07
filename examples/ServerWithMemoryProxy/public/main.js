@@ -1,5 +1,6 @@
 /*jslint node: true */
 "use strict";
+var ko = require("knockout");
 
 var superdata = require("superdata");
 
@@ -100,7 +101,7 @@ store.load.after.add(function() {
 
 
 var seed = true;
-function handleResponse(err, result) {
+function handleResponse() {
 	// console.log(err, result);
 }
 if (seed) {
