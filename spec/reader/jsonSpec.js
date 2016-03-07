@@ -1,10 +1,10 @@
 var superData = require("../../src/superData");
 
-var readerBehaviour = require("./readerBehaviour");
+// var readerBehaviour = require("./readerBehaviour");
 var createJsonRreader = require("../../src/reader/json");
 
 var response = {
-	"total": 122,
+	"count": 122,
 	"offset": 0,
 	"users": [
 		{
@@ -31,10 +31,10 @@ var response = {
 var config = {
 	root: "users",
 	record: "user",
-	total: "total",
+	count: "count",
 	message: "message",
 	success: "success",
-	err: "error",
+	err: "err",
 	out: "out"
 };
 
@@ -45,16 +45,25 @@ var jsrRoot = createJsonRreader({
 	root: config.root
 });
 
+var jsrRecord = createJsonRreader({
+	root: config.record
+});
+
 var jsrRootAndRecord = createJsonRreader({
 	root: config.root,
 	record: config.record
 });
 
 var jsrProp = createJsonRreader({
-	total: config.total,
+	root: "users",
+
+	count: config.count,
 	message: config.message,
-	success: config.success,
-	error: config.error
+	success: config.success
+});
+
+var jsrError = createJsonRreader({
+	err: config.err
 });
 
 var jsrOut = createJsonRreader({
@@ -66,26 +75,43 @@ describe("json reader", function() {
 		expect(typeof superData.reader.json).toBe("function");
 	});
 
-	it("jsrBase should return response", function() {
+	it("config: {} returns response", function() {
 		expect(jsrBase.read(response)).toBe(response);
 	});
 
-	it("jsrRoot should return response[root]", function() {
+	it("config: {root: root} should return response[root]", function() {
 		expect(jsrRoot.read(response)).toBe(response[config.root]);
 	});
 
-	it("jsrRootAndRecord should return response[root][record]", function() {
+	it("config: {record: record} should return response[record]", function() {
+		expect(jsrRecord.read(response)).toBe(response[config.record]);
+	});
+
+	it("config: {root: root, record: record} should return response[root][record]", function() {
 		expect(jsrRootAndRecord.read(response)).toBe(response[config.root][config.record]);
 	});
 
-	it("jsrProp should return props", function() {
-		expect(jsrProp.read(response).total).toBe(response[config.total]);
+	it("return props if root or record present", function() {
+		expect(jsrProp.read(response).count).toBe(response[config.count]);
 		expect(jsrProp.read(response).message).toBe(response[config.message]);
 		expect(jsrProp.read(response).success).toBe(response[config.success]);
-		expect(jsrProp.read(response).err).toBe(response[config.error]);
 	});
 
-	it("jsrOut should return response in out field", function() {
+	it("throw exception if message, count or success defined, but root or record not", function() {
+		expect(function() {
+			createJsonRreader({
+				count: config.count,
+				message: config.message,
+				success: config.success
+			});
+		}).toThrow();
+	});
+
+	it("return err", function() {
+		expect(jsrError.read(response).err).toBe(response[config.err]);
+	});
+
+	it("should return response in out field if defined", function() {
 		expect(jsrOut.read(response)[config.out]).toBe(response);
 	});
 });

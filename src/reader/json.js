@@ -7,12 +7,16 @@ module.exports = function createReader(config) {
 		throw "JSON READER: please provide a config object";
 	}
 
+	if ((config && (config.success || config.message || config.count) && !(config.root || config.record))) {
+		throw "JSON READER: If success, message, or count present, root or record must be specified!";
+	}
+
 	var recordProp  = config.record;
 	var root		= config.root;
-	var totalProp	= config.total;
+	var countProp	= config.count;
 	var successProp = config.success;
 	var messageProp = config.message;
-	var errProp     = config.err;
+	var errProp     = config.err || "err";
 	var outProp		= config.out;
 
 	function read(response) {
@@ -27,8 +31,8 @@ module.exports = function createReader(config) {
 			data = recordProp ? rootData[recordProp] : rootData;
 		}
 
-		if (totalProp) {
-			data.count = response[totalProp];
+		if (countProp) {
+			data.count = response[countProp];
 		}
 
 		if (successProp) {
@@ -40,7 +44,9 @@ module.exports = function createReader(config) {
 		}
 
 		if (errProp) {
-			data.err = response[errProp];
+			if (response[errProp]) {
+				data.err = response[errProp];
+			}
 		}
 
 		return data;
