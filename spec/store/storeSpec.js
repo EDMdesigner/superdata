@@ -6,6 +6,14 @@ describe("store", function() {
 
 	beforeEach(function() {
 		mockModel = {
+			create: function(data, callback) {
+				setTimeout(function() {
+					callback(null, {
+						model: mockModel,
+						data: data
+					});
+				}, 1);
+			},
 			list: function(query, callback) {
 				setTimeout(function() {
 					callback(null, {
@@ -32,6 +40,7 @@ describe("store", function() {
 		};
 
 		spyOn(mockModel, "list").and.callThrough();
+		spyOn(mockModel, "create").and.callThrough();
 
 		store = createStore({
 			model: mockModel
@@ -77,6 +86,13 @@ describe("store", function() {
 			store.sort = {id: 1};
 			store.skip = 1;
 			store.limit = 12;
+		});
+	});
+
+	it("add", function(done) {
+		store.add({}, function() {
+			expect(mockModel.create).toHaveBeenCalled();
+			done();
 		});
 	});
 });
