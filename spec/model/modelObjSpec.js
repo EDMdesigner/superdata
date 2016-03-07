@@ -16,10 +16,17 @@ describe("modelObject", function() {
 						str: "test"
 					});
 				}, 1);
+			},
+			updateOneById: function(id, data, callback) {
+				setTimeout(function() {
+					data.id = id;
+					callback(null, data);
+				}, 1);
 			}
 		};
 
 		spyOn(mockProxy, "readOneById").and.callThrough();
+		spyOn(mockProxy, "updateOneById").and.callThrough();
 		
 		mockModel = {
 			fields: [],
@@ -48,6 +55,12 @@ describe("modelObject", function() {
 	});
 
 	//save
+	it("save", function(done) {
+		modelObject.save(function() {
+			expect(mockProxy.updateOneById).toHaveBeenCalled();
+			done();
+		});
+	});
 
 	//destroy
 });
