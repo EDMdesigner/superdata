@@ -4,12 +4,36 @@
 var createProp = require("./prop");
 
 module.exports = function createModelObject(options) {
+	if (!options) {
+		options = {};
+	}
+
+	if (!options.data) {
+		throw new Error("options.data is mandatory!");
+	}
+
+	if (!options.model) {
+		throw new Error("options.model is mandatory!");
+	}
+
+	if (!options.model.fields) {
+		throw new Error("options.model.fields is mandatory!");
+	}
+
+	if (!options.model.idField) {
+		throw new Error("options.model.idField is mandatory!");
+	}
+
+	if (!options.model.proxy) {
+		throw new Error("options.model.proxy is mandatory!");
+	}
+
 	var model = options.model;
 
 	var fields = options.model.fields;
 	var idField = options.model.idField;
 	var proxy = options.model.proxy;
-	
+
 
 	var data = {};
 

@@ -54,8 +54,63 @@ describe("modelObject", function() {
 		});
 	});
 
+	it("config", function() {
+		expect(function() {
+			createModelObject();
+		}).toThrowError("options.data is mandatory!");
 
-	//read
+		expect(function() {
+			createModelObject({
+				model: mockModel
+			});
+		}).toThrowError("options.data is mandatory!");
+
+		expect(function() {
+			createModelObject({
+				data: {
+					id: 2,
+					str: "x"
+				}
+			});
+		}).toThrowError("options.model is mandatory!");
+
+		expect(function() {
+			createModelObject({
+				model: {
+				},
+				data: {
+					id: 2,
+					str: "x"
+				}
+			});
+		}).toThrowError("options.model.fields is mandatory!");
+
+		expect(function() {
+			createModelObject({
+				model: {
+					fields: mockModel.fields
+				},
+				data: {
+					id: 2,
+					str: "x"
+				}
+			});
+		}).toThrowError("options.model.idField is mandatory!");
+
+		expect(function() {
+			createModelObject({
+				model: {
+					fields: mockModel.fields,
+					idField: mockModel.idField
+				},
+				data: {
+					id: 2,
+					str: "x"
+				}
+			});
+		}).toThrowError("options.model.proxy is mandatory!");
+	});
+
 	it("read", function(done) {
 		modelObject.read(function() {
 			expect(mockProxy.readOneById).toHaveBeenCalled();
@@ -63,7 +118,6 @@ describe("modelObject", function() {
 		});
 	});
 
-	//save
 	it("save", function(done) {
 		modelObject.save(function() {
 			expect(mockProxy.updateOneById).toHaveBeenCalled();
@@ -71,7 +125,6 @@ describe("modelObject", function() {
 		});
 	});
 
-	//destroy
 	it("destroy", function(done) {
 		modelObject.destroy(function() {
 			expect(mockProxy.destroyOneById).toHaveBeenCalled();
