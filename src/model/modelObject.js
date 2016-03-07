@@ -4,10 +4,12 @@
 var createProp = require("./prop");
 
 module.exports = function createModelObject(options) {
+	var model = options.model;
+
 	var fields = options.model.fields;
 	var idField = options.model.idField;
 	var proxy = options.model.proxy;
-	var model = options.model;
+	
 
 	var data = {};
 
