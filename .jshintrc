@@ -23,6 +23,7 @@
   "esnext":true,
   "globals":{
     "jquery": true,
+    "jasmine": true,
     "$": true
   },
   "globalstrict":false,
@@ -31,7 +32,6 @@
   "plusplus":true,
   "predef":[
     "$",
-    "jasmine",
     "describe",
     "xdescribe",
     "before",

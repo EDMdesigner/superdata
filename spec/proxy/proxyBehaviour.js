@@ -80,7 +80,7 @@ module.exports = function proxyBehaviour(name, proxy) {
 				}, function(err, result) {
 					expect(err).toBeNull();
 
-					var numOfItems = limit < expectedNum ? limit : expectedNum
+					var numOfItems = limit < expectedNum ? limit : expectedNum;
 
 					expect(result.items.length).toBe(numOfItems);
 					expect(result.count).toBe(expectedNum);
@@ -241,7 +241,7 @@ module.exports = function proxyBehaviour(name, proxy) {
 			});
 
 			it("with invalid id", function(done) {
-				proxy.readOneById(108, function(err, result) {
+				proxy.readOneById(108, function(err) {
 					expect(err).toBe("NOT_FOUND");
 
 					done();

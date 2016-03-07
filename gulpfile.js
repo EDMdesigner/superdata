@@ -11,9 +11,8 @@ var source = require("vinyl-source-stream");
 var jsFiles = [
 	"./**/*.js",
 	"!node_modules/**/*",
-	"spec/**/*",
-	"!specs/**/*",
 	"!examples/**/node_modules/**/*",
+	"!*/**/*.json",
 	"!./**/*.built.js"
 ];
 
@@ -150,4 +149,8 @@ gulp.task("watch:js", function() {
 	gulp.watch(jsFiles, ["jshint", "jscs"]);
 });
 
-gulp.task("test", ["jsonlint", "jshint", "jscs"]);
+gulp.task("watch-test", function() {
+	gulp.watch(jsFiles, ["jasmine"]);
+});
+
+gulp.task("test", ["jsonlint", "jshint", "jscs", "jasmine"]);
