@@ -1,5 +1,5 @@
 describe("prop", function() {
-	it("should be possible to create it", function() {
+	xit("should be possible to create it", function() {
 		var validator = function(val) {
 			return typeof val === "string";
 		};
