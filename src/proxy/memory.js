@@ -194,11 +194,16 @@ module.exports = function createMemoryProxy(config) {
 	}
 
 	function destroyOneById(id, callback) {
+		checkCallback(callback);
+
 		var dataIdx = findIndexById(id);
+		if (dataIdx === -1) {
+			return callback(messages.errorMessages.NOT_FOUND);
+		}
 
 		var data = db.splice(dataIdx, 1);
 
-		callback(null, data);
+		callback(null, data[0]);
 	}
 
 	return Object.freeze({
