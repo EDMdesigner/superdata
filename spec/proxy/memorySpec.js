@@ -11,7 +11,7 @@ describe("memory proxy", function() {
 
 	var proxy = memoryProxy({
 		idProperty: "id",
-		idType: "string"
+		idType: "number"
 	});
 
 	proxyBehaviour("memory", proxy);

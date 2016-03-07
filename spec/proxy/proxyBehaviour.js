@@ -227,5 +227,26 @@ module.exports = function proxyBehaviour(name, proxy) {
 				proxy: proxy
 			});
 		});
+
+		describe("readOneById", function() {
+			it("with valid id", function(done) {
+				proxy.readOneById(18, function(err, result) {
+					expect(err).toBeNull();
+
+					expect(result.id).toBe(18);
+					expect(result.str).toBe("str18");
+
+					done();
+				});
+			});
+
+			it("with invalid id", function(done) {
+				proxy.readOneById(108, function(err, result) {
+					expect(err).toBe("NOT_FOUND");
+
+					done();
+				});
+			});
+		});
 	});
 };
