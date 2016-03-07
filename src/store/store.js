@@ -121,8 +121,6 @@ module.exports = function createStore(options) {
 			limit: store.limit
 		};
 
-		console.log(queryObj);
-
 		load.before(queryObj);
 
 		query(queryObj, function(err, result) {
@@ -157,6 +155,14 @@ module.exports = function createStore(options) {
 			}
 
 			array.push(func);
+		};
+
+		callbackArrayCaller.remove = function(func) {
+			var idx = array.indexOf(func);
+
+			if (idx > -1) {
+				array.splice(idx, 1);
+			}
 		};
 
 		return callbackArrayCaller;
