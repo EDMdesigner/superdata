@@ -12,10 +12,11 @@ module.exports = function createReader(config) {
 	var totalProp	= config.total;
 	var successProp = config.success;
 	var messageProp = config.message;
+	var errProp     = config.err;
 	var outProp		= config.out;
 
 	function read(response) {
-		
+
 		var rootData = !root ? response : response[root];
 
 		var data = {};
@@ -38,7 +39,10 @@ module.exports = function createReader(config) {
 			data.message = response[messageProp];
 		}
 
-		//ERR
+		if (errProp) {
+			data.err = response[errProp];
+		}
+
 		return data;
 	}
 
