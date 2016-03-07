@@ -22,11 +22,20 @@ describe("modelObject", function() {
 					data.id = id;
 					callback(null, data);
 				}, 1);
+			},
+			destroyOneById: function(id, callback) {
+				setTimeout(function() {
+					callback(null, {
+						id: id,
+						str: "test"
+					});
+				}, 1);
 			}
 		};
 
 		spyOn(mockProxy, "readOneById").and.callThrough();
 		spyOn(mockProxy, "updateOneById").and.callThrough();
+		spyOn(mockProxy, "destroyOneById").and.callThrough();
 		
 		mockModel = {
 			fields: [],
@@ -63,4 +72,10 @@ describe("modelObject", function() {
 	});
 
 	//destroy
+	it("destroy", function(done) {
+		modelObject.destroy(function() {
+			expect(mockProxy.destroyOneById).toHaveBeenCalled();
+			done();
+		});
+	});
 });
