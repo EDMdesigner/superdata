@@ -6,7 +6,8 @@ var messages = require("../errorMessages");
 module.exports = function createMemoryProxy(config) {
 	config = config || {};
 	var idProperty = config.idField || "id";
-	//var idType = config.idType.toLowerCase() || "string";
+	var idType = config.idType.toLowerCase() || "string";
+
 	var generateId = config.generateId || (function() {
 		var nextId = 0;
 		return function() {
@@ -17,7 +18,7 @@ module.exports = function createMemoryProxy(config) {
 	var db = [];
 
 	function findIndexById(originalId) {
-		var id = castId(config.idType, originalId);
+		var id = castId(idType, originalId);
 		for (var idx = 0; idx < db.length; idx += 1) {
 			var act = db[idx];
 			if (act[idProperty] === id) {
