@@ -248,5 +248,58 @@ module.exports = function proxyBehaviour(name, proxy) {
 				});
 			});
 		});
+
+		describe("updateOneById", function() {
+			it("with valid id", function(done) {
+				proxy.updateOneById(18, {str: "str18 - modified"}, function(err, result) {
+					expect(err).toBeNull();
+
+					expect(result.id).toBe(18);
+					expect(result.str).toBe("str18 - modified");
+
+					proxy.readOneById(18, function(err, result) {
+						expect(err).toBeNull();
+
+						expect(result.id).toBe(18);
+						expect(result.str).toBe("str18 - modified");
+
+						done();
+					});
+				});
+			});
+
+			it("with invalid id", function(done) {
+				proxy.updateOneById(108, {str: "won't work"}, function(err) {
+					expect(err).toBe("NOT_FOUND");
+
+					done();
+				});
+			});
+		});
+
+		describe("destroyOneById", function() {
+			it("with valid id", function(done) {
+				proxy.destroyOneById(18, function(err, result) {
+					expect(err).toBeNull();
+
+					expect(result.id).toBe(18);
+					expect(result.str).toBe("str18 - modified");
+
+					proxy.readOneById(18, function(err) {
+						expect(err).toBe("NOT_FOUND");
+
+						done();
+					});
+				});
+			});
+
+			it("with invalid id", function(done) {
+				proxy.destroyOneById(108, function(err) {
+					expect(err).toBe("NOT_FOUND");
+
+					done();
+				});
+			});
+		});
 	});
 };
