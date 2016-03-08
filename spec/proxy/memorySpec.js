@@ -9,6 +9,28 @@ describe("memory proxy", function() {
 		expect(typeof superData.proxy.memory).toBe("function");
 	});
 
+	it("config empty", function() {
+		expect(function() {
+			memoryProxy();
+		}).toThrowError("config.idProperty is mandatory!");
+	});
+
+	it("config with idType", function() {
+		expect(function() {
+			memoryProxy({
+				idType: "number"
+			});
+		}).toThrowError("config.idProperty is mandatory!");
+	});
+
+	it("config with idProperty", function() {
+		expect(function() {
+			memoryProxy({
+				idProperty: "id",
+			});
+		}).toThrowError("config.idType is mandatory!");
+	});
+
 	var proxy = memoryProxy({
 		idProperty: "id",
 		idType: "number"

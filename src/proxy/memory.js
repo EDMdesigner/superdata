@@ -4,14 +4,25 @@
 var messages = require("../errorMessages");
 
 module.exports = function createMemoryProxy(config) {
-	config = config || {};
-	var idProperty = config.idField || "id";
-	var idType = config.idType.toLowerCase() || "string";
+	if (!config) {
+		config = {};
+	}
+
+	if (!config.idProperty) {
+		throw new Error("config.idProperty is mandatory!");
+	}
+
+	if (!config.idType) {
+		throw new Error("config.idType is mandatory!");
+	}
+
+	var idProperty = config.idProperty;
+	var idType = config.idType.toLowerCase();
 
 	var generateId = config.generateId || (function() {
 		var nextId = 0;
 		return function() {
-			return nextId+=1;
+			return nextId += 1;
 		};
 	}());
 
