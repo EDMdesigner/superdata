@@ -164,4 +164,10 @@ describe("store", function() {
 
 		store.load();
 	});
+
+	it("config", function() {
+		expect(function() {
+			createStore();
+		}).toThrowError("options.model is mandatory!");
+	});
 });
