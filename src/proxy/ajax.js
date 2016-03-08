@@ -31,6 +31,7 @@ module.exports = function createAjaxProxy(config) {
 	}());
 	
 	var defaultReader = createReader({});
+	var queryMapping = config.queryMapping;
 
 	prepareOperationsConfig(config.operations);
 
@@ -43,36 +44,15 @@ module.exports = function createAjaxProxy(config) {
 
 	function read(options, callback) {
 		checkCallback(callback);
-
+		if (typeof queryMapping === "function") {
+			options = queryMapping(options);
+		}
 		var actConfig = createOperationConfig(config.operations.read);
 
+		for (var prop in options) {
+			actConfig.queries[prop] = options[prop];
+		}
 		actConfig.method = actConfig.method.toLowerCase();
-
-		var settings = {};
-
-		if (options.find) {
-			settings.find = options.find;
-		}
-		if (options.sort) {
-			settings.sort = options.sort;
-		}
-		if (options.skip) {
-			settings.skip = options.skip;
-		}
-		if (options.limit) {
-			settings.limit = options.limit;
-		}
-		// delete settings.find; //TODO
-		function RegExpreplacer(name, val) {
-			if ( val && val.constructor === RegExp ) {
-				return val.toString();
-			}
-
-			return val;
-
-		}
-		actConfig.queries.settings = JSON.stringify(settings, RegExpreplacer);
-
 		dispatchAjax(actConfig, callback);
 	}
 
