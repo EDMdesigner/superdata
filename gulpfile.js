@@ -59,7 +59,9 @@ gulp.task("jscs", function() {
 
 gulp.task("jasmine", function() {
 	return gulp.src(jasmineFiles)
-	.pipe(jasmine());
+	.pipe(jasmine({
+		verbose: true
+	}));
 });
 
 
