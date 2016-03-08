@@ -6,7 +6,6 @@ var source = require("vinyl-source-stream");
 var partialify = require("partialify");
 var jsonlint	= require("gulp-jsonlint");
 
-
 gulp.task("jsonlint", function() {
 	return gulp.src(["src/featureConfigDefaults/**/*.json", "src/modules/**/*.json"])
 		.pipe(jsonlint())
@@ -77,8 +76,6 @@ var examplesConfigs = {
 		destFolder: "./src/knob"
 	}
 };
-
-
 
 for (var prop in examplesConfigs) {
 	var actConfig = examplesConfigs[prop];
