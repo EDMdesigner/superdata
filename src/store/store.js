@@ -19,7 +19,6 @@ module.exports = function createStore(options) {
 		items: [],
 		count: 0,
 
-		query: query,
 		load: load,
 		add: add
 	};
