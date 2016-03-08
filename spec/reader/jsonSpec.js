@@ -1,7 +1,7 @@
 var superData = require("../../src/superData");
 
 // var readerBehaviour = require("./readerBehaviour");
-var createJsonRreader = require("../../src/reader/json");
+var createJsonReader = require("../../src/reader/json");
 
 var response = {
 	"count": 122,
@@ -38,23 +38,23 @@ var config = {
 	out: "out"
 };
 
-var jsrBase = createJsonRreader({
+var jsrBase = createJsonReader({
 });
 
-var jsrRoot = createJsonRreader({
+var jsrRoot = createJsonReader({
 	root: config.root
 });
 
-var jsrRecord = createJsonRreader({
+var jsrRecord = createJsonReader({
 	root: config.record
 });
 
-var jsrRootAndRecord = createJsonRreader({
+var jsrRootAndRecord = createJsonReader({
 	root: config.root,
 	record: config.record
 });
 
-var jsrProp = createJsonRreader({
+var jsrProp = createJsonReader({
 	root: "users",
 
 	count: config.count,
@@ -62,11 +62,11 @@ var jsrProp = createJsonRreader({
 	success: config.success
 });
 
-var jsrError = createJsonRreader({
+var jsrError = createJsonReader({
 	err: config.err
 });
 
-var jsrOut = createJsonRreader({
+var jsrOut = createJsonReader({
 	out: config.out
 });
 
@@ -99,7 +99,7 @@ describe("json reader", function() {
 
 	it("throw exception if message, count or success defined, but root or record not", function() {
 		expect(function() {
-			createJsonRreader({
+			createJsonReader({
 				count: config.count,
 				message: config.message,
 				success: config.success

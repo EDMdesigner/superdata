@@ -95,4 +95,79 @@ describe("store", function() {
 			done();
 		});
 	});
+
+	it("should call the callbacks before and after load", function(done) {
+		var testCallbacks = {
+			before1: function() {
+				expect(testCallbacks.before1.calls.count()).toEqual(1);
+				expect(testCallbacks.before2.calls.count()).toEqual(0);
+				expect(testCallbacks.after1.calls.count()).toEqual(0);
+				expect(testCallbacks.after2.calls.count()).toEqual(0);
+			},
+			before2: function() {
+				expect(testCallbacks.before1.calls.count()).toEqual(1);
+				expect(testCallbacks.before2.calls.count()).toEqual(1);
+				expect(testCallbacks.after1.calls.count()).toEqual(0);
+				expect(testCallbacks.after2.calls.count()).toEqual(0);
+			},
+			after1: function() {
+				expect(testCallbacks.before1.calls.count()).toEqual(1);
+				expect(testCallbacks.before2.calls.count()).toEqual(1);
+				expect(testCallbacks.after1.calls.count()).toEqual(1);
+				expect(testCallbacks.after2.calls.count()).toEqual(0);
+			},
+			after2: function() {
+				expect(testCallbacks.before1.calls.count()).toEqual(1);
+				expect(testCallbacks.before2.calls.count()).toEqual(1);
+				expect(testCallbacks.after1.calls.count()).toEqual(1);
+				expect(testCallbacks.after2.calls.count()).toEqual(1);
+				done();
+			}
+		};
+
+		spyOn(testCallbacks, "before1").and.callThrough();
+		spyOn(testCallbacks, "before2").and.callThrough();
+		spyOn(testCallbacks, "after1").and.callThrough();
+		spyOn(testCallbacks, "after2").and.callThrough();
+
+		store.load.before.add(testCallbacks.before1);
+		store.load.before.add(testCallbacks.before2);
+
+		store.load.after.add(testCallbacks.after1);
+		store.load.after.add(testCallbacks.after2);
+
+		store.load();
+	});
+
+	it("should stop load execution when a before callback throws an exception", function(done) {
+		var testCallbacks = {
+			beforeWithException: function() {
+				throw new Error("test exception");
+			},
+			after: function() {
+				expect(testCallbacks.after.calls.count()).toEqual(1);
+				done();
+			}
+		};
+
+		spyOn(testCallbacks, "beforeWithException").and.callThrough();
+		spyOn(testCallbacks, "after").and.callThrough();
+
+		store.load.before.add(testCallbacks.beforeWithException);
+		store.load.after.add(testCallbacks.after);
+
+		expect(function() {
+			store.load();
+		}).toThrowError("test exception");
+
+		store.load.before.remove(testCallbacks.beforeWithException);
+
+		store.load();
+	});
+
+	it("config", function() {
+		expect(function() {
+			createStore();
+		}).toThrowError("options.model is mandatory!");
+	});
 });

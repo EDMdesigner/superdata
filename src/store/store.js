@@ -4,6 +4,14 @@
 var createProp = require("../model/prop");
 
 module.exports = function createStore(options) {
+	if (!options) {
+		options = {};
+	}
+
+	if (!options.model) {
+		throw new Error("options.model is mandatory!");
+	}
+
 	var model = options.model;
 	var proxy = model.proxy;
 
@@ -19,7 +27,6 @@ module.exports = function createStore(options) {
 		items: [],
 		count: 0,
 
-		query: query,
 		load: load,
 		add: add
 	};
