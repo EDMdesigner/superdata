@@ -9,9 +9,27 @@ var createReader = require("../reader/json");
 
 
 module.exports = function createAjaxProxy(config) {
-	config = config || {};
+	if (!config) {
+		config = {};
+	}
+
+	if (!config.idProperty) {
+		throw new Error("config.idProperty is mandatory!");
+	}
+
+	if (!config.operations) {
+		throw new Error("config.operations is mandatory!");
+	}
+
 	var idProperty = config.idProperty;
-	var generateId = config.generateId;
+	
+	var generateId = config.generateId || (function() {
+		var nextId = 0;
+		return function() {
+			return nextId += 1;
+		};
+	}());
+	
 	var defaultReader = createReader({});
 
 	prepareOperationsConfig(config.operations);
