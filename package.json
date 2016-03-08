@@ -1,68 +1,68 @@
 {
-  "name": "superdata",
-  "version": "0.0.5",
-  "description": "A ligth weight data layer module motivated by extjs' data layer. It can be used with any client-side framework.",
-  "main": "src/superData.js",
-  "keywords": [
+  "name":"superdata",
+  "description":"A ligth weight data layer module motivated by extjs' data layer. It can be used with any client-side framework.",
+  "main":"src/superData.js",
+  "keywords":[
     "datalayer",
     "data layer",
     "model",
     "store",
     "proxy"
   ],
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/EDMdesigner/superdata.git"
+  "license":"MIT",
+  "repository":{
+    "type":"git",
+    "url":"https://github.com/EDMdesigner/superdata.git"
   },
-  "author": {
-    "name": "EDMdesigner",
-    "email": "info@edmdesigner.com",
-    "url": "http://edmdesigner.com"
+  "author":{
+    "name":"EDMdesigner",
+    "email":"info@edmdesigner.com",
+    "url":"http://edmdesigner.com"
   },
-  "bugs": {
-    "url": "https://github.com/EDMdesigner/superdata/issues"
+  "bugs":{
+    "url":"https://github.com/EDMdesigner/superdata/issues"
   },
-  "maintainers": [
+  "maintainers":[
     {
-      "name": "Gyula Németh",
-      "email": "gyula.nemeth@edmdesigner.com"
+      "name":"Gyula Németh",
+      "email":"gyula.nemeth@edmdesigner.com"
     },
     {
-      "name": "arnolduis",
-      "email": "arnolduis@gmail.com"
+      "name":"arnolduis",
+      "email":"arnolduis@gmail.com"
     }
   ],
-  "browserify": {
-    "transform": [
+  "browserify":{
+    "transform":[
       "browserify-global-shim"
     ]
   },
-  "browserify-global-shim": {
-    "knockout": "ko"
+  "browserify-global-shim":{
+    "knockout":"ko"
   },
-  "devDependencies": {
-    "body-parser": "*",
-    "brfs": "^1.4.3",
-    "browserify": "^12.0.1",
-    "browserify-global-shim": "^1.0.0",
-    "express": "*",
-    "express-logger": "*",
-    "grunt-contrib-jasmine": "^0.9.2",
-    "grunt-contrib-jshint": "^0.11.3",
-    "grunt-contrib-watch": "^0.6.1",
-    "gulp": "^3.9.0",
-    "gulp-brfs": "^0.1.0",
-    "gulp-jsonlint": "^1.1.1",
-    "jasmine-expect": "^1.22.3",
-    "jsonlint": "^1.6.2",
-    "partialify": "^3.1.6",
-    "stringify": "^3.2.0",
-    "vinyl-source-stream": "^1.1.0",
-    "knockout": "3.4.0"
+  "devDependencies":{
+    "body-parser":"*",
+    "brfs":"^1.4.3",
+    "browserify":"^12.0.1",
+    "browserify-global-shim":"^1.0.0",
+    "express":"*",
+    "express-logger":"*",
+    "grunt-contrib-jasmine":"^0.9.2",
+    "grunt-contrib-jshint":"^0.11.3",
+    "grunt-contrib-watch":"^0.6.1",
+    "gulp":"^3.9.0",
+    "gulp-brfs":"^0.1.0",
+    "gulp-jsonlint":"^1.1.1",
+    "jasmine-expect":"^1.22.3",
+    "jsonlint":"^1.6.2",
+    "knockout":"3.4.0",
+    "npm-prepublish":"^1.2.1",
+    "partialify":"^3.1.6",
+    "stringify":"^3.2.0",
+    "vinyl-source-stream":"^1.1.0"
   },
-  "dependencies": {
-    "grunt": "^0.4.5",
-    "superagent": "1.7.2"
+  "dependencies":{
+    "grunt":"^0.4.5",
+    "superagent":"1.7.2"
   }
 }
