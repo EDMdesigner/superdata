@@ -60,7 +60,36 @@ describe("ajax proxy", function() {
 		}).toThrowError("config.idProperty is mandatory!");
 	});
 
-	
+	function queryMapping(options) {
+		var queries = {
+			settings: {}
+		};
+
+		if (options.find) {
+			queries.settings.find = options.find;
+		}
+		if (options.sort) {
+			queries.settings.sort = options.sort;
+		}
+		if (options.skip) {
+			queries.settings.skip = options.skip;
+		}
+		if (options.limit) {
+			queries.settings.limit = options.limit;
+		}
+
+		function RegExpreplacer(name, val) {
+			if (val && val.constructor === RegExp) {
+				return val.toString();
+			}
+			return val;
+		}
+
+		queries.settings = JSON.stringify(queries.settings, RegExpreplacer);
+
+		return queries;
+	}
+
 	var proxy = ajaxProxy({
 		idProperty: "id",
 		operations: {
@@ -84,20 +113,57 @@ describe("ajax proxy", function() {
 				route: "http://localhost:7357/user/:id",
 				method: "DELETE"
 			}
-		}
+		},
+		queryMapping: queryMapping
 	});
 
-	it("read", function(done) {
+	// it("read", function(done) {
+	// 	var callbacks = {
+	// 		read: function(req, res) {
+	// 			res.send({
+	// 				items: [],
+	// 				count: 0
+	// 			});
+	// 		}
+	// 	};
+
+	// 	spyOn(callbacks, "read").and.callThrough();
+
+	// 	var mockServer = createMockServer({
+	// 		operations: {
+	// 			read: {
+	// 				route: "/user",
+	// 				method: "GET",
+	// 				callback: callbacks.read
+	// 			}
+	// 		},
+	// 		serverStarted: function() {
+	// 			proxy.read({}, function() {
+	// 				expect(callbacks.read).toHaveBeenCalled();
+	// 				mockServer.stop();
+	// 				done();
+	// 			});
+	// 		},
+	// 		port: 7357
+	// 	});
+	// });
+
+	it("queryMapping", function(done) {
+		var options = {
+			find: /tit/gi, 
+			limit: 10
+		};
+
 		var callbacks = {
 			read: function(req, res) {
-				res.send({
-					items: [],
-					count: 0
-				});
+				console.log(req.query);
+				expect(req.query).toEqual(queryMapping(options));
+				res.send({});
 			}
 		};
 
-		spyOn(callbacks, "read").and.callThrough();
+
+		// spyOn(callbacks, "read").and.callThrough();
 
 		var mockServer = createMockServer({
 			operations: {
@@ -108,15 +174,12 @@ describe("ajax proxy", function() {
 				}
 			},
 			serverStarted: function() {
-				proxy.read({}, function() {
-					expect(callbacks.read).toHaveBeenCalled();
-					mockServer.stop();
+				proxy.read(options, function() {
+					// mockServer.stop();
 					done();
 				});
 			},
 			port: 7357
 		});
 	});
-
-	//proxyBehaviour("ajax", proxy);
 });
