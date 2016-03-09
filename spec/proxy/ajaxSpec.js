@@ -148,35 +148,86 @@ describe("ajax proxy", function() {
 	// 	});
 	// });
 
-	it("queryMapping", function(done) {
+	it("server calls & query mapping", function(done) {
 		var options = {
-			find: /tit/gi, 
+			find: /test/gi, 
 			limit: 10
 		};
 
 		var callbacks = {
 			read: function(req, res) {
-				console.log(req.query);
 				expect(req.query).toEqual(queryMapping(options));
+				res.send({});
+			},
+			createOne: function(req, res) {
+				res.send({});
+			},
+			readOneById: function(req, res) {
+				expect(req.params.id).toBe("1");
+				res.send({});
+			},
+			updateOneById: function(req, res) {
+				expect(req.params.id).toBe("1");
+				res.send({});
+			},
+			destroyOneById: function(req, res) {
+				expect(req.params.id).toBe("1");
 				res.send({});
 			}
 		};
 
 
-		// spyOn(callbacks, "read").and.callThrough();
+		spyOn(callbacks, "read").and.callThrough();
+		spyOn(callbacks, "createOne").and.callThrough();
+		spyOn(callbacks, "readOneById").and.callThrough();
+		spyOn(callbacks, "updateOneById").and.callThrough();
+		spyOn(callbacks, "destroyOneById").and.callThrough();
 
-		var mockServer = createMockServer({
+		createMockServer({
 			operations: {
 				read: {
 					route: "/user",
 					method: "GET",
 					callback: callbacks.read
+				},
+				createOne: {
+					route: "/user",
+					method: "POST",
+					callback: callbacks.createOne
+				},
+				readOneById: {
+					route: "/user/:id",
+					method: "GET",
+					callback: callbacks.readOneById
+				},
+				updateOneById: {
+					route: "/user/:id",
+					method: "PUT",
+					callback: callbacks.updateOneById
+				},
+				destroyOneById: {
+					route: "/user/:id",
+					method: "DELETE",
+					callback: callbacks.destroyOneById
 				}
 			},
 			serverStarted: function() {
+				//All kneel and praise the pyramid of doom!
 				proxy.read(options, function() {
-					// mockServer.stop();
-					done();
+					expect(callbacks.read).toHaveBeenCalled();
+					proxy.createOne({}, function() {
+						expect(callbacks.createOne).toHaveBeenCalled();
+						proxy.readOneById(1, function() {
+							expect(callbacks.readOneById).toHaveBeenCalled();
+							proxy.updateOneById(1, {}, function() {
+								expect(callbacks.updateOneById).toHaveBeenCalled();
+								proxy.destroyOneById(1, function() {
+									expect(callbacks.destroyOneById).toHaveBeenCalled();
+									done();
+								});
+							});
+						});
+					});
 				});
 			},
 			port: 7357
