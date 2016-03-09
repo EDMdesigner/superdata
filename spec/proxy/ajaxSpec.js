@@ -21,13 +21,15 @@ function createMockServer(config) {
 		app[method](act.route, act.callback);
 	}
 
-	app.listen(config.port, function() {
+	var server = app.listen(config.port, function() {
 		config.serverStarted();
 	});
 
 	return {
-		stop: function() {
-			//app.close();
+		stop: function(callback) {
+			server.close(function() {
+				callback();
+			});
 		}
 	};
 }
@@ -183,7 +185,7 @@ describe("ajax proxy", function() {
 		spyOn(callbacks, "updateOneById").and.callThrough();
 		spyOn(callbacks, "destroyOneById").and.callThrough();
 
-		createMockServer({
+		var mockServer = createMockServer({
 			operations: {
 				read: {
 					route: "/user",
@@ -223,7 +225,10 @@ describe("ajax proxy", function() {
 								expect(callbacks.updateOneById).toHaveBeenCalled();
 								proxy.destroyOneById(1, function() {
 									expect(callbacks.destroyOneById).toHaveBeenCalled();
-									done();
+
+									mockServer.stop(function() {
+										done();
+									});
 								});
 							});
 						});
