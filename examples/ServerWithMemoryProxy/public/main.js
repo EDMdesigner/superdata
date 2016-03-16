@@ -2,11 +2,11 @@
 "use strict";
 var ko = require("knockout");
 
-var superdata = require("superdata");
+var superData = require("superdata");
 
-var createProxy = superdata.proxy.ajax;
-var createModel = superdata.model.model;
-var createStore = superdata.store.store;
+var createProxy = superData.proxy.ajax;
+var createModel = superData.model.model;
+var createStore = superData.store.store;
 
 // queries: {
 // 	token: "34oirfgdsnTOKENawern4o",
@@ -106,7 +106,7 @@ function handleResponse() {
 }
 if (seed) {
 	var names = ["Bob", "Rob", "Olga", "Helga"];
-	var titles = ["CEO", "CTO", "Slave"];
+	var titles = ["CEO", "CTO", "Ninja"];
 	for (var idx = 0; idx < 100; idx += 1) {
 		var actName = names[idx % 4];
 		store.add({
