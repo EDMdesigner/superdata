@@ -1,6 +1,8 @@
 /*jslint node: true */
 "use strict";
 
+//not used yet
+
 var createMemoryProxy = require("./memory");
 
 module.exports = function createDelayedMemoryProxy(config) {

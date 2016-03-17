@@ -7,7 +7,7 @@ module.exports = function createRestProxy(config) {
 	var generateId = config.generateId || (function() {
 		var nextId = 0;
 		return function() {
-			return nextId++;
+			return nextId+=1;
 		};
 	}());
 	var route = config.route;

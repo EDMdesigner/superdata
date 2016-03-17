@@ -9,7 +9,7 @@ var config = require("./config.json");
 
 var app = express();
 var port = config.port || 7357;
-var testDelay = config.testDelay || 2000;
+//var testDelay = config.testDelay || 2000;
 
 var proxy = createProxy({
 	idProperty: "id",
@@ -17,7 +17,7 @@ var proxy = createProxy({
 	generateId: (function() {
 		var nextId = 0;
 		return function() {
-			return nextId++;
+			return nextId+=1;
 		};
 	}())
 });
@@ -37,5 +37,5 @@ app.listen(port, function() {
 	console.log("Express server listening on port " + port);
 
 	console.log("Routes:");
-	console.log(app._router.stack);
+	console.log(app.router.stack);
 });

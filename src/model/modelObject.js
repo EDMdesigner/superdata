@@ -4,10 +4,36 @@
 var createProp = require("./prop");
 
 module.exports = function createModelObject(options) {
+	if (!options) {
+		options = {};
+	}
+
+	if (!options.data) {
+		throw new Error("options.data is mandatory!");
+	}
+
+	if (!options.model) {
+		throw new Error("options.model is mandatory!");
+	}
+
+	if (!options.model.fields) {
+		throw new Error("options.model.fields is mandatory!");
+	}
+
+	if (!options.model.idField) {
+		throw new Error("options.model.idField is mandatory!");
+	}
+
+	if (!options.model.proxy) {
+		throw new Error("options.model.proxy is mandatory!");
+	}
+
+	var model = options.model;
+
 	var fields = options.model.fields;
 	var idField = options.model.idField;
 	var proxy = options.model.proxy;
-	var model = options.model;
+
 
 	var data = {};
 
@@ -35,24 +61,26 @@ module.exports = function createModelObject(options) {
 		return function beforeChange(values) {
 			validate(propName, values);
 
-			var field = fields[propName];
+			//var field = fields[propName];
 
+/*
 			if (field.beforeChange) {
 				if (typeof field.beforeChange === "function") {
 
 				}
 			}
+*/
 		};
 	}
 
-	function createAfterChangeFunction(propName) {
-		return function afterChange(values) {
+	function createAfterChangeFunction() {
+		return function afterChange() {
 			//call the onChange listeners
 		};
 	}
 
 
-	function validate(propName, values) {
+	function validate(propName) {
 		var field = fields[propName];
 
 		if (!field) {
@@ -92,7 +120,7 @@ module.exports = function createModelObject(options) {
 	//deleted flag?
 	function destroy(callback) {
 		var id = data[idField];
-		proxy.destroyOneById(id, function(err, result) {
+		proxy.destroyOneById(id, function(err) {
 			if (err) {
 				return callback(err);
 			}

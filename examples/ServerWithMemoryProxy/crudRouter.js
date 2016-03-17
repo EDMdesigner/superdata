@@ -41,6 +41,8 @@ module.exports = function createCRUDRouter(config) {
 
 	router.get("/", function(req, res) {
 		var query = {}; //TODO sophisticate this!
+
+
 		if (req.query) {
 			query = req.query;
 		}

@@ -1,6 +1,8 @@
 /*jslint node: true */
 "use strict";
 
+//not used yet
+
 var storage = (function() {
 	try {
 		var testDate = new Date();

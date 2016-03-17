@@ -4,20 +4,32 @@
 var messages = require("../errorMessages");
 
 module.exports = function createMemoryProxy(config) {
-	config = config || {};
-	var idProperty = config.idField || "id";
-	var idType = config.idType.toLowerCase() || "string";
+	if (!config) {
+		config = {};
+	}
+
+	if (!config.idProperty) {
+		throw new Error("config.idProperty is mandatory!");
+	}
+
+	if (!config.idType) {
+		throw new Error("config.idType is mandatory!");
+	}
+
+	var idProperty = config.idProperty;
+	var idType = config.idType.toLowerCase();
+
 	var generateId = config.generateId || (function() {
 		var nextId = 0;
 		return function() {
-			return nextId++;
+			return nextId += 1;
 		};
 	}());
 
 	var db = [];
 
 	function findIndexById(originalId) {
-		var id = castId(config.idType, originalId);
+		var id = castId(idType, originalId);
 		for (var idx = 0; idx < db.length; idx += 1) {
 			var act = db[idx];
 			if (act[idProperty] === id) {
@@ -35,7 +47,7 @@ module.exports = function createMemoryProxy(config) {
 
 		var castedId = id;
 		switch(type) {
-			case "string":
+			case "string": {
 				if (typeof castedId !== "string") {
 					castedId = castedId.toString();
 					if (typeof castedId !== "string") {
@@ -43,7 +55,8 @@ module.exports = function createMemoryProxy(config) {
 					}
 				}
 				break;
-			case "number":
+			}
+			case "number": {
 				if (typeof castedId !== "number") {
 					castedId = parseInt(castedId);
 					if (isNaN(castedId)) {
@@ -51,8 +64,10 @@ module.exports = function createMemoryProxy(config) {
 					}
 				}
 				break;
-			default:
+			}
+			default: {
 				return console.log("Unrecognized id type", type);
+			}
 		}
 		return castedId;
 	}
@@ -77,7 +92,7 @@ module.exports = function createMemoryProxy(config) {
 		if (!options) {
 			options = {};
 		}
-		
+
 		var find = options.find;
 		var sort = options.sort;
 
@@ -114,15 +129,16 @@ module.exports = function createMemoryProxy(config) {
 					if(actRelation === 1) {
 						if (act1 < act2) {
 							return -1;
-						} else if (act1 > act2) {
-							return 1;
 						}
-					} else {
 						if (act1 > act2) {
-							return -1;
-						} else if (act1 < act2) {
 							return 1;
 						}
+					}
+					if (act1 > act2) {
+						return -1;
+					}
+					if (act1 < act2) {
+						return 1;
 					}
 				}
 				return 0;
@@ -185,16 +201,21 @@ module.exports = function createMemoryProxy(config) {
 
 		newData[idProperty] = id;
 		db[dataIdx] = newData;
-		
+
 		callback(null, newData);
 	}
 
 	function destroyOneById(id, callback) {
+		checkCallback(callback);
+
 		var dataIdx = findIndexById(id);
+		if (dataIdx === -1) {
+			return callback(messages.errorMessages.NOT_FOUND);
+		}
 
 		var data = db.splice(dataIdx, 1);
 
-		callback(null, data);
+		callback(null, data[0]);
 	}
 
 	return Object.freeze({

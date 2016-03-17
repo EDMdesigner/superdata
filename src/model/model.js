@@ -4,7 +4,26 @@
 var createModelObject = require("./modelObject");
 
 module.exports = function createModel(options) {
+	if (!options) {
+		options = {};
+	}
+
+	if (!options.idField) {
+		throw new Error("options.idField is mandatory!");
+	}
+
+	if (!options.fields) {
+		throw new Error("options.fields is mandatory!");
+	}
+
+	if (!options.proxy) {
+		throw new Error("options.proxy is mandatory!");
+	}
+	
+	var idField = options.idField;
 	var fields = options.fields;
+
+	var proxy = options.proxy;
 
 	//options.fields should be an array of objects
 	//the objects should describe the fields:
@@ -15,9 +34,6 @@ module.exports = function createModel(options) {
 	// - defaultValue
 	// - beforeChange
 	// - afterChange
-
-	var proxy = options.proxy;
-	var idField = options.idField;
 
 	function list(options, callback) {
 		proxy.read(options, function(err, result) {
