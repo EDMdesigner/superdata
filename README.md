@@ -36,14 +36,35 @@ If you throw an exception in the before hook, then you can prevent the store fro
 
 ## Model
 
-When the store is being loaded, then it invokes the models list function (which will use the proxy's read function). This list function will create **modelObjects** based on the data and the description in the model. (So the modelObjects are created on the basis of the model.) You can create a new modelObject by callint the model's create function, wich will use the proxy's createOne function.
+When the store is being loaded, then it invokes the models list function (which will use the proxy's read function). This list function will create **modelObjects** based on the data and the description in the model. (So the modelObjects are created on the basis of the model.) You can create a new modelObject by calling the model's create function, wich will use the proxy's createOne function.
 
 The model is responsible for data validation, although it's not yet implemented in superdata.
 
 You can change the data fields on the modelObject and when you want to save it, you just have to call its **save** function. (It will use the proxy's updateOneById function.) Also, you can delete a modelObject by calling its **destroy** function. Be careful, the reference of the modelObject will still remain in the memory, it only removes the resource via the proxy.
 
+```javascript
+var model = createModel({
+	fields: {
+		id: {
+			type: "number"
+		},
+		email: {
+			type: "string"
+		},
+		name: {
+			type: "string"
+		},
+		title: {
+			type: "string"
+		}
+	},
+	idField: "id",
+	proxy: proxy
+});
+```
+
 ## Proxy
-Proxies are responsible for reading and writing data. You could as where they write and from where they read. Well, it's totally dependent on the proxy, it can send the data to a server or just read it from the memory. It's dependent on the implemantation of the actual prody. The common thing in proxies that they implement the following functions:
+Proxies are responsible for reading and writing data. You could ask where they write and from where they read. Well, it's totally dependent on the proxy, it can send the data to a server or just read it from the memory. It's dependent on the implemantation of the actual prody. The common thing in proxies that they implement the following functions:
 
 function name | params
 ---|---
@@ -59,9 +80,49 @@ As you can see, these functions are responsible for CRUD operations, their funct
 
 The memory proxy simply stores everything in the memory. You can use it on both the server and the client side.
 
+```javascript
+var proxy = superData.proxy.memory({
+	idProperty: "id",
+	idType: "number",
+	generateId: (function() {
+		var nextId = 0;
+		return function() {
+			return nextId+=1;
+		};
+	}())
+});
+```
+
 ### Ajax proxy
 
 The ajax proxy makes HTTP calls to certain urls based on its configuration. You can define query mappings, namely you can define the way how the find, sort, skip and limit properties should be mapped to the query string of the request. You can also define custom query string properties, which will be added to the query string of all of the HTTP calls.
+
+```javascript
+var proxy = superData.proxy.ajax({
+	operations: {
+		read: {
+			route: "http://localhost:7357/user",
+			method: "GET"
+		},
+		createOne: {
+			route: "http://localhost:7357/user",
+			method: "POST"
+		},
+		readOneById: {
+			route: "http://localhost:7357/user/:id",
+			method: "GET"
+		},
+		updateOneById: {
+			route: "http://localhost:7357/user/:id",
+			method: "PUT"
+		},
+		destroyOneById: {
+			route: "http://localhost:7357/user/:id",
+			method: "DELETE"
+		}
+	}
+});
+```
 
 ### REST proxy
 
