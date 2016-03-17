@@ -1,12 +1,10 @@
 # superdata
 
-## Overview
- - what is superdata yo.
-  - extjs' datalayer motivated
-  - changable yo
-  - can work together with any client side frameworks.
+Superdata is a data layer, motivated by Extjs' data layer. It consists of three main parts: the **store**, the **model** and the **proxy**. You need one instance of these three elements to make the data layer work. Basically the store needs one model because it's dependent on its functions and the model needs one proxy, because it uses the proxy's functions.
 
-  - Store -> Model -> Proxy
+The biggest advantage is that you can easily change the proxy implementations so you can change the way of storing your data.
+
+This lib can easily work together with any client side frameworks.
 
 ## Store
 
@@ -18,7 +16,7 @@ You can add new entries to your store or you can trigger the store to load by se
  - skip
  - limit
 
-It will load the elements into the items array. You hook to the store's load functionality in the following way.
+It will load the elements into the items array. If you change them at the same time, it won't trigger the loading many times. You can hook to the store's load functionality in the following way.
 
 ```javascript
 var store = superData.store.store({
@@ -37,8 +35,12 @@ store.load.after.add(function() {
 If you throw an exception in the before hook, then you can prevent the store from loading.
 
 ## Model
- - model
- - modelObject
+
+When the store is being loaded, then it invokes the models list function (which will use the proxy's read function). This list function will create **modelObjects** based on the data and the description in the model. (So the modelObjects are created on the basis of the model.) You can create a new modelObject by callint the model's create function, wich will use the proxy's createOne function.
+
+The model is responsible for data validation, although it's not yet implemented in superdata.
+
+You can change the data fields on the modelObject and when you want to save it, you just have to call its **save** function. (It will use the proxy's updateOneById function.) Also, you can delete a modelObject by calling its **destroy** function. Be careful, the reference of the modelObject will still remain in the memory, it only removes the resource via the proxy.
 
 ## Proxy
 Proxies are responsible for reading and writing data. You could as where they write and from where they read. Well, it's totally dependent on the proxy, it can send the data to a server or just read it from the memory. It's dependent on the implemantation of the actual prody. The common thing in proxies that they implement the following functions:
