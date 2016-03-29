@@ -112,7 +112,7 @@ module.exports = function createMemoryProxy(config) {
 						actSplit.splice(0, 1);
 						
 						var regexpOptions = actSplit.splice(actSplit.length - 1, 1);
-						var pattern = actSplit.join("");
+						var pattern = actSplit.join("/");
 						
 						act = new RegExp(pattern, regexpOptions);
 					}
