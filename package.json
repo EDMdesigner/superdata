@@ -1,48 +1,48 @@
 {
-  "version": "0.1.0",
-  "name":"superdata",
-  "description":"A ligth weight data layer module motivated by extjs' data layer. It can be used with any client-side framework.",
-  "main":"src/superData.js",
-  "keywords":[
+  "version": "0.1.1",
+  "name": "superdata",
+  "description": "A ligth weight data layer module motivated by extjs' data layer. It can be used with any client-side framework.",
+  "main": "src/superData.js",
+  "keywords": [
     "datalayer",
     "data layer",
     "model",
     "store",
     "proxy"
   ],
-  "license":"MIT",
-  "repository":{
-    "type":"git",
-    "url":"https://github.com/EDMdesigner/superdata.git"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EDMdesigner/superdata.git"
   },
-  "author":{
-    "name":"EDMdesigner",
-    "email":"info@edmdesigner.com",
-    "url":"http://edmdesigner.com"
+  "author": {
+    "name": "EDMdesigner",
+    "email": "info@edmdesigner.com",
+    "url": "http://edmdesigner.com"
   },
-  "bugs":{
-    "url":"https://github.com/EDMdesigner/superdata/issues"
+  "bugs": {
+    "url": "https://github.com/EDMdesigner/superdata/issues"
   },
   "scripts": {
     "test": "gulp test"
   },
   "maintainers": [
     {
-      "name":"Gyula Németh",
-      "email":"gyula.nemeth@edmdesigner.com"
+      "name": "Gyula Németh",
+      "email": "gyula.nemeth@edmdesigner.com"
     },
     {
-      "name":"arnolduis",
-      "email":"arnolduis@gmail.com"
+      "name": "arnolduis",
+      "email": "arnolduis@gmail.com"
     }
   ],
-  "browserify":{
-    "transform":[
+  "browserify": {
+    "transform": [
       "browserify-global-shim"
     ]
   },
-  "browserify-global-shim":{
-    "knockout":"ko"
+  "browserify-global-shim": {
+    "knockout": "ko"
   },
   "devDependencies": {
     "body-parser": "*",
