@@ -126,7 +126,24 @@ var proxy = superData.proxy.ajax({
 
 ### REST proxy
 
-!!! REST proxy should be refactored to be a wrapper around ajax proxy !!!
+With the rest proxy you can easily define a CRUD proxy by giving a base route, and optionally queries and/or a reader. It is based upon the ajax proxy.
+
+```javascript
+var proxy = superData.proxy.rest({
+	idProperty: "id",
+	route: "http://localhost:7357/user",
+	reader: {
+		root: "items",
+		count: "count"
+	},
+	queries: {
+		read: {
+			token: "exampleAccessToken"
+		}
+	}
+});
+});
+```
 
 ## Example
 
