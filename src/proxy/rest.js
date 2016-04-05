@@ -17,8 +17,6 @@ module.exports = function createRestProxy(config) {
 	var readOneByIdQuery = queries.readOneById || {};
 	var updateOneByIdQuery = queries.updateOneById || {};
 	var destroyOneByIdQuery = queries.destroyOneById || {};
-	//TODO checkConfig
-	//checkqueries
 
 	var route = config.route;
 
