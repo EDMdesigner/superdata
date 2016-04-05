@@ -10,6 +10,16 @@ module.exports = function createRestProxy(config) {
 		throw new Error("config.route is mandatory");
 	}
 
+	var queries = config.queries || {};
+
+	var readQuery = queries.read || {};
+	var createOneQuery = queries.createOne || {};
+	var readOneByIdQuery = queries.readOneById || {};
+	var updateOneByIdQuery = queries.updateOneById || {};
+	var destroyOneByIdQuery = queries.destroyOneById || {};
+	//TODO checkConfig
+	//checkqueries
+
 	var route = config.route;
 
 	var restProxy = createAjaxProxy({
@@ -19,27 +29,27 @@ module.exports = function createRestProxy(config) {
 				route: route,
 				method: "GET",
 				reader: config.reader,
-				queries: config.queries
+				queries: readQuery
 			},
 			createOne: {
 				route: route,
 				method: "POST",
-				queries: config.queries
+				queries: createOneQuery
 			},
 			readOneById: {
 				route: route + "/:id",
 				method: "GET",
-				queries: config.queries
+				queries: readOneByIdQuery
 			},
 			updateOneById: {
 				route: route + "/:id",
 				method: "PUT",
-				queries: config.queries
+				queries: updateOneByIdQuery
 			},
 			destroyOneById: {
 				route: route + "/:id",
 				method: "DELETE",
-				queries: config.queries
+				queries: destroyOneByIdQuery
 			}
 		}
 	});
