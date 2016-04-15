@@ -1,3 +1,5 @@
+global.FormData = require("form-data");
+
 var superData = require("../../src/superData");
 
 //var proxyBehaviour = require("./proxyBehaviour");
@@ -152,7 +154,7 @@ describe("ajax proxy", function() {
 
 	it("server calls & query mapping", function(done) {
 		var options = {
-			find: /test/gi, 
+			find: /test/gi,
 			limit: 10
 		};
 
@@ -215,19 +217,24 @@ describe("ajax proxy", function() {
 			},
 			serverStarted: function() {
 				//All kneel and praise the pyramid of doom!
+				var formData = new FormData();
+
+				formData.append("title", "text");
+
 				proxy.read(options, function() {
 					expect(callbacks.read).toHaveBeenCalled();
 					proxy.createOne({}, function() {
-						expect(callbacks.createOne).toHaveBeenCalled();
-						proxy.readOneById(1, function() {
-							expect(callbacks.readOneById).toHaveBeenCalled();
-							proxy.updateOneById(1, {}, function() {
-								expect(callbacks.updateOneById).toHaveBeenCalled();
-								proxy.destroyOneById(1, function() {
-									expect(callbacks.destroyOneById).toHaveBeenCalled();
-
-									mockServer.stop(function() {
-										done();
+						proxy.createOne(formData, function() {
+							expect(callbacks.createOne).toHaveBeenCalled();
+							proxy.readOneById(1, function() {
+								expect(callbacks.readOneById).toHaveBeenCalled();
+								proxy.updateOneById(1, {}, function() {
+									expect(callbacks.updateOneById).toHaveBeenCalled();
+									proxy.destroyOneById(1, function() {
+										expect(callbacks.destroyOneById).toHaveBeenCalled();
+										mockServer.stop(function() {
+											done();
+										});
 									});
 								});
 							});
