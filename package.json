@@ -50,6 +50,7 @@
     "browserify-global-shim": "^1.0.0",
     "express": "*",
     "express-logger": "*",
+    "form-data": "1.0.0-rc4",
     "gulp-brfs": "^0.1.0",
     "gulp-jasmine": "^2.3.0",
     "gulp-jscs": "^3.0.2",
