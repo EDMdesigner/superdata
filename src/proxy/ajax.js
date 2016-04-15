@@ -7,6 +7,18 @@ var timeout = 10000;
 
 var createReader = require("../reader/json");
 
+// var isNode = new Function("try {return this===global;}catch(e){return false;}");
+var environment;
+
+try {
+	environment = window ? window : global;
+} catch (e) {
+	environment = global;
+}
+
+if (!environment.FormData) {
+	global.FormData = require("form-data");
+}
 
 module.exports = function createAjaxProxy(config) {
 	if (!config) {

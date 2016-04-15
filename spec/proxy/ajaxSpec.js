@@ -1,4 +1,4 @@
-global.FormData = require("form-data");
+var FormData = require("form-data");
 
 var superData = require("../../src/superData");
 
