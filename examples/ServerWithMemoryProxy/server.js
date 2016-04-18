@@ -36,6 +36,6 @@ app.use(express.static("./public"));
 app.listen(port, function() {
 	console.log("Express server listening on port " + port);
 
-	console.log("Routes:");
-	console.log(app.router.stack);
+	// console.log("Routes:");
+	// console.log(app.router.stack);
 });

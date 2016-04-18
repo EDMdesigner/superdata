@@ -7,6 +7,18 @@ var timeout = 10000;
 
 var createReader = require("../reader/json");
 
+// var isNode = new Function("try {return this===global;}catch(e){return false;}");
+var environment;
+
+try {
+	environment = window ? window : global;
+} catch (e) {
+	environment = global;
+}
+
+if (!environment.FormData) {
+	global.FormData = require("form-data");
+}
 
 module.exports = function createAjaxProxy(config) {
 	if (!config) {
@@ -22,14 +34,15 @@ module.exports = function createAjaxProxy(config) {
 	}
 
 	var idProperty = config.idProperty;
-	
+
 	var generateId = config.generateId || (function() {
 		var nextId = 0;
+
 		return function() {
 			return nextId += 1;
 		};
 	}());
-	
+
 	var defaultReader = createReader({});
 	var queryMapping = config.queryMapping;
 
@@ -38,6 +51,12 @@ module.exports = function createAjaxProxy(config) {
 	function createOne(data, callback) {
 		checkCallback(callback);
 		var actConfig = createOperationConfig(config.operations.createOne, null, data);
+
+
+		if (data.constructor === FormData) {
+			actConfig.formData = true;
+		}
+
 
 		dispatchAjax(actConfig, callback);
 	}
@@ -98,13 +117,17 @@ module.exports = function createAjaxProxy(config) {
 	}
 
 	function dispatchAjax(actConfig, callback) {
-		request
+		var req = request
 			[actConfig.method](actConfig.route)
 			.query(actConfig.queries)
-			.send(actConfig.data)
-			.type(actConfig.type)
 			.accept(actConfig.accept)
-			.timeout(timeout)
+			.timeout(timeout);
+
+		if (actConfig.formData !== true) {
+			req.type(actConfig.type);
+		}
+		req
+			.send(actConfig.data)
 			.end(function(err, result) {
 				if (err) {
 					return callback(err);
@@ -122,8 +145,8 @@ module.exports = function createAjaxProxy(config) {
 			assert(act.method, prop + " method should be configured");
 			act.method = act.method.toLowerCase();
 			act.queries = act.queries || {};
-			act.type = act.type || "application/json";
 			act.accept = act.accept || "application/json";
+			act.type = act.type || "application/json";
 			act.reader = act.reader ? act.reader : {};
 			if (prop === "read") {
 				act.reader.out = "items";

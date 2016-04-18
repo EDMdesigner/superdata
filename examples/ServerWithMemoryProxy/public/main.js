@@ -4,7 +4,8 @@ var ko = require("knockout");
 
 var superData = require("superdata");
 
-var createProxy = superData.proxy.ajax;
+// var createProxy = superData.proxy.ajax;
+var createRestProxy = superData.proxy.rest;
 var createModel = superData.model.model;
 var createStore = superData.store.store;
 
@@ -12,30 +13,46 @@ var createStore = superData.store.store;
 // 	token: "34oirfgdsnTOKENawern4o",
 // 	user: "Lali"
 // }
-var proxy = createProxy({
-	operations: {
-		read: {
-			route: "http://localhost:7357/user",
-			method: "GET"
-		},
-		createOne: {
-			route: "http://localhost:7357/user",
-			method: "POST"
-		},
-		readOneById: {
-			route: "http://localhost:7357/user/:id",
-			method: "GET"
-		},
-		updateOneById: {
-			route: "http://localhost:7357/user/:id",
-			method: "PUT"
-		},
-		destroyOneById: {
-			route: "http://localhost:7357/user/:id",
-			method: "DELETE"
-		}
+
+var proxy = createRestProxy({
+	idProperty: "id",
+	route: "http://localhost:7357/user",
+	reader: {
+		root: "items",
+		count: "count"
 	}
 });
+
+// var proxy = createProxy({
+// 	idProperty: "id",
+// 	operations: {
+// 		read: {
+// 			route: "http://localhost:7357/user",
+// 			method: "GET",
+// 			reader: {
+// 				root: "items",
+// 				count: "count"
+// 			}
+// 		},
+// 		createOne: {
+// 			route: "http://localhost:7357/user",
+// 			method: "POST"
+// 		},
+// 		readOneById: {
+// 			route: "http://localhost:7357/user/:id",
+// 			method: "GET"
+// 		},
+// 		updateOneById: {
+// 			route: "http://localhost:7357/user/:id",
+// 			method: "PUT"
+// 		},
+// 		destroyOneById: {
+// 			route: "http://localhost:7357/user/:id",
+// 			method: "DELETE"
+// 		}
+// 	}
+// });
+
 var model = createModel({
 	fields: {
 		id: {
