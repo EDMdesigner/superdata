@@ -33,6 +33,8 @@ module.exports = function createAjaxProxy(config) {
 		throw new Error("config.operations is mandatory!");
 	}
 
+	timeout = config.timeout || timeout;
+
 	var idProperty = config.idProperty;
 
 	var generateId = config.generateId || (function() {
