@@ -3,7 +3,7 @@
 
 var request = require("superagent");
 
-var timeout = 10000;
+var timeout = 3000;
 
 var createReader = require("../reader/json");
 
@@ -88,12 +88,7 @@ module.exports = function createAjaxProxy(config) {
 			newConfig.data = {};
 		}
 
-		var idRegex = /:id/g;
-		if (idRegex.test(newConfig.route)) {
-			newConfig.route = newConfig.route.replace(idRegex, id);
-		} else if (id) {
-			newConfig.data[idProperty] = id;
-		}
+		newConfig.id = id;
 
 		return newConfig;
 	}
@@ -117,23 +112,48 @@ module.exports = function createAjaxProxy(config) {
 	}
 
 	function dispatchAjax(actConfig, callback) {
-		var req = request
-			[actConfig.method](actConfig.route)
-			.query(actConfig.queries)
-			.accept(actConfig.accept)
-			.timeout(timeout);
-
-		if (actConfig.formData !== true) {
-			req.type(actConfig.type);
+		if (typeof actConfig.route === "string") {
+			actConfig.route = [actConfig.route];
 		}
-		req
-			.send(actConfig.data)
-			.end(function(err, result) {
-				if (err) {
-					return callback(err);
-				}
-				callback(null, actConfig.reader.read(result.body));
-			});
+
+		var actRouteIdx = 0;
+		var actRoute = actConfig.route[actRouteIdx];
+
+		function dispatch(retries) {
+
+			var idRegex = /:id/g;
+
+			if (idRegex.test(actRoute)) {
+				actRoute = actRoute.replace(idRegex, actConfig.id);
+			} else if (actConfig.id) {
+				actConfig.data[idProperty] = actConfig.id;
+			}
+
+			var req = request
+				[actConfig.method](actRoute)
+				.query(actConfig.queries)
+				.accept(actConfig.accept)
+				.timeout(timeout);
+
+			if (actConfig.formData !== true) {
+				req.type(actConfig.type);
+			}
+			req
+				.send(actConfig.data)
+				.end(function(err, result) {
+					if (err) {
+						if (retries < actConfig.route.length) {
+							actRouteIdx += 1;
+							actRouteIdx %= actConfig.route.length;
+							actRoute = actConfig.route[actRouteIdx];
+							return dispatch(retries + 1);
+						}
+						return callback(err);
+					}
+					callback(null, actConfig.reader.read(result.body));
+				});
+		}
+		dispatch(0);
 	}
 
 	function prepareOperationsConfig(config) {
