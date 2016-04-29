@@ -261,27 +261,6 @@ describe("ajax proxy", function() {
 						done();
 					});
 				});
-
-				// proxy.read(options, function() {
-				// 	expect(callbacks.read).toHaveBeenCalled();
-				// 	proxy.createOne({}, function() {
-				// 		proxy.createOne(formData, function() {
-				// 			expect(callbacks.createOne).toHaveBeenCalled();
-				// 			proxy.readOneById(1, function() {
-				// 				expect(callbacks.readOneById).toHaveBeenCalled();
-				// 				proxy.updateOneById(1, {}, function() {
-				// 					expect(callbacks.updateOneById).toHaveBeenCalled();
-				// 					proxy.destroyOneById(1, function() {
-				// 						expect(callbacks.destroyOneById).toHaveBeenCalled();
-				// 						mockServer.stop(function() {
-				// 							done();
-				// 						});
-				// 					});
-				// 				});
-				// 			});
-				// 		});
-				// 	});
-				// });
 			},
 			port: 7357
 		});
