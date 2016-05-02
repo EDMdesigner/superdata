@@ -123,6 +123,20 @@ var proxy = superData.proxy.ajax({
 	}
 });
 ```
+The ajax proxy has a failover mechanism to it
+. You can pass arrays as route parameters. If arrays are given, on error, the proxy tries to iterate through the given routes, before returning with the error.
+
+```javascript
+var proxy = superData.proxy.ajax({
+	operations: {
+		read: {
+			route: ["FailingHost", "http://localhost:7357/user"],
+			method: "GET"
+		}
+		...
+		...
+		...
+```
 
 ### REST proxy
 

@@ -45,6 +45,7 @@
     "knockout": "ko"
   },
   "devDependencies": {
+    "async": "^2.0.0-rc.3",
     "body-parser": "*",
     "browserify": "^12.0.1",
     "browserify-global-shim": "^1.0.0",
