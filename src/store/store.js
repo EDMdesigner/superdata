@@ -39,8 +39,8 @@ module.exports = function createStore(options) {
 			}
 
 			queryChanged = setTimeout(function() {
-				load();
 				queryChanged = null;
+				load();
 			}, 0);
 		};
 	}());
