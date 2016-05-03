@@ -131,29 +131,38 @@ module.exports = function createAjaxProxy(config) {
 				actConfig.data[idProperty] = actConfig.id;
 			}
 
-			var req = request
-				[actConfig.method](actRoute)
-				.query(actConfig.queries)
-				.accept(actConfig.accept)
-				.timeout(timeout);
+			try {
+				var req = request
+					[actConfig.method](actRoute)
+					.query(actConfig.queries)
+					.accept(actConfig.accept)
+					.timeout(timeout);
 
-			if (actConfig.formData !== true) {
-				req.type(actConfig.type);
-			}
-			req
-				.send(actConfig.data)
-				.end(function(err, result) {
-					if (err) {
-						if (retries < actConfig.route.length) {
-							actRouteIdx += 1;
-							actRouteIdx %= actConfig.route.length;
-							actRoute = actConfig.route[actRouteIdx];
-							return dispatch(retries + 1);
+				if (actConfig.formData !== true) {
+					req.type(actConfig.type);
+				}
+				req
+					.send(actConfig.data)
+					.end(function(err, result) {
+						if (err) {
+							if (retries < actConfig.route.length) {
+								actRouteIdx += 1;
+								actRouteIdx %= actConfig.route.length;
+								actRoute = actConfig.route[actRouteIdx];
+								return dispatch(retries + 1);
+							}
+							return callback(err);
 						}
-						return callback(err);
-					}
-					callback(null, actConfig.reader.read(result.body));
-				});
+						callback(null, actConfig.reader.read(result.body));
+					});
+			} catch (e) {
+				// if (retries < actConfig.route.length) {
+				// 	actRouteIdx += 1;
+				// 	actRouteIdx %= actConfig.route.length;
+				// 	actRoute = actConfig.route[actRouteIdx];
+				// 	return dispatch(retries + 1);
+				// }
+			}
 		}
 		dispatch(0);
 	}
