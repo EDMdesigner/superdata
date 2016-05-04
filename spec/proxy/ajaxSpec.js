@@ -2,6 +2,8 @@ var FormData = require("form-data");
 
 var superData = require("../../src/superData");
 
+var async = require("async");
+
 //var proxyBehaviour = require("./proxyBehaviour");
 var ajaxProxy = require("../../src/proxy/ajax");
 
@@ -96,25 +98,26 @@ describe("ajax proxy", function() {
 
 	var proxy = ajaxProxy({
 		idProperty: "id",
+		timeout: 3000,
 		operations: {
 			read: {
-				route: "http://localhost:7357/user",
+				route: ["FailOverHost", "http://localhost:7357/user"],
 				method: "GET"
 			},
 			createOne: {
-				route: "http://localhost:7357/user",
+				route: ["FailOverHost", "http://localhost:7357/user"],
 				method: "POST"
 			},
 			readOneById: {
-				route: "http://localhost:7357/user/:id",
+				route: ["FailOverHost", "http://localhost:7357/user/:id"],
 				method: "GET"
 			},
 			updateOneById: {
-				route: "http://localhost:7357/user/:id",
+				route: ["FailOverHost", "http://localhost:7357/user/:id"],
 				method: "PUT"
 			},
 			destroyOneById: {
-				route: "http://localhost:7357/user/:id",
+				route: ["FailOverHost", "http://localhost:7357/user/:id"],
 				method: "DELETE"
 			}
 		},
@@ -221,24 +224,41 @@ describe("ajax proxy", function() {
 
 				formData.append("title", "text");
 
-				proxy.read(options, function() {
-					expect(callbacks.read).toHaveBeenCalled();
-					proxy.createOne({}, function() {
-						proxy.createOne(formData, function() {
-							expect(callbacks.createOne).toHaveBeenCalled();
-							proxy.readOneById(1, function() {
-								expect(callbacks.readOneById).toHaveBeenCalled();
-								proxy.updateOneById(1, {}, function() {
-									expect(callbacks.updateOneById).toHaveBeenCalled();
-									proxy.destroyOneById(1, function() {
-										expect(callbacks.destroyOneById).toHaveBeenCalled();
-										mockServer.stop(function() {
-											done();
-										});
-									});
-								});
-							});
+
+				async.series([
+					function(callback) {
+						proxy.read(options, function() {
+							expect(callbacks.read).toHaveBeenCalled();
+							callback(null);
 						});
+					},
+					function(callback) {
+						proxy.createOne({}, function() {
+							expect(callbacks.createOne).toHaveBeenCalled();
+							callback(null);
+						});
+					},
+					function(callback) {
+						proxy.readOneById(1, function() {
+							expect(callbacks.readOneById).toHaveBeenCalled();
+							callback(null);
+						});
+					},
+					function(callback) {
+						proxy.updateOneById(1, {}, function() {
+							expect(callbacks.updateOneById).toHaveBeenCalled();
+							callback(null);
+						});
+					},
+					function(callback) {
+						proxy.destroyOneById(1, function() {
+							expect(callbacks.destroyOneById).toHaveBeenCalled();
+							callback(null);
+						});
+					}],
+				function() {
+					mockServer.stop(function() {
+						done();
 					});
 				});
 			},
