@@ -156,12 +156,6 @@ module.exports = function createAjaxProxy(config) {
 						callback(null, actConfig.reader.read(result.body));
 					});
 			} catch (e) {
-				// if (retries < actConfig.route.length) {
-				// 	actRouteIdx += 1;
-				// 	actRouteIdx %= actConfig.route.length;
-				// 	actRoute = actConfig.route[actRouteIdx];
-				// 	return dispatch(retries + 1);
-				// }
 			}
 		}
 		dispatch(0);
