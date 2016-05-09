@@ -10,6 +10,11 @@ module.exports = function createRestProxy(config) {
 		throw new Error("config.route is mandatory");
 	}
 
+	if (!(typeof config.route === "string" ||
+		config.route.constructor === Array)) {
+		throw new Error("config.route must be either string or array");
+	}
+
 	var queries = config.queries || {};
 
 	var readQuery = queries.read || {};

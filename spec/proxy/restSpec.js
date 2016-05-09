@@ -49,6 +49,14 @@ describe("Rest proxy", function() {
 				createRestProxy({});
 			}).toThrowError("config.route is mandatory");
 		});
+
+		it("config.route must be string or array", function() {
+			expect(function() {
+				createRestProxy({
+					route: 1
+				});
+			}).toThrowError("config.route must be either string or array");
+		});
 	});
 
 	describe("valid config", function() {
