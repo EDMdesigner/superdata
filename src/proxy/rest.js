@@ -20,6 +20,22 @@ module.exports = function createRestProxy(config) {
 
 	var route = config.route;
 
+	function addId(route) {
+		var newRoute;
+
+		if (typeof route === "string") {
+			newRoute = [route];
+		} else {
+			newRoute = route.slice(0);
+		}
+
+		for (var i = 0; i < newRoute.length; i+=1) {
+			newRoute[i] += "/:id";
+		}
+
+		return newRoute;
+	}
+
 	var restProxy = createAjaxProxy({
 		idProperty: config.idProperty,
 		operations: {
@@ -35,17 +51,17 @@ module.exports = function createRestProxy(config) {
 				queries: createOneQuery
 			},
 			readOneById: {
-				route: route + "/:id",
+				route: addId(route),
 				method: "GET",
 				queries: readOneByIdQuery
 			},
 			updateOneById: {
-				route: route + "/:id",
+				route: addId(route),
 				method: "PUT",
 				queries: updateOneByIdQuery
 			},
 			destroyOneById: {
-				route: route + "/:id",
+				route: addId(route),
 				method: "DELETE",
 				queries: destroyOneByIdQuery
 			}
