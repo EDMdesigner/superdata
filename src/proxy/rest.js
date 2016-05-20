@@ -10,8 +10,9 @@ module.exports = function createRestProxy(config) {
 		throw new Error("config.route is mandatory");
 	}
 
-	if (!config.idProperty) {
-		throw new Error("config.idProperty is mandatory!");
+	if (!(typeof config.route === "string" ||
+		config.route.constructor === Array)) {
+		throw new Error("config.route must be either string or array");
 	}
 
 	var queries = config.queries || {};
@@ -25,22 +26,20 @@ module.exports = function createRestProxy(config) {
 	var route = config.route;
 
 	function addId(route) {
-		var routeWithId;
+		var newRoute;
 
 		if (typeof route === "string") {
-			routeWithId = [route];
+			newRoute = [route];
 		} else {
-			routeWithId = route.slice(0);
+			newRoute = route.slice(0);
 		}
 
-		for (var i = 0; i < routeWithId.length; i += 1) {
-			routeWithId[i] = routeWithId[i] + "/:id";
+		for (var i = 0; i < newRoute.length; i+=1) {
+			newRoute[i] += "/:id";
 		}
 
-		return routeWithId;
+		return newRoute;
 	}
-
-
 
 	var restProxy = createAjaxProxy({
 		idProperty: config.idProperty,

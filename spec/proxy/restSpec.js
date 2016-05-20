@@ -1,12 +1,15 @@
 var express = require("express");
 var bodyParser = require("body-parser");
+var superData = require("../../src/superData");
+var createRestProxy = superData.proxy.rest;
+
+
 var async = require("async");
-var FormData = require("form-data");
 
-var createRestProxy = require("../../src/proxy/rest");
 
-var express = require("express");
-var bodyParser = require("body-parser");
+
+
+
 
 function createMockServer(config) {
 	var app = express();
@@ -34,6 +37,7 @@ function createMockServer(config) {
 	};
 }
 
+
 describe("Rest proxy", function() {
 	describe("Invalid config", function() {
 		it("missing config", function() {
@@ -46,12 +50,12 @@ describe("Rest proxy", function() {
 			}).toThrowError("config.route is mandatory");
 		});
 
-		it("missing config.idProperty", function() {
+		it("config.route must be string or array", function() {
 			expect(function() {
 				createRestProxy({
-					route: "route"
+					route: 1
 				});
-			}).toThrowError("config.idProperty is mandatory!");
+			}).toThrowError("config.route must be either string or array");
 		});
 	});
 
@@ -61,12 +65,13 @@ describe("Rest proxy", function() {
 
 		var proxy = createRestProxy({
 			idProperty: "id",
-			route: ["failHost", "http://localhost:" + port + "/user"],
+			route: ["Failover", "http://localhost:" + port + "/user"],
 			reader: {
 				root: "items",
 				count: "count"
 			}
 		});
+
 
 		it("routes should be working", function(done) {
 			var options = {
@@ -76,7 +81,7 @@ describe("Rest proxy", function() {
 
 			var callbacks = {
 				read: function(req, res) {
-					// expect(req.query).toEqual(queryMapping(options));
+					// expect(req.query).toEqual(options);
 					res.send({});
 				},
 				createOne: function(req, res) {
@@ -95,6 +100,8 @@ describe("Rest proxy", function() {
 					res.send({});
 				}
 			};
+
+
 
 			spyOn(callbacks, "read").and.callThrough();
 			spyOn(callbacks, "createOne").and.callThrough();
@@ -131,13 +138,13 @@ describe("Rest proxy", function() {
 					}
 				},
 				serverStarted: function() {
+					//All kneel and praise the pyramid of doom!
 					var formData = new FormData();
 
 					formData.append("title", "text");
 
 
 					async.series([
-
 						function(callback) {
 							proxy.read(options, function() {
 								expect(callbacks.read).toHaveBeenCalled();
