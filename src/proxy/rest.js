@@ -10,6 +10,10 @@ module.exports = function createRestProxy(config) {
 		throw new Error("config.route is mandatory");
 	}
 
+	if (!config.idProperty) {
+		throw new Error("config.idProperty is mandatory!");
+	}
+
 	var queries = config.queries || {};
 
 	var readQuery = queries.read || {};
@@ -20,8 +24,28 @@ module.exports = function createRestProxy(config) {
 
 	var route = config.route;
 
+	function addId(route) {
+		var routeWithId;
+
+		if (typeof route === "string") {
+			routeWithId = [route];
+		} else {
+			routeWithId = route.slice(0);
+		}
+
+		for (var i = 0; i < routeWithId.length; i += 1) {
+			routeWithId[i] = routeWithId[i] + "/:id";
+		}
+
+		return routeWithId;
+	}
+
+
+
 	var restProxy = createAjaxProxy({
 		idProperty: config.idProperty,
+		idType: config.idType,
+		timeout: config.timeout,
 		operations: {
 			read: {
 				route: route,
@@ -35,17 +59,17 @@ module.exports = function createRestProxy(config) {
 				queries: createOneQuery
 			},
 			readOneById: {
-				route: route + "/:id",
+				route: addId(route),
 				method: "GET",
 				queries: readOneByIdQuery
 			},
 			updateOneById: {
-				route: route + "/:id",
+				route: addId(route),
 				method: "PUT",
 				queries: updateOneByIdQuery
 			},
 			destroyOneById: {
-				route: route + "/:id",
+				route: addId(route),
 				method: "DELETE",
 				queries: destroyOneByIdQuery
 			}
