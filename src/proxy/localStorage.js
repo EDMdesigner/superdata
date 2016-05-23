@@ -5,7 +5,9 @@
 
 var storage = (function() {
 	try {
-		var testDate = new Date();
+		// var testDate = new Date();
+		var testDate = "adsfj";
+
 		localStorage.setItem(testDate, testDate);
 		var isSame = localStorage.getItem(testDate) === testDate;
 		localStorage.removeItem(testDate);
@@ -22,14 +24,18 @@ module.exports = function(config) {
 	var proxyName = config.name || "lsProxy";
 
 	if (storage) {
-		JSON.parse(storage.getItem(proxyName)).forEach(function(item) {
-			memoryProxy.createOne(item, function() {});
-		});
+		var localData = JSON.parse(storage.getItem(proxyName));
+
+		if (localData) {
+			localData.items.forEach(function(item) {
+				memoryProxy.createOne(item, function() {});
+			});
+		}
 	}
 
 	function createWrapperFunction(prop) {
 		return function saveToLocalStorageWrapper() {
-			memoryProxy[prop](arguments);
+			memoryProxy[prop].apply(this, arguments);
 
 			memoryProxy.read({}, function(err, result) {
 				if (err) {

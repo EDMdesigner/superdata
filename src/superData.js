@@ -2,6 +2,7 @@
 "use strict";
 
 var memoryProxy = require("./proxy/memory");
+var localStorageProxy = require("./proxy/localStorage");
 var restProxy =   require("./proxy/rest");
 var ajaxProxy =   require("./proxy/ajax");
 var store = require("./store/store");
@@ -11,6 +12,7 @@ var jsonReader = require("./reader/json");
 module.exports = {
 	proxy: {
 		memory: memoryProxy,
+		localStorage: localStorageProxy,
 		rest: restProxy,
 		ajax: ajaxProxy
 	},
