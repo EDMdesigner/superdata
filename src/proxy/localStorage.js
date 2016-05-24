@@ -1,66 +1,27 @@
-/*jslint node: true */
-"use strict";
+// /*
+//  * LocalStorage proxy shell
+//  */
 
-//not used yet
-
-var storage = (function() {
-	try {
-		// var testDate = new Date();
-		var testDate = "adsfj";
-
-		localStorage.setItem(testDate, testDate);
-		var isSame = localStorage.getItem(testDate) === testDate;
-		localStorage.removeItem(testDate);
-		return isSame && localStorage;
-	} catch(e) {
-		return false;
-	}
-}());
+//  /*jslint node: true */
+//  "use strict";
 
 var createMemoryProxy = require("./memory");
+var localStorageCore = require("./localStorageCore");
+var storage = (function() {
+		try {
+			// var testDate = new Date();
+			var testDate = "adsfj";
 
-module.exports = function(config) {
-	var memoryProxy = createMemoryProxy(config);
-	var proxyName = config.name || "lsProxy";
-
-	if (storage) {
-		var localData = JSON.parse(storage.getItem(proxyName));
-
-		if (localData) {
-			localData.items.forEach(function(item) {
-				memoryProxy.createOne(item, function() {});
-			});
+			localStorage.setItem(testDate, testDate);
+			var isSame = localStorage.getItem(testDate) === testDate;
+			localStorage.removeItem(testDate);
+			return isSame && localStorage;
+		} catch(e) {
+			return false;
 		}
-	}
+	}());
 
-	function createWrapperFunction(prop) {
-		return function saveToLocalStorageWrapper() {
-			memoryProxy[prop].apply(this, arguments);
-
-			memoryProxy.read({}, function(err, result) {
-				if (err) {
-					return console.log(err);
-				}
-
-				if (storage) {
-					storage.setItem(proxyName, JSON.stringify(result));
-				}
-			});
-		};
-	}
-
-
-	return Object.freeze({
-		idProperty: memoryProxy.idProperty,
-		generateId: memoryProxy.generateId,
-
-
-		read: memoryProxy.read,
-
-		createOne: createWrapperFunction("createOne"),
-
-		readOneById: memoryProxy.readOneById,
-		updateOneById: createWrapperFunction("updateOneById"),
-		destroyOneById: createWrapperFunction("destroyOneById")
-	});
-};
+module.exports = localStorageCore({
+	createMemoryProxy: createMemoryProxy,
+	storage: storage
+});
