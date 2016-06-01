@@ -10,8 +10,7 @@ module.exports = function createRestProxy(config) {
 		throw new Error("config.route is mandatory");
 	}
 
-	if (!(typeof config.route === "string" ||
-		config.route.constructor === Array)) {
+	if (typeof config.route !== "string" &&	config.route.constructor !== Array) {
 		throw new Error("config.route must be either string or array");
 	}
 
@@ -34,7 +33,7 @@ module.exports = function createRestProxy(config) {
 			newRoute = route.slice(0);
 		}
 
-		for (var i = 0; i < newRoute.length; i+=1) {
+		for (var i = 0; i < newRoute.length; i += 1) {
 			newRoute[i] += "/:id";
 		}
 
