@@ -153,7 +153,9 @@ module.exports = function createAjaxProxy(config) {
 							}
 							return callback(err);
 						}
-						callback(null, actConfig.reader.read(result.body));
+						var body = actConfig.reader.read(result.body);
+
+						callback(body.err, body);
 					});
 			} catch (e) {
 			}
