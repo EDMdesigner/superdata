@@ -120,7 +120,10 @@ var proxy = superData.proxy.ajax({
 			route: "http://localhost:7357/user/:id",
 			method: "DELETE"
 		}
-	}
+	},
+	fieldsToBeExcluded: [ //fields given here won't be stored in database
+		"readOneById"
+	]
 });
 ```
 The ajax proxy has a failover mechanism to it
