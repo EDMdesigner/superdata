@@ -121,8 +121,8 @@ var proxy = superData.proxy.ajax({
 			method: "DELETE"
 		}
 	},
-	fieldsToBeExcluded: [ //fields given here won't be stored in database
-		"readOneById"
+	fieldsToBeExcluded: [ 	//fields given here won't be sent to the database
+		"readOneById"		//in case of the createOne and updateOneById functions
 	]
 });
 ```
