@@ -13,7 +13,8 @@ var jsFiles = [
 	"!node_modules/**/*",
 	"!examples/**/node_modules/**/*",
 	"!*/**/*.json",
-	"!./**/*.built.js"
+	"!./**/*.built.js",
+	"!dist/**/*"
 ];
 
 var jsonFiles = [
@@ -64,6 +65,12 @@ gulp.task("jasmine", function() {
 	}));
 });
 
+gulp.task("js:prod", createBrowserifyTask({
+	entries: ["./src/superData.js"],
+	outputFileName: "superdata.js",
+	destFolder: "./dist/"
+}));
+
 
 function createBrowserifyTask(config) {
 	return function() {
@@ -72,7 +79,8 @@ function createBrowserifyTask(config) {
 		var bundler = bundleMethod({
 			// Specify the entry point of your app
 			debug: true,
-			entries: config.entries
+			entries: config.entries,
+			standalone: "superdata"
 		});
 
 		var bundle = function() {
