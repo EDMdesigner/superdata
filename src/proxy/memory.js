@@ -86,9 +86,15 @@ module.exports = function createMemoryProxy(config) {
 		}
 	}
 
-	function accessProp(item, propArray) {
-		for(var idx = 0; idx < propArray.length; idx += 1) {
-			item = item[propArray[idx]];
+	function accessProp(item, prop) {
+		var propSplit = prop.split(".");
+
+		for(var idx = 0; idx < propSplit.length; idx += 1) {
+			if(typeof item[propSplit[idx]] !== "undefined") {
+				item = item[propSplit[idx]];
+			} else {
+				return item;
+			}
 		}
 
 		return item;
@@ -113,9 +119,8 @@ module.exports = function createMemoryProxy(config) {
 			elements = elements.filter(function(item) {
 				for (var prop in find) {
 					var act = find[prop];
-					var propSplit = prop.split(".");
 
-					item = accessProp(item, propSplit);
+					item = accessProp(item, prop);
 
 					if (typeof act === "string") {
 						var actSplit = act.split("/");
@@ -129,10 +134,10 @@ module.exports = function createMemoryProxy(config) {
 					}
 
 					if (act instanceof RegExp) {
-						if (!act.test(item[prop])) {
+						if (!act.test(item)) {
 							return false;
 						}
-					} else if (act !== item[prop]) {
+					} else if (act !== item) {
 						return false;
 					}
 				}
@@ -143,10 +148,9 @@ module.exports = function createMemoryProxy(config) {
 		if (sort && typeof sort === "object") {
 			elements = elements.sort(function(item1, item2) {
 				for (var prop in sort) {
-					var propSplit = prop.split(".");
 
-					var act1 = accessProp(item1, propSplit);
-					var act2 = accessProp(item2, propSplit);
+					var act1 = accessProp(item1, prop);
+					var act2 = accessProp(item2, prop);
 
 					var actRelation = sort[prop];
 
