@@ -86,6 +86,14 @@ module.exports = function createMemoryProxy(config) {
 		}
 	}
 
+	function accessProp(item, propArray) {
+		for(var idx = 0; idx < propArray.length; idx += 1) {
+			item = item[propArray[idx]];
+		}
+
+		return item;
+	}
+
 	function read(options, callback) {
 		checkCallback(callback);
 
@@ -105,6 +113,9 @@ module.exports = function createMemoryProxy(config) {
 			elements = elements.filter(function(item) {
 				for (var prop in find) {
 					var act = find[prop];
+					var propSplit = prop.split(".");
+
+					item = accessProp(item, propSplit);
 
 					if (typeof act === "string") {
 						var actSplit = act.split("/");
@@ -132,8 +143,10 @@ module.exports = function createMemoryProxy(config) {
 		if (sort && typeof sort === "object") {
 			elements = elements.sort(function(item1, item2) {
 				for (var prop in sort) {
-					var act1 = item1[prop];
-					var act2 = item2[prop];
+					var propSplit = prop.split(".");
+
+					var act1 = accessProp(item1, propSplit);
+					var act2 = accessProp(item2, propSplit);
 
 					var actRelation = sort[prop];
 
