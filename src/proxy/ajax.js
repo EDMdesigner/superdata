@@ -33,6 +33,12 @@ module.exports = function createAjaxProxy(config) {
 		throw new Error("config.operations is mandatory!");
 	}
 
+	if(config.fieldsToBeExcluded) {
+		if(!(config.fieldsToBeExcluded instanceof "Array")) {
+			throw Error("config.fieldsToBeExcluded should be an array");
+		}
+	}
+
 	timeout = config.timeout || timeout;
 
 	var idProperty = config.idProperty;
@@ -48,9 +54,27 @@ module.exports = function createAjaxProxy(config) {
 	var defaultReader = createReader({});
 	var queryMapping = config.queryMapping;
 
+	var fieldsToBeExcluded = config.fieldsToBeExcluded;
+
+	function removeFields(object, fields) {
+		if(!fields){
+			return;
+		}
+
+		for(var i = 0; i < fields.length; i += 1){
+			for(var prop in object){
+				if(fields[i] === prop){
+					delete object[prop];
+				}
+			}
+		}
+	}
+
 	prepareOperationsConfig(config.operations);
 
 	function createOne(data, callback) {
+		removeFields(data, fieldsToBeExcluded);
+
 		checkCallback(callback);
 		var actConfig = createOperationConfig(config.operations.createOne, null, data);
 
@@ -102,6 +126,8 @@ module.exports = function createAjaxProxy(config) {
 	}
 
 	function updateOneById(id, newData, callback) {
+		removeFields(newData, fieldsToBeExcluded);
+
 		checkCallback(callback);
 		var actConfig = createOperationConfig(config.operations.updateOneById, id, newData);
 		dispatchAjax(actConfig, callback);

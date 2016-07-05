@@ -1,5 +1,5 @@
 {
-  "version": "0.1.8",
+  "version": "0.1.9",
   "name": "superdata",
   "description": "A ligth weight data layer module motivated by extjs' data layer. It can be used with any client-side framework.",
   "main": "src/superData.js",
@@ -34,6 +34,10 @@
     {
       "name": "arnolduis",
       "email": "arnolduis@gmail.com"
+    },
+    {
+      "name": "György Szövérdffy",
+      "email": "szoverdffy.gyorgy@gmail.com"
     }
   ],
   "browserify": {

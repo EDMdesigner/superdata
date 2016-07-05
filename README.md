@@ -68,13 +68,31 @@ Proxies are responsible for reading and writing data. You could ask where they w
 
 function name | params
 ---|---
-read | query, callback
+read | options, callback
 createOne | data, callback
 readOneById | id, callback
 updateOneById | id, data, callback
 destroyOneById | id, callback
 
-As you can see, these functions are responsible for CRUD operations, their functionality is quite self-explanatory. The callback functions will be passed two parameters on every invocation, the first is an error string or object, the second is the returned data. The id is always the identifier of the resource and the data is a json object. (Although there will be proxies later where it can be multipart data...)
+As you can see, these functions are responsible for CRUD operations, their functionality is quite self-explanatory. These proxy's functions receive the options paramter in a way, that sorting and finding is possible on composed objects aswell just like in MongoDB, as the following example shows.
+
+```javascript
+var proxy = superdata.proxy.memory({...});
+proxy.read({
+	sort: {
+		"user.name": 1,
+		"user.email": -1
+	}
+});
+
+proxy.read({
+	find: {
+		"user.name": "pattern"
+	}
+});
+```
+
+ The callback functions will be passed two parameters on every invocation, the first is an error string or object, the second is the returned data. The id is always the identifier of the resource and the data is a json object. (Although there will be proxies later where it can be multipart data...)
 
 ### Memory proxy
 
@@ -120,7 +138,10 @@ var proxy = superData.proxy.ajax({
 			route: "http://localhost:7357/user/:id",
 			method: "DELETE"
 		}
-	}
+	},
+	fieldsToBeExcluded: [ 	//fields given here won't be sent to the database
+		"example_property"	//in case of the createOne and updateOneById functions
+	]
 });
 ```
 The ajax proxy has a failover mechanism to it

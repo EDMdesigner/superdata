@@ -25,7 +25,12 @@ module.exports = function proxyBehaviour(name, proxy) {
 			for (var idx = 0; idx < numOfItems; idx += 1) {
 				proxy.createOne({
 					id: idx,
-					str: "str" + idx //we could generate different strings, so it would be easier to test find
+					str: "str" + idx, //we could generate different strings, so it would be easier to test find
+
+					user: {
+						name: "user" + idx,
+						email: "email" + idx + "@gmail.com"
+					}
 				}, createOneCallback);
 			}
 		});
@@ -60,7 +65,7 @@ module.exports = function proxyBehaviour(name, proxy) {
 				}
 			}
 
-			it("find: " + findStr + ", sort: " + JSON.stringify(sort) + ", skip: " + skip + ", limit: " + limit, function(done) {
+			it("find: " + JSON.stringify(findStr) + ", sort: " + JSON.stringify(sort) + ", skip: " + skip + ", limit: " + limit, function(done) {
 				skip = skip || 0;
 				limit = limit || 10;
 
@@ -171,6 +176,63 @@ module.exports = function proxyBehaviour(name, proxy) {
 			createReadTest({
 				find: {
 					id: 16
+				},
+				sort: {
+					id: 1
+				},
+				expectedNum: 1,
+				expectedIds: [16],
+
+				proxy: proxy
+			});
+
+			createReadTest({
+				find: {
+					"user.email": /gmail/
+				},
+				sort: {
+					id: 1
+				},
+				limit: 10,
+
+				expectedNum: 100,
+				expectedIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+
+				proxy: proxy
+			});
+
+			createReadTest({
+				find: {
+					"user.email": /5/
+				},
+				sort: {
+					id: -1
+				},
+				limit: 7,
+
+				expectedNum: 19,
+				expectedIds: [95, 85, 75, 65, 59, 58, 57],
+
+				proxy: proxy
+			});
+
+			createReadTest({
+				find: {
+					"user.name": /0/
+				},
+				sort: {
+					id: 1
+				},
+
+				expectedNum: 10,
+				expectedIds: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90],
+
+				proxy: proxy
+			});
+
+			createReadTest({
+				find: {
+					"user.name": /16/
 				},
 				sort: {
 					id: 1
