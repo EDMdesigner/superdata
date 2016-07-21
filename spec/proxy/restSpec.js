@@ -1,5 +1,6 @@
 var express = require("express");
 var bodyParser = require("body-parser");
+var FormData = require("form-data");
 var superData = require("../../src/superData");
 var createRestProxy = superData.proxy.rest;
 
@@ -39,7 +40,7 @@ function createMockServer(config) {
 
 
 describe("Rest proxy", function() {
-	describe("Invalid config", function() {
+	describe("with invalid config", function() {
 		it("missing config", function() {
 			expect(createRestProxy).toThrowError("config is mandatory");
 		});
@@ -59,7 +60,7 @@ describe("Rest proxy", function() {
 		});
 	});
 
-	describe("valid config", function() {
+	describe("with valid config", function() {
 
 		var port = 7357;
 
