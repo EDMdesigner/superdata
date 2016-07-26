@@ -36,8 +36,8 @@ module.exports = function(dependencies) {
 		}
 
 		if(config.fieldsToBeExcluded) {
-			if(!(config.fieldsToBeExcluded instanceof "Array")) {
-				throw Error("config.fieldsToBeExcluded should be an array");
+			if(!(Array.isArray(config.fieldsToBeExcluded))) {
+				throw Error("config.fieldsToBeExcluded should be an array!");
 			}
 		}
 
@@ -147,9 +147,7 @@ module.exports = function(dependencies) {
 			config: config,
 
 			read: read,
-
 			createOne: createOne,
-
 			readOneById: readOneById,
 			updateOneById: updateOneById,
 			destroyOneById: destroyOneById

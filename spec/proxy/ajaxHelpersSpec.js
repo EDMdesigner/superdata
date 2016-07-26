@@ -279,7 +279,7 @@ describe("ajax helpers", function() {
 							expect(callback).toHaveBeenCalledTimes(1);
 							expect(callback.calls.argsFor(0)[0]).toBe("some error message");
 							done();
-						}, 100);
+						}, 300);
 
 					});
 

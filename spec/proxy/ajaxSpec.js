@@ -17,38 +17,11 @@ var superData = require("../../src/superData");
 
 var ajaxProxyCore = require("../../src/proxy/ajaxCore");
 
-/* function createMockServer(config) {
-	var app = express();
-	app.use(bodyParser.urlencoded({limit: "2mb", extended: true}));
-	app.use(bodyParser.json({limit: "2mb"}));
-
-	for (var prop in config.operations) {
-		var act = config.operations[prop];
-
-		var method = act.method.toLowerCase();
-
-		app[method](act.route, act.callback);
-	}
-
-	var server = app.listen(config.port, function() {
-		config.serverStarted();
-	});
-
-	return {
-		stop: function(callback) {
-			server.close(function() {
-				callback();
-			});
-		}
-	};
-} */
-
-
-
 
 describe("ajax proxy", function() {
+
 	var ajaxHelpers;
-	var ajaxProxy;
+	var createAjaxProxy;
 
 	beforeEach(function() {
 		
@@ -61,10 +34,19 @@ describe("ajax proxy", function() {
 			};
 
 			function createOperationConfig() {
-
+				return {
+					queries: {},
+					method: "GET"
+				};
 			}
-			function dispatchAjax() {
-
+			function dispatchAjax(actConfig, filters, callback) {
+				if(!callback) {
+					callback = filters;
+					filters = undefined;
+				}
+				if(typeof callback === "function") {
+					callback();
+				}
 			}
 			function prepareOperationsConfig() {
 
@@ -73,8 +55,8 @@ describe("ajax proxy", function() {
 
 			}
 
-			spyOn(obj,"createOperationConfig");
-			spyOn(obj,"dispatchAjax");
+			spyOn(obj,"createOperationConfig").and.callThrough();
+			spyOn(obj,"dispatchAjax").and.callThrough();
 			spyOn(obj,"prepareOperationsConfig");
 			spyOn(obj,"assert");
 
@@ -83,12 +65,21 @@ describe("ajax proxy", function() {
 
 		ajaxHelpers = createMockAjaxHelpers();
 
-		ajaxProxy = ajaxProxyCore({
+		createAjaxProxy = ajaxProxyCore({
 			ajaxHelpers: ajaxHelpers,
 			FormData: FormData
 		});
 	
 	});
+
+	describe("included in superData", function() {
+
+		it("creator function should be defined", function() {
+			expect(typeof superData.proxy.ajax).toBe("function");
+		});
+
+	});
+
 	describe("with missing dependecies", function() {
 
 		it("should throw error if dependencies.ajaxHelpers is missing", function() {
@@ -111,33 +102,212 @@ describe("ajax proxy", function() {
 
 	describe("with invalid config", function() {
 
-	});
-	it("creator function should be defined", function() {
-		expect(typeof superData.proxy.ajax).toBe("function");
-	});
-
-	it("config empty", function() {
-		expect(function() {
-			ajaxProxy();
-		}).toThrowError("config.idProperty is mandatory!");
-	});
-
-	it("config with idProperty", function() {
-		expect(function() {
-			ajaxProxy({
-				idProperty: "id"
-			});
-		}).toThrowError("config.operations is mandatory!");
-	});
-
-	describe("with valid config", function() {
-
-		it("config with operations", function() {
+		it("should throw error if config empty", function() {
 			expect(function() {
-				ajaxProxy({
+				createAjaxProxy();
+			}).toThrowError("config.idProperty is mandatory!");
+		});
+
+		it("should throw an error if config.idProperty is missing", function() {
+			expect(function() {
+				createAjaxProxy({
 					operations: {}
 				});
 			}).toThrowError("config.idProperty is mandatory!");
+		});
+
+		it("should throw error if config.operations is missing", function() {
+			expect(function() {
+				createAjaxProxy({
+					idProperty: "id"
+				});
+			}).toThrowError("config.operations is mandatory!");
+		});
+
+		it("should throw error if config.fieldsToBeExcluded is given but it's not an array", function() {
+			expect(function() {
+				createAjaxProxy({
+					idProperty: "id",
+					operations: {},
+					fieldsToBeExcluded: "notAnArray"
+				});
+			}).toThrowError("config.fieldsToBeExcluded should be an array!");
+		});
+
+	});
+	
+	describe("with valid config", function() {
+
+		var ajaxProxy;
+		var data;
+		var callback;
+		var id;
+		var filters;
+		var options;
+
+		beforeEach(function() {
+
+			var config = {
+				idProperty: "id",
+				operations: {}
+			};
+			ajaxProxy = createAjaxProxy(config);
+			data = {
+
+			};
+			callback = jasmine.createSpy("callback");
+			id = 7;
+			filters = {
+				projectID: 2,
+				userID: 7
+			};
+			options = {
+				option1: "some value",
+				option2: "other value"
+			};
+
+		});
+
+		describe("read", function() {
+
+			describe("without filters", function() {
+
+				it("should call ajaxHelpers.assert, ajaxHelpers.createOperationConfig, ajaxHelpers.dispatchAjax (with expectations to actConfig parameter) and callback", function() {
+
+					ajaxProxy.read(options, callback);
+
+					expect(ajaxHelpers.assert).toHaveBeenCalledTimes(1);
+					expect(ajaxHelpers.createOperationConfig).toHaveBeenCalledTimes(1);
+					expect(ajaxHelpers.dispatchAjax).toHaveBeenCalledTimes(1);
+					expect(ajaxHelpers.dispatchAjax.calls.argsFor(0)[0]).toEqual({
+						queries: {
+							option1: "some value",
+							option2: "other value"
+						},
+						method: "get"
+					});
+					expect(callback).toHaveBeenCalledTimes(1);
+
+				});
+
+			});
+
+			describe("with filters", function() {
+
+				it("should call ajaxHelpers.dispatchAjax with pass filters as parameter", function() {
+
+					ajaxProxy.read(options, filters, callback);
+					expect(ajaxHelpers.dispatchAjax.calls.argsFor(0)[1]).toBe(filters);
+					
+				});
+
+			});
+
+		});
+
+		describe("createOne", function() {
+
+			it("should call ajaxHelpers.assert, ajaxHelpers.createOperationConfig, ajaxHelpers.dispatchAjax and callback", function() {
+
+				ajaxProxy.createOne(data, callback);
+
+				expect(ajaxHelpers.assert).toHaveBeenCalledTimes(1);
+				expect(ajaxHelpers.createOperationConfig).toHaveBeenCalledTimes(1);
+				expect(ajaxHelpers.dispatchAjax).toHaveBeenCalledTimes(1);
+				expect(callback).toHaveBeenCalledTimes(1);
+
+			});
+
+		});
+
+		describe("readOneById", function() {
+			
+			describe("without filters", function() {
+
+				it("should call ajaxHelpers.assert, ajaxHelpers.createOperationConfig, ajaxHelpers.dispatchAjax and callback", function() {
+
+					ajaxProxy.readOneById(id, callback);
+
+					expect(ajaxHelpers.assert).toHaveBeenCalledTimes(1);
+					expect(ajaxHelpers.createOperationConfig).toHaveBeenCalledTimes(1);
+					expect(ajaxHelpers.dispatchAjax).toHaveBeenCalledTimes(1);
+					expect(callback).toHaveBeenCalledTimes(1);
+
+				});
+
+			});
+
+			describe("with filters", function() {
+
+				it("should call ajaxHelpers.dispatchAjax with pass filters as parameter", function() {
+
+					ajaxProxy.readOneById(id, filters, callback);
+					expect(ajaxHelpers.dispatchAjax.calls.argsFor(0)[1]).toBe(filters);
+
+				});
+
+			});
+
+		});
+
+		describe("updateOneById", function() {
+			
+			describe("without filters", function() {
+
+				it("should call ajaxHelpers.assert, ajaxHelpers.createOperationConfig, ajaxHelpers.dispatchAjax and callback", function() {
+
+					ajaxProxy.updateOneById(id, data, callback);
+
+					expect(ajaxHelpers.assert).toHaveBeenCalledTimes(1);
+					expect(ajaxHelpers.createOperationConfig).toHaveBeenCalledTimes(1);
+					expect(ajaxHelpers.dispatchAjax).toHaveBeenCalledTimes(1);
+					expect(callback).toHaveBeenCalledTimes(1);
+
+				});
+
+			});
+
+			describe("with filters", function() {
+
+				it("should call ajaxHelpers.dispatchAjax with pass filters as parameter", function() {
+
+					ajaxProxy.updateOneById(id, data, filters, callback);
+					expect(ajaxHelpers.dispatchAjax.calls.argsFor(0)[1]).toBe(filters);
+					
+				});
+
+			});
+
+		});
+
+		describe("destroyOneById", function() {
+			
+			describe("without filters", function() {
+
+				it("should call ajaxHelpers.assert, ajaxHelpers.createOperationConfig, ajaxHelpers.dispatchAjax and callback", function() {
+
+					ajaxProxy.destroyOneById(id, callback);
+
+					expect(ajaxHelpers.assert).toHaveBeenCalledTimes(1);
+					expect(ajaxHelpers.createOperationConfig).toHaveBeenCalledTimes(1);
+					expect(ajaxHelpers.dispatchAjax).toHaveBeenCalledTimes(1);
+					expect(callback).toHaveBeenCalledTimes(1);
+
+				});
+
+			});
+
+			describe("with filters", function() {
+
+				it("should call ajaxHelpers.dispatchAjax with pass filters as parameter", function() {
+
+					ajaxProxy.destroyOneById(id, filters, callback);
+					expect(ajaxHelpers.dispatchAjax.calls.argsFor(0)[1]).toBe(filters);
+					
+				});
+
+			});
+
 		});
 
 		/* var proxy;
