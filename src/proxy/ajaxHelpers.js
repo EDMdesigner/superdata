@@ -82,7 +82,7 @@ module.exports = function(dependencies) {
 					.send(actConfig.data)
 					.end(function(err, result) {
 						if (err) {
-							if (retries < actConfig.route.length) {
+							if (retries + 1 < actConfig.route.length) {
 								actRouteIdx += 1;
 								actRouteIdx %= actConfig.route.length;
 								actRoute = actConfig.route[actRouteIdx];
@@ -100,7 +100,7 @@ module.exports = function(dependencies) {
 		dispatch(0);
 	}
 
-	var defaultReader = createReader({});
+	//var defaultReader = createReader({});
 
 	function prepareOperationsConfig(config) {
 		assert(typeof config === "object", "config.operations should be a config object");
@@ -117,7 +117,7 @@ module.exports = function(dependencies) {
 			if (prop === "read") {
 				act.reader.out = "items";
 			}
-			act.reader = act.reader !== {} ? createReader(act.reader) : defaultReader;
+			act.reader = createReader(act.reader);
 		}
 	}
 

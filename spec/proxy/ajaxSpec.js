@@ -109,6 +109,9 @@ describe("ajax proxy", function() {
 		
 	});
 
+	describe("with invalid config", function() {
+
+	});
 	it("creator function should be defined", function() {
 		expect(typeof superData.proxy.ajax).toBe("function");
 	});
