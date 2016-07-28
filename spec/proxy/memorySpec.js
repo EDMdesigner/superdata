@@ -72,6 +72,81 @@ describe("memory proxy", function() {
 
 	});
 
+	describe("with valid config", function() {
+
+		var memoryProxy;
+		var callback;
+
+		beforeEach(function() {
+			memoryProxy = createMemoryProxy({
+				idProperty: "id",
+				idType: "string"
+			});
+			memoryProxy.createOne({
+				id: "id1",
+				prop: "some value"
+			}, function() {});
+			callback = jasmine.createSpy("callback");
+		});
+
+		it("should throw error if given callback is not a function", function() {
+
+			expect(function() {
+				memoryProxy.read({
+					options: {},
+					callback: "notAFunction"
+				});
+			}).toThrowError("callback should be a function");
+
+			expect(function() {
+				memoryProxy.createOne({
+					data: {},
+					callback: "notAFunction"
+				});
+			}).toThrowError("callback should be a function");
+
+			expect(function() {
+				memoryProxy.readOneById({
+					id: "1",
+					callback: "notAFunction"
+				});
+			}).toThrowError("callback should be a function");
+
+			expect(function() {
+				memoryProxy.updateOneById({
+					id: "1",
+					callback: "notAFunction"
+				});
+			}).toThrowError("callback should be a function");
+
+			expect(function() {
+				memoryProxy.destroyOneById({
+					id: "1",
+					callback: "notAFunction"
+				});
+			}).toThrowError("callback should be a function");
+
+		});
+
+		/* it("should throw error if it can't cast given id to number if given idType is number", function() {
+
+			memoryProxy = createMemoryProxy({
+				idProperty: "id",
+				idType: "number"
+			});
+
+			expect(function() {
+				memoryProxy.readOneById("notANumber", callback);
+			}).toThrowError("Id notANumber could not be parsed as number");
+
+		}); */
+
+		describe("createOne", function() {
+
+		});
+
+	});
+
 	/* var proxy = createMemoryProxy({
 		idProperty: "id",
 		idType: "number"
