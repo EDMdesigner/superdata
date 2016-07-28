@@ -49,7 +49,7 @@ describe("ajax helpers", function() {
 			return obj;
 		}
 		function end(callback) {
-			setTimeout(function() {
+			//setTimeout(function() {
 				if(endError) {
 					callback("some error message", "");
 				} else {
@@ -58,7 +58,7 @@ describe("ajax helpers", function() {
 					});
 				}
 				
-			}, 0);
+			//}, 0);
 			return obj;
 		}
 
@@ -198,11 +198,11 @@ describe("ajax helpers", function() {
 						expect(request.type).toHaveBeenCalledTimes(1);
 						expect(request.send).toHaveBeenCalledTimes(1);
 						expect(request.end).toHaveBeenCalledTimes(1);
-						setTimeout(function() {
+						//setTimeout(function() {
 							expect(actConfig.reader.read).toHaveBeenCalledTimes(1);
 							expect(callback).toHaveBeenCalledTimes(1);
 							done();
-						}, 100);
+						//}, 100);
 						
 					});
 
@@ -216,10 +216,10 @@ describe("ajax helpers", function() {
 						ajaxHelpers.dispatchAjax(actConfig, callback);
 
 						expect(request.post).toHaveBeenCalledTimes(1);
-						setTimeout(function() {
+						//setTimeout(function() {
 							expect(callback).toHaveBeenCalledTimes(1);
 							done();
-						}, 100);
+						//}, 100);
 
 					});
 
@@ -230,10 +230,10 @@ describe("ajax helpers", function() {
 						ajaxHelpers.dispatchAjax(actConfig, callback);
 						
 						expect(request.put).toHaveBeenCalledTimes(1);
-						setTimeout(function() {
+						//setTimeout(function() {
 							expect(callback).toHaveBeenCalledTimes(1);
 							done();
-						}, 100);
+						//}, 100);
 
 					});
 
@@ -244,10 +244,10 @@ describe("ajax helpers", function() {
 						ajaxHelpers.dispatchAjax(actConfig, callback);
 						
 						expect(request.del).toHaveBeenCalledTimes(1);
-						setTimeout(function() {
+						//setTimeout(function() {
 							expect(callback).toHaveBeenCalledTimes(1);
 							done();
-						}, 100);
+						//}, 100);
 
 					});
 
@@ -267,7 +267,7 @@ describe("ajax helpers", function() {
 						actConfig.route = manyRoutes;
 						ajaxHelpers.dispatchAjax(actConfig, callback);
 
-						setTimeout(function() {
+						//setTimeout(function() {
 							expect(request.get).toHaveBeenCalledTimes(3);
 							expect(request.query).toHaveBeenCalledTimes(3);
 							expect(request.accept).toHaveBeenCalledTimes(3);
@@ -279,7 +279,7 @@ describe("ajax helpers", function() {
 							expect(callback).toHaveBeenCalledTimes(1);
 							expect(callback.calls.argsFor(0)[0]).toBe("some error message");
 							done();
-						}, 300);
+						//}, 300);
 
 					});
 
