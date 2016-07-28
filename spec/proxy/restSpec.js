@@ -1,46 +1,46 @@
-var express = require("express");
-var bodyParser = require("body-parser");
-var FormData = require("form-data");
 var superData = require("../../src/superData");
-var createRestProxy = superData.proxy.rest;
-
-
-var async = require("async");
-
-
-
-
-
-
-function createMockServer(config) {
-	var app = express();
-	app.use(bodyParser.urlencoded({limit: "2mb", extended: true}));
-	app.use(bodyParser.json({limit: "2mb"}));
-
-	for (var prop in config.operations) {
-		var act = config.operations[prop];
-
-		var method = act.method.toLowerCase();
-
-		app[method](act.route, act.callback);
-	}
-
-	var server = app.listen(config.port, function() {
-		config.serverStarted();
-	});
-
-	return {
-		stop: function(callback) {
-			server.close(function() {
-				callback();
-			});
-		}
-	};
-}
-
+var restProxyCore = require("../../src/proxy/restCore");
 
 describe("Rest proxy", function() {
+	
+	var createRestProxy;
+
+	beforeEach(function() {
+
+		function createMockedAjaxProxy() {
+
+		}
+
+		createRestProxy = restProxyCore({
+			createAjaxProxy: createMockedAjaxProxy
+		});
+
+	});
+
+	describe("included in superData", function() {
+
+		it("creator function should be defined", function() {
+			expect(typeof superData.proxy.rest).toBe("function");
+		});
+
+	});
+
+	describe("with missing dependencies", function() {
+
+		it("should throw error if dependencies is missing", function() {
+			expect(restProxyCore).toThrowError("dependencies is mandatory!");
+		});
+
+		it("should throw error if dependencies.createAjaxProxy is missing", function() {
+			expect(function() {
+				restProxyCore({});
+			}).toThrowError("dependencies.createAjaxProxy is mandatory!");
+		});
+
+	});
+
 	describe("with invalid config", function() {
+
 		it("missing config", function() {
 			expect(createRestProxy).toThrowError("config is mandatory");
 		});
@@ -58,11 +58,16 @@ describe("Rest proxy", function() {
 				});
 			}).toThrowError("config.route must be either string or array");
 		});
+
 	});
 
 	describe("with valid config", function() {
 
-		var port = 7357;
+		it("", function() {
+			
+		});
+		
+		/* var port = 7357;
 
 		var proxy = createRestProxy({
 			idProperty: "id",
@@ -184,6 +189,6 @@ describe("Rest proxy", function() {
 				},
 				port: 7357
 			});
-		});
+		}); */
 	});
 });

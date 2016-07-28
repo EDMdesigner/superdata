@@ -202,7 +202,7 @@ describe("ajax helpers", function() {
 							expect(actConfig.reader.read).toHaveBeenCalledTimes(1);
 							expect(callback).toHaveBeenCalledTimes(1);
 							done();
-						}, 1);
+						}, 100);
 						
 					});
 
@@ -219,7 +219,7 @@ describe("ajax helpers", function() {
 						setTimeout(function() {
 							expect(callback).toHaveBeenCalledTimes(1);
 							done();
-						}, 1);
+						}, 100);
 
 					});
 
@@ -233,7 +233,7 @@ describe("ajax helpers", function() {
 						setTimeout(function() {
 							expect(callback).toHaveBeenCalledTimes(1);
 							done();
-						}, 1);
+						}, 100);
 
 					});
 
@@ -247,7 +247,7 @@ describe("ajax helpers", function() {
 						setTimeout(function() {
 							expect(callback).toHaveBeenCalledTimes(1);
 							done();
-						}, 1);
+						}, 100);
 
 					});
 

@@ -7,6 +7,10 @@
 
 module.exports = function(dependencies) {
 
+	if(!dependencies) {
+		throw new Error("dependencies is mandatory!");
+	}
+
 	if (!dependencies.ajaxHelpers) {
 		throw new Error("dependencies.ajaxHelpers is mandatory!");
 	}

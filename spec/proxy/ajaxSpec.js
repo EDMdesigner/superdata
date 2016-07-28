@@ -82,6 +82,10 @@ describe("ajax proxy", function() {
 
 	describe("with missing dependecies", function() {
 
+		it("should throw error if dependencies is missing", function() {
+			expect(ajaxProxyCore).toThrowError("dependencies is mandatory!");
+		});
+
 		it("should throw error if dependencies.ajaxHelpers is missing", function() {
 			expect(function() {
 				ajaxProxyCore({
