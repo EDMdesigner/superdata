@@ -20,9 +20,9 @@ try {
 	environment = global;
 }
 
-var FormData = environment.FormData;
-if (!FormData) {
-	FormData = require("form-data");
+var formData = environment.FormData;
+if (!formData) {
+	formData = require("form-data");
 }
 
 var ajaxHelpers = require("./ajaxHelpers")({
@@ -32,5 +32,5 @@ var ajaxHelpers = require("./ajaxHelpers")({
 
 module.exports = ajaxCore({
 	ajaxHelpers: ajaxHelpers,
-	FormData: FormData
+	FormData: formData
 });

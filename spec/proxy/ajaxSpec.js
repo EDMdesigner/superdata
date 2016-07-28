@@ -1,4 +1,4 @@
-var FormData = require("form-data");
+var formData = require("form-data");
 
 var superData = require("../../src/superData");
 
@@ -67,7 +67,7 @@ describe("ajax proxy", function() {
 
 		createAjaxProxy = ajaxProxyCore({
 			ajaxHelpers: ajaxHelpers,
-			FormData: FormData
+			FormData: formData
 		});
 	
 	});
@@ -89,7 +89,7 @@ describe("ajax proxy", function() {
 		it("should throw error if dependencies.ajaxHelpers is missing", function() {
 			expect(function() {
 				ajaxProxyCore({
-					FormData: FormData
+					FormData: formData
 				});
 			}).toThrowError("dependencies.ajaxHelpers is mandatory!");
 		});
@@ -471,9 +471,9 @@ describe("ajax proxy", function() {
 				},
 				serverStarted: function() {
 					//All kneel and praise the pyramid of doom!
-					var formData = new FormData();
+					var formdata = new formData();
 
-					formData.append("title", "text");
+					formdata.append("title", "text");
 
 
 					async.series([
