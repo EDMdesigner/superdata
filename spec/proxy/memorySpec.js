@@ -183,7 +183,7 @@ describe("memory proxy", function() {
 					prop: "some other value"
 				};
 				memoryProxy.createOne(data, callback);
-				memoryProxy.createOne(data2, function(err, data) {
+				memoryProxy.createOne(data2, function(err) {
 					expect(err).toBe("duplicate key error message");
 				});
 				memoryProxy.readOneById(1, function(err, readData) {
@@ -211,7 +211,7 @@ describe("memory proxy", function() {
 			});
 
 			it("should call callback with not found error if id doesn't exist", function() {
-				memoryProxy.readOneById("", function(err, data) {
+				memoryProxy.readOneById("", function(err) {
 					expect(err).toBe("not found error message");
 				});
 			});
@@ -243,13 +243,13 @@ describe("memory proxy", function() {
 				memoryProxy.updateOneById("id1", data, function(err, newData) {
 					expect(newData.id).toBe("id1");
 				});
-				memoryProxy.readOneById("newId", function(err, newData) {
+				memoryProxy.readOneById("newId", function(err) {
 					expect(err).toBe("not found error message");
 				});
 			});
 
 			it("should call callback with not found error if id doesn't exist", function() {
-				memoryProxy.updateOneById("", {}, function(err, data) {
+				memoryProxy.updateOneById("", {}, function(err) {
 					expect(err).toBe("not found error message");
 				});
 			});
@@ -274,13 +274,13 @@ describe("memory proxy", function() {
 
 			it("should delete element", function() {
 				memoryProxy.destroyOneById("id1", callback);
-				memoryProxy.readOneById("id1", function(err, newData) {
+				memoryProxy.readOneById("id1", function(err) {
 					expect(err).toBe("not found error message");
 				});
 			});
 
 			it("should call callback with not found error if id doesn't exist", function() {
-				memoryProxy.destroyOneById("", function(err, data) {
+				memoryProxy.destroyOneById("", function(err) {
 					expect(err).toBe("not found error message");
 				});
 			});
@@ -295,6 +295,112 @@ describe("memory proxy", function() {
 			it("should complete proxyBehaviour tests", function() {
 				proxyBehaviour("memory", memoryProxy);
 			});
+		});
+
+		describe("with filters", function() {
+
+			var data;
+			var notMatchingFilterObjects;
+			var matchingFilterObject;
+
+			beforeEach(function() {
+				data = {
+					id: "id2",
+					prop1: "some value",
+					prop2: "some value2"
+				};
+				notMatchingFilterObjects = [
+					{
+						prop1: "some other value"
+					},
+					{
+						prop1: "some other value",
+						prop2: "some other value2"
+					},
+					{
+						prop1: "some value",
+						prop2: "some other value2"
+					}
+				];
+				matchingFilterObject = {
+					prop1: "some value",
+					prop2: "some value2"
+				};
+				memoryProxy.createOne(data, callback);
+			});
+
+			it("read should check filter parameters", function() {
+				memoryProxy.createOne({
+					id: "id3",
+					prop1: "some value",
+					prop2: "some value2",
+					prop3: "some value3"
+				}, callback);
+				var responseCallback = function(err, response) {
+					expect(response).toEqual({
+						items: [],
+						count: 0
+					});
+				};
+				for(var i = 0; i < notMatchingFilterObjects.length; i += 1) {
+					memoryProxy.read({}, notMatchingFilterObjects[i], responseCallback);
+				}
+				memoryProxy.read("id2", matchingFilterObject, function(err, response) {
+					expect(response).toEqual({
+						items: [
+							{
+								id: "id2",
+								prop1: "some value",
+								prop2: "some value2"
+							},
+							{
+								id: "id3",
+								prop1: "some value",
+								prop2: "some value2",
+								prop3: "some value3"
+							}
+						],
+						count: 2
+					});
+				});
+			});
+
+			it("readOneById should check filter parameters", function() {
+				var responseCallback = function(err) {
+					expect(err).toBe("not found error message");
+				};
+				for(var i = 0; i < notMatchingFilterObjects.length; i += 1) {
+					memoryProxy.readOneById("id2", notMatchingFilterObjects[i], responseCallback);
+				}
+				memoryProxy.readOneById("id2", matchingFilterObject, function(err, readData) {
+					expect(readData).toBe(data);
+				});
+			});
+
+			it("updateOneById should check filter parameters", function() {
+				var responseCallback = function(err) {
+					expect(err).toBe("not found error message");
+				};
+				for(var i = 0; i < notMatchingFilterObjects.length; i += 1) {
+					memoryProxy.updateOneById("id2", data, notMatchingFilterObjects[i], responseCallback);
+				}
+				memoryProxy.updateOneById("id2", data, matchingFilterObject, function(err, readData) {
+					expect(readData).toBe(data);
+				});
+			});
+
+			it("destroyOneById should check filter parameters", function() {
+				var responseCallback = function(err) {
+					expect(err).toBe("not found error message");
+				};
+				for(var i = 0; i < notMatchingFilterObjects.length; i += 1) {
+					memoryProxy.destroyOneById("id2", notMatchingFilterObjects[i], responseCallback);
+				}
+				memoryProxy.destroyOneById("id2", matchingFilterObject, function(err, readData) {
+					expect(readData).toBe(data);
+				});
+			});
+
 		});
 
 	});

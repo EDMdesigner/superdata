@@ -68,11 +68,11 @@ Proxies are responsible for reading and writing data. You could ask where they w
 
 function name | params
 ---|---
-read | options, callback
+read | options[, filters], callback
 createOne | data, callback
-readOneById | id, callback
-updateOneById | id, data, callback
-destroyOneById | id, callback
+readOneById | id[, filters], callback
+updateOneById | id[, filters], data, callback
+destroyOneById | id[, filters], callback
 
 As you can see, these functions are responsible for CRUD operations, their functionality is quite self-explanatory. These proxy's functions receive the options paramter in a way, that sorting and finding is possible on composed objects aswell just like in MongoDB, as the following example shows.
 
@@ -177,7 +177,62 @@ var proxy = superData.proxy.rest({
 		}
 	}
 });
+```
+
+### Using 'filters' parameter for proxies
+
+CRUD operations has an optional parameter called 'filters', which ensures that operations will be executed only items matching to the filter conditions.
+
+This parameter is an object. Its properties are field names of data to filter, and values of this properties are the filtering values.
+
+In case of ajax and rest proxy, filtering is implemented as URL filtering. The request URL will be changed: each occurence of a ":" concatenated to a filter field name will replaced to the filtering value.
+
+In case of memory proxy, items have to contain every property of filters object with their values.
+
+```javascript
+var userProxy = superData.proxy.memory({
+	idProperty: "id",
+	idType: "number"
 });
+userProxy.createOne(
+	{
+		id: 1,
+		project: 2,
+		team: 3
+	},
+	function() {}
+);
+userProxy.createOne(
+	{
+		id: 2,
+		project: 2,
+		team: 4
+	},
+	function() {}
+);
+userProxy.read(
+	{
+
+	},
+	{
+		project: 2
+	},
+	function(err, response) {
+		console.log(response);
+	}
+);
+userProxy.read(
+	{
+
+	},
+	{
+		project: 2,
+		team: 3
+	},
+	function(err, response) {
+		console.log(response);
+	}
+);
 ```
 
 ## Example

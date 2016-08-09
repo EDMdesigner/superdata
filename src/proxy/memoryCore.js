@@ -41,17 +41,27 @@ module.exports = function(dependencies) {
 					return nextId;
 				}
 				return defaultGenerateId();
-			};
+			}
 			return defaultGenerateId;
 		}());
 
 		var db = [];
 
-		function findIndexById(originalId) {
+		function findIndexById(originalId, filters) {
 			var id = castId(idType, originalId);
 			for (var idx = 0; idx < db.length; idx += 1) {
 				var act = db[idx];
 				if (act[idProperty] === id) {
+					if(typeof filters === "object") {
+						for (var filter in filters) {
+							if(!act[filter]) {
+								return -1;
+							}
+							if(act[filter] !== filters[filter]) {
+								return -1;
+							}
+						}
+					}
 					return idx;
 				}
 			}
@@ -118,7 +128,11 @@ module.exports = function(dependencies) {
 			return item;
 		}
 
-		function read(options, callback) {
+		function read(options, filters, callback) {
+			if(!callback) {
+				callback = filters;
+				filters = undefined;
+			}
 			checkCallback(callback);
 
 			if (!options) {
@@ -132,6 +146,20 @@ module.exports = function(dependencies) {
 			var limit = options.limit;
 
 			var elements = db;
+
+			if(typeof filters === "object") {
+				elements = elements.filter(function(item) {
+					for (var filter in filters) {
+						if(!item[filter]) {
+							return false;
+						}
+						if(item[filter] !== filters[filter]) {
+							return false;
+						}
+					}
+					return true;
+				});
+			}
 
 			if (find && typeof find === "object") {
 				elements = elements.filter(function(item) {
@@ -228,20 +256,28 @@ module.exports = function(dependencies) {
 			callback(null, data);
 		}
 
-		function readOneById(id, callback) {
+		function readOneById(id, filters, callback) {
+			if(!callback) {
+				callback = filters;
+				filters = undefined;
+			}
 			checkCallback(callback);
 
-			var dataIdx = findIndexById(id);
+			var dataIdx = findIndexById(id, filters);
 			if (dataIdx === -1) {
 				return callback(messages.errorMessages.NOT_FOUND);
 			}
 			callback(null, db[dataIdx]);
 		}
 
-		function updateOneById(id, newData, callback) {
+		function updateOneById(id, newData, filters, callback) {
+			if(!callback) {
+				callback = filters;
+				filters = undefined;
+			}
 			checkCallback(callback);
 
-			var dataIdx = findIndexById(id);
+			var dataIdx = findIndexById(id, filters);
 			if (dataIdx === -1) {
 				return callback(messages.errorMessages.NOT_FOUND);
 			}
@@ -252,10 +288,14 @@ module.exports = function(dependencies) {
 			callback(null, newData);
 		}
 
-		function destroyOneById(id, callback) {
+		function destroyOneById(id, filters, callback) {
+			if(!callback) {
+				callback = filters;
+				filters = undefined;
+			}
 			checkCallback(callback);
 
-			var dataIdx = findIndexById(id);
+			var dataIdx = findIndexById(id, filters);
 			if (dataIdx === -1) {
 				return callback(messages.errorMessages.NOT_FOUND);
 			}
