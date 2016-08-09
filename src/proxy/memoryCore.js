@@ -35,9 +35,14 @@ module.exports = function(dependencies) {
 
 		var generateId = config.generateId || (function() {
 			var nextId = 0;
-			return function() {
-				return nextId += 1;
+			function defaultGenerateId() {
+				nextId += 1;
+				if (findIndexById(nextId) === -1) {
+					return nextId;
+				}
+				return defaultGenerateId();
 			};
+			return defaultGenerateId;
 		}());
 
 		var db = [];
@@ -50,7 +55,6 @@ module.exports = function(dependencies) {
 					return idx;
 				}
 			}
-
 			return -1;
 		}
 
@@ -65,7 +69,7 @@ module.exports = function(dependencies) {
 					if (typeof castedId !== "string") {
 						castedId = castedId.toString();
 						if (typeof castedId !== "string") {
-							throw "Id " + id + " could not be parsed as " + type;
+							throw new Error ("Id " + id + " could not be parsed as " + type);
 						}
 					}
 					break;
@@ -74,7 +78,7 @@ module.exports = function(dependencies) {
 					if (typeof castedId !== "number") {
 						castedId = parseInt(castedId);
 						if (isNaN(castedId)) {
-							throw "Id " + id + " could not be parsed as " + type;
+							throw new Error ("Id " + id + " could not be parsed as " + type);
 						}
 					}
 					break;
@@ -217,7 +221,8 @@ module.exports = function(dependencies) {
 			if (dataIdx === -1) { //this way this is an upsert actually...
 				db.push(data);
 			} else {
-				db[dataIdx] = data;
+				//db[dataIdx] = data;
+				return callback(messages.errorMessages.DUPLICATE_KEY);
 			}
 
 			callback(null, data);

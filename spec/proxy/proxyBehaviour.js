@@ -2,7 +2,7 @@ module.exports = function proxyBehaviour(name, proxy) {
 	describe(name + " proxy", function() {
 		var numOfItems = 100;
 
-		it("prody should have the following functions", function() {
+		it("proxy should have the following functions", function() {
 			expect(typeof proxy.read).toBe("function");
 			expect(typeof proxy.createOne).toBe("function");
 			expect(typeof proxy.readOneById).toBe("function");

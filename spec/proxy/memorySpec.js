@@ -1,6 +1,6 @@
 var superData = require("../../src/superData");
 
-//var proxyBehaviour = require("./proxyBehaviour");
+var proxyBehaviour = require("./proxyBehaviour");
 //var memoryProxy = require("../../src/proxy/memory");
 var memoryProxyCore = require("../../src/proxy/memoryCore");
 
@@ -14,7 +14,8 @@ describe("memory proxy", function() {
 
 		messages = {
 			errorMessages: {
-				NOT_FOUND: "not found error message"
+				NOT_FOUND: "not found error message",
+				DUPLICATE_KEY: "duplicate key error message"
 			}
 		};
 
@@ -128,7 +129,7 @@ describe("memory proxy", function() {
 
 		});
 
-		/* it("should throw error if it can't cast given id to number if given idType is number", function() {
+		it("should throw error if it can't cast given id to number if given idType is number", function() {
 
 			memoryProxy = createMemoryProxy({
 				idProperty: "id",
@@ -139,21 +140,163 @@ describe("memory proxy", function() {
 				memoryProxy.readOneById("notANumber", callback);
 			}).toThrowError("Id notANumber could not be parsed as number");
 
-		}); */
+		});
 
 		describe("createOne", function() {
 
+			it("should generate Id if data[idProperty] is undefined", function() {
+				var data = {
+					notIdProperty: "some value"
+				};
+
+				memoryProxy.createOne(data, callback);
+				expect(data.id).toBe(1);
+
+			});
+
+			it("should call callback function", function() {
+				memoryProxy.createOne({}, callback);
+				expect(callback).toHaveBeenCalledTimes(1);
+			});
+
+			it("should push data to it's db array and call callback with data", function() {
+				var data = {
+					id: "1",
+					prop1: "some value"
+				};
+				memoryProxy.createOne(data, function(err, createData) {
+					expect(createData).toEqual(data);
+				});
+				memoryProxy.readOneById(1, function(err, readData) {
+					expect(readData).toBe(data);
+				});
+				
+			});
+
+			it("should call callback with duplicate key error if id exists", function() {
+				var data = {
+					id: "1",
+					prop: "some value"
+				};
+				var data2 = {
+					id: "1",
+					prop: "some other value"
+				};
+				memoryProxy.createOne(data, callback);
+				memoryProxy.createOne(data2, function(err, data) {
+					expect(err).toBe("duplicate key error message");
+				});
+				memoryProxy.readOneById(1, function(err, readData) {
+					expect(readData).toEqual(data);
+				});
+
+			});
+
+		});
+
+		describe("readOneById", function() {
+
+			it("should call callback with read data", function() {
+				memoryProxy.readOneById("id1", function(err, data) {
+					expect(data).toEqual({
+						id: "id1",
+						prop: "some value"
+					});
+				});
+			});
+
+			it("should call callback function", function() {
+				memoryProxy.readOneById("", callback);
+				expect(callback).toHaveBeenCalledTimes(1);
+			});
+
+			it("should call callback with not found error if id doesn't exist", function() {
+				memoryProxy.readOneById("", function(err, data) {
+					expect(err).toBe("not found error message");
+				});
+			});
+
+		});
+
+		describe("updateOneById", function() {
+
+			it("should call callback with new data", function() {
+				var data = {
+					id: "id1",
+					prop: "some new value"
+				};
+				memoryProxy.updateOneById("id1", data, function(err, newData) {
+					expect(newData).toEqual(data);
+				});
+			});
+
+			it("should call callback function", function() {
+				memoryProxy.updateOneById("", {}, callback);
+				expect(callback).toHaveBeenCalledTimes(1);
+			});
+
+			it("should not change original id", function() {
+				var data = {
+					id: "newId",
+					prop: "some new value"
+				};
+				memoryProxy.updateOneById("id1", data, function(err, newData) {
+					expect(newData.id).toBe("id1");
+				});
+				memoryProxy.readOneById("newId", function(err, newData) {
+					expect(err).toBe("not found error message");
+				});
+			});
+
+			it("should call callback with not found error if id doesn't exist", function() {
+				memoryProxy.updateOneById("", {}, function(err, data) {
+					expect(err).toBe("not found error message");
+				});
+			});
+
+		});
+
+		describe("destroyOneById", function() {
+
+			it("should call callback with deleted data", function() {
+				memoryProxy.destroyOneById("id1", function(err, deletedData) {
+					expect(deletedData).toEqual({
+						id: "id1",
+						prop: "some value"
+					});
+				});
+			});
+
+			it("should call callback function", function() {
+				memoryProxy.destroyOneById("", callback);
+				expect(callback).toHaveBeenCalledTimes(1);
+			});
+
+			it("should delete element", function() {
+				memoryProxy.destroyOneById("id1", callback);
+				memoryProxy.readOneById("id1", function(err, newData) {
+					expect(err).toBe("not found error message");
+				});
+			});
+
+			it("should call callback with not found error if id doesn't exist", function() {
+				memoryProxy.destroyOneById("", function(err, data) {
+					expect(err).toBe("not found error message");
+				});
+			});
+
+		});
+
+		describe("proxy behaviour", function() {
+			/* var proxy = createMemoryProxy({
+				idProperty: "id",
+				idType: "number"
+			}); */
+			it("should complete proxyBehaviour tests", function() {
+				proxyBehaviour("memory", memoryProxy);
+			});
 		});
 
 	});
 
-	/* var proxy = createMemoryProxy({
-		idProperty: "id",
-		idType: "number"
-	});
-
-	proxyBehaviour("memory", proxy); */
 });
-
-
-
