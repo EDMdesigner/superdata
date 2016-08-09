@@ -23,7 +23,6 @@
   "esnext":true,
   "globals":{
     "global": true,
-    "FormData": true,
     "jquery":true,
     "jasmine":true,
     "$":true
