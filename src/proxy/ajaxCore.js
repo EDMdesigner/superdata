@@ -148,7 +148,6 @@ module.exports = function(dependencies) {
 		return Object.freeze({
 			idProperty: idProperty,
 			generateId: generateId,
-			config: config,
 
 			read: read,
 			createOne: createOne,

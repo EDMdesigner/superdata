@@ -40,7 +40,15 @@ When the store is being loaded, then it invokes the models list function (which 
 
 The model is responsible for data validation, although it's not yet implemented in superdata.
 
+function name | params
+---|---
+list | options[, belongsToValues], callback
+load | id[, belongsToValues], callback
+create | modelValues, callback
+
 You can change the data fields on the modelObject and when you want to save it, you just have to call its **save** function. (It will use the proxy's updateOneById function.) Also, you can delete a modelObject by calling its **destroy** function. Be careful, the reference of the modelObject will still remain in the memory, it only removes the resource via the proxy.
+
+You can set default values for fields by giving it as 'defaultValue' property in the field descriptor object.
 
 ```javascript
 var model = createModel({
@@ -49,10 +57,12 @@ var model = createModel({
 			type: "number"
 		},
 		email: {
-			type: "string"
+			type: "string",
+			defaultValue: "default@example.com"
 		},
 		name: {
-			type: "string"
+			type: "string",
+			defaultValue: "My name is Nobody"
 		},
 		title: {
 			type: "string"
@@ -61,6 +71,59 @@ var model = createModel({
 	idField: "id",
 	proxy: proxy
 });
+```
+
+### Using 'belongsTo' in order to ensure references
+
+You can set required filter parameters for proxy by giving an array as 'belongsTo' property of createModel's config object. This way CRUD and listing operations will check these field names and their values and they will execute only on matching items. E.g. you can make a model which can list users associated to a project only or users can be deleted only if correct projectID is given (which is the one user is belonging to) this way.
+
+This feature is suitable for ensuring access restrictions. In the mentioned example, a server can accept requests with correct projectID and complete them only if user has convenient permissions to that operation on project - feature helps implement this restriction client-side. Important: it doesn't replace server-side checking!
+
+```javascript
+var model = createModel({
+	fields: {
+		id: {
+			type: "number"
+		},
+		name: {
+			type: "string"
+		},
+		projectID: {
+			type: "number"
+		}
+	},
+	idField: "id",
+	belongsTo: ["projectID"],
+	proxy: proxy
+});
+
+model.create({
+	id: 1,
+	name: "somebody",
+	projectID: 1
+}, function() {});
+
+model.create({
+	id: 2,
+	name: "somebody 2"
+	projectID: 1
+}, function() {});
+
+model.create({
+	id: 3,
+	name: "somebody 3"
+	projectID: 2
+}, function() {});
+
+model.list(
+	{},
+	{
+		projectID: 1
+	},
+	function(err, result) {
+		console.log(result);
+	}
+);
 ```
 
 ## Proxy

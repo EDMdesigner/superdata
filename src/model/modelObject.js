@@ -24,12 +24,24 @@ module.exports = function createModelObject(options) {
 		throw new Error("options.model.idField is mandatory!");
 	}
 
+	if(!options.data[options.model.idField]) {
+		throw new Error("options.data has to have a property with same name as value of options.model.idField!");
+	}
+
 	if (!options.model.proxy) {
 		throw new Error("options.model.proxy is mandatory!");
 	}
 
-	if(options.model.references && !Array.isArray(options.model.references)) {
-		throw new Error("options.model.references has to be an array!");
+	if(options.model.belongsTo && !Array.isArray(options.model.belongsTo)) {
+		throw new Error("options.model.belongsTo has to be an array!");
+	}
+
+	if(Array.isArray(options.model.belongsTo)) {
+		for(var i=0; i<options.model.belongsTo.length; i += 1) {
+			if(!options.model.fields[options.model.belongsTo[i]]) {
+				throw new Error("options.model.belongsTo has to contain field names!");
+			}
+		}
 	}
 	
 	var model = options.model;
@@ -37,30 +49,56 @@ module.exports = function createModelObject(options) {
 	var fields = options.model.fields;
 	var idField = options.model.idField;
 	var proxy = options.model.proxy;
-	//var references = options.model.references || [];
+	var belongsTo = options.model.belongsTo || [];
 
 
 	var data = {};
+	var belongsToValues = {};
 
-	for (var prop in fields) {
-		var actField = fields[prop];
-		var actValue = options.data.hasOwnProperty(prop) ? options.data[prop] : actField.defaultValue;
+	writeData(options.data);
 
-		createProp(data, prop, {
-			value: actValue,
-			beforeChange: createBeforeChangeFunction(prop),
-			afterChange: createAfterChangeFunction(prop)
-		});
+	for(var i=0; i<belongsTo.length; i += 1) {
+		if(!data[belongsTo[i]]) {
+			throw new Error("data has to have properties for references given in belongsTo");
+		}
 	}
 
 	var obj = {
 		data: data,
 		model: model,
 
-		read: read,
 		save: save,
 		destroy: destroy
 	};
+
+	function writeData(dataToWrite) {
+
+		data = {};
+		belongsToValues = {};
+		for (var prop in fields) {
+			var actField = fields[prop];
+			var actValue = dataToWrite.hasOwnProperty(prop) ? dataToWrite[prop] : actField.defaultValue;
+
+			createProp(data, prop, {
+				value: actValue,
+				beforeChange: createBeforeChangeFunction(prop),
+				afterChange: createAfterChangeFunction(prop)
+			});
+		}
+		for(var i=0; i<belongsTo.length; i += 1) {
+			belongsToValues[belongsTo[i]]=data[belongsTo[i]];
+		}
+
+	}
+
+	/* function checkReferences() {
+		for(var i=0; i<belongsTo.length; i += 1) {
+			if(!data[belongsTo[i]]) {
+				return false;
+			}
+		}
+		return true;
+	} */
 
 	function createBeforeChangeFunction(propName) {
 		return function beforeChange(values) {
@@ -97,26 +135,19 @@ module.exports = function createModelObject(options) {
 		}
 	}
 
-	function read(callback) {
-		var id = data[idField];
-		proxy.readOneById(id, function(err, result) {
-			if (err) {
-				return callback(err);
-			}
-			callback(null, result);
-		});
-	}
-
 	function save(callback) {
+
+		/* if(!checkReferences()) {
+			return callback("data has to have properties for references given in belongsTo");
+		} */
+		
 		var id = data[idField];
-		proxy.updateOneById(id, data, function(err, result) {
+		proxy.updateOneById(id, data, belongsToValues, function(err, result) {
 			if (err) {
 				return callback(err);
 			}
 
-			for (var prop in result) {
-				data[prop] = result[prop];
-			}
+			writeData(result);
 
 			callback(null, obj);
 		});
@@ -124,8 +155,13 @@ module.exports = function createModelObject(options) {
 
 	//deleted flag?
 	function destroy(callback) {
+
+		/* if(!checkReferences()) {
+			return callback("data has to have properties for references given in belongsTo");
+		} */
+		
 		var id = data[idField];
-		proxy.destroyOneById(id, function(err) {
+		proxy.destroyOneById(id, belongsToValues, function(err) {
 			if (err) {
 				return callback(err);
 			}

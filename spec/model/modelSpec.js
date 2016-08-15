@@ -6,7 +6,7 @@ describe("model", function() {
 
 	beforeEach(function() {
 		mockProxy = {
-			read: function(options, belongsToValues, callback) {
+			read: function(options, filters, callback) {
 				setTimeout(function() {
 					callback(null, {
 						items: [],
@@ -14,11 +14,12 @@ describe("model", function() {
 					});
 				}, 1);
 			},
-			readOneById: function(id, belongsToValues, callback) {
+			readOneById: function(id, filters, callback) {
 				setTimeout(function() {
 					callback(null, {
 						id: id,
-						str: "test"
+						str: "test",
+						projectID: 2
 					});
 				}, 1);
 			},
@@ -36,7 +37,7 @@ describe("model", function() {
 
 
 		model = createModel({
-			fields: [],
+			fields: {},
 			proxy: mockProxy,
 			idField: "id"
 		});
@@ -56,9 +57,18 @@ describe("model", function() {
 		expect(function() {
 			createModel({
 				idField: "id",
-				fields: []
+				fields: {}
 			});
 		}).toThrowError("options.proxy is mandatory!");
+
+		expect(function() {
+			createModel({
+				idField: "id",
+				fields: {},
+				proxy: mockProxy,
+				belongsTo: ["projectID"]
+			})
+		}).toThrowError("options.belongsTo has to contain field names!");
 	});
 
 	it("list", function(done) {
@@ -81,4 +91,75 @@ describe("model", function() {
 			done();
 		});
 	});
+
+	describe("belongsTo", function() {
+
+		describe("with invalid config", function() {
+			it("should throw an error if options.belongsTo is not array", function() {
+				expect(function() {
+					createModel({
+						idField: "id",
+						fields: {},
+						proxy: mockProxy,
+						belongsTo: "notAnArray"
+					});
+				}).toThrowError("options.belongsTo has to be an array!");
+			});
+
+		});
+		
+		describe("with valid config", function() {
+
+			beforeEach(function() {
+				model = createModel({
+					idField: "id",
+					fields: {
+						id: {
+							type: "number"
+						},
+						projectID: {
+							type: "number"
+						},
+						name: {
+							type: "string"
+						}
+					},
+					proxy: mockProxy,
+					belongsTo: ["projectID"]
+				});
+
+			});
+
+			it("should call callback with error if no projectID is given", function() {
+				model.list({}, {}, function(err) {
+					expect(err).toBe("belongsToValues has to have properties for references given in belongsTo");
+				});
+				model.load({}, {}, function(err) {
+					expect(err).toBe("belongsToValues has to have properties for references given in belongsTo");
+				});
+				model.create({}, function(err) {
+					expect(err).toBe("modelValues has to have properties for references given in belongsTo");
+				});
+			});
+
+			it("should pass belongsToValues as parameter to proxy's functions", function() {
+				model.list({}, {
+					projectID: 2
+				}, function() {});
+				expect(mockProxy.read).toHaveBeenCalledTimes(1);
+				expect(mockProxy.read.calls.argsFor(0)[1]).toEqual({
+					projectID: 2
+				});
+				model.load({}, {
+					projectID: 2
+				}, function() {});
+				expect(mockProxy.readOneById).toHaveBeenCalledTimes(1);
+				expect(mockProxy.readOneById.calls.argsFor(0)[1]).toEqual({
+					projectID: 2
+				});
+			});
+
+		});
+	});
+
 });

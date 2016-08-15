@@ -24,6 +24,14 @@ module.exports = function createModel(options) {
 		throw new Error("options.belongsTo has to be an array!");
 	}
 	
+	if(Array.isArray(options.belongsTo)) {
+		for(var i=0; i<options.belongsTo.length; i += 1) {
+			if(!options.fields[options.belongsTo[i]]) {
+				throw new Error("options.belongsTo has to contain field names!");
+			}
+		}
+	}
+	
 	var idField = options.idField;
 	var fields = options.fields;
 
@@ -56,7 +64,7 @@ module.exports = function createModel(options) {
 			belongsToValues = undefined;
 		}
 		if(!checkReferences(belongsToValues)) {
-			return callback("belongsToValues has to have properties for references");
+			return callback("belongsToValues has to have properties for references given in belongsTo");
 		}
 		proxy.read(options, belongsToValues, function(err, result) {
 			if (err) {
@@ -88,7 +96,7 @@ module.exports = function createModel(options) {
 			belongsToValues = undefined;
 		}
 		if(!checkReferences(belongsToValues)) {
-			return callback("belongsToValues has to have properties for references");
+			return callback("belongsToValues has to have properties for references given in belongsTo");
 		}
 		proxy.readOneById(id, belongsToValues, function(err, result) {
 			if (err) {
@@ -105,6 +113,9 @@ module.exports = function createModel(options) {
 	}
 
 	function create(modelValues, callback) {
+		if(!checkReferences(modelValues)) {
+			return callback("modelValues has to have properties for references given in belongsTo");
+		}
 		proxy.createOne(modelValues, function(err, result) {
 			if (err) {
 				return callback(err);
