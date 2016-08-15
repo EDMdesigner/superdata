@@ -28,11 +28,16 @@ module.exports = function createModelObject(options) {
 		throw new Error("options.model.proxy is mandatory!");
 	}
 
+	if(options.model.references && !Array.isArray(options.model.references)) {
+		throw new Error("options.model.references has to be an array!");
+	}
+	
 	var model = options.model;
 
 	var fields = options.model.fields;
 	var idField = options.model.idField;
 	var proxy = options.model.proxy;
+	var references = options.model.references || [];
 
 
 	var data = {};

@@ -14,7 +14,7 @@ describe("model", function() {
 					});
 				}, 1);
 			},
-			readOneById: function(id, callback) {
+			readOneById: function(id, belongsToValues, callback) {
 				setTimeout(function() {
 					callback(null, {
 						id: id,
