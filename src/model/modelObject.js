@@ -91,15 +91,6 @@ module.exports = function createModelObject(options) {
 
 	}
 
-	/* function checkReferences() {
-		for(var i=0; i<belongsTo.length; i += 1) {
-			if(!data[belongsTo[i]]) {
-				return false;
-			}
-		}
-		return true;
-	} */
-
 	function createBeforeChangeFunction(propName) {
 		return function beforeChange(values) {
 			validate(propName, values);
@@ -137,10 +128,6 @@ module.exports = function createModelObject(options) {
 
 	function save(callback) {
 
-		/* if(!checkReferences()) {
-			return callback("data has to have properties for references given in belongsTo");
-		} */
-		
 		var id = data[idField];
 		proxy.updateOneById(id, data, belongsToValues, function(err, result) {
 			if (err) {
@@ -156,10 +143,6 @@ module.exports = function createModelObject(options) {
 	//deleted flag?
 	function destroy(callback) {
 
-		/* if(!checkReferences()) {
-			return callback("data has to have properties for references given in belongsTo");
-		} */
-		
 		var id = data[idField];
 		proxy.destroyOneById(id, belongsToValues, function(err) {
 			if (err) {

@@ -161,6 +161,33 @@ describe("modelObject", function() {
 		});
 	});
 
+	describe("defaultValue", function() {
+
+		it("has to set default value given in model's 'fields' config option", function() {
+			mockModel.fields = {
+				id: {
+					type: "number"
+				},
+				projectID: {
+					type: "number"
+				},
+				name: {
+					type: "string",
+					defaultValue: "Default Name"
+				}
+			};
+			modelObject = createModelObject({
+				model: mockModel,
+				data: {
+					id: 2,
+					projectID: 1
+				}
+			});
+			expect(modelObject.data.name).toBe("Default Name");
+		});
+
+	});
+
 	describe("belongsTo", function() {
 
 		describe("with invalid config", function() {
@@ -175,7 +202,7 @@ describe("modelObject", function() {
 					});
 				}).toThrowError("options.model.belongsTo has to be an array!");
 			});
-			it("should throw error if data hasn't property of each element in belongsTo array", function() {
+			it("should throw error if data has no property of each element in belongsTo array", function() {
 				expect(function() {
 					mockModel.belongsTo = ["projectID"];
 					createModelObject({
