@@ -159,6 +159,24 @@ describe("model", function() {
 				});
 			});
 
+			it("should pass only properties of belongsTo from belongsToValues", function() {
+				model.list({}, {
+					projectID: 2,
+					name: "somebody"
+				}, function() {});
+				expect(mockProxy.read).toHaveBeenCalledTimes(1);
+				expect(mockProxy.read.calls.argsFor(0)[1]).toEqual({
+					projectID: 2
+				});
+				model.load({}, {
+					projectID: 2,
+					name: "somebody"
+				}, function() {});
+				expect(mockProxy.readOneById).toHaveBeenCalledTimes(1);
+				expect(mockProxy.readOneById.calls.argsFor(0)[1]).toEqual({
+					projectID: 2
+				});
+			});
 		});
 	});
 

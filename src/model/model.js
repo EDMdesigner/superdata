@@ -66,7 +66,11 @@ module.exports = function createModel(options) {
 		if(!checkReferences(belongsToValues)) {
 			return callback("belongsToValues has to have properties for references given in belongsTo");
 		}
-		proxy.read(options, belongsToValues, function(err, result) {
+		var filters = {};
+		for(var i=0; i<belongsTo.length; i += 1) {
+			filters[belongsTo[i]] = belongsToValues[belongsTo[i]];
+		}
+		proxy.read(options, filters, function(err, result) {
 			if (err) {
 				return callback(err);
 			}
@@ -98,7 +102,11 @@ module.exports = function createModel(options) {
 		if(!checkReferences(belongsToValues)) {
 			return callback("belongsToValues has to have properties for references given in belongsTo");
 		}
-		proxy.readOneById(id, belongsToValues, function(err, result) {
+		var filters = {};
+		for(var i=0; i<belongsTo.length; i += 1) {
+			filters[belongsTo[i]] = belongsToValues[belongsTo[i]];
+		}
+		proxy.readOneById(id, filters, function(err, result) {
 			if (err) {
 				return callback(err);
 			}
