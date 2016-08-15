@@ -37,7 +37,7 @@ module.exports = function createModelObject(options) {
 	var fields = options.model.fields;
 	var idField = options.model.idField;
 	var proxy = options.model.proxy;
-	var references = options.model.references || [];
+	//var references = options.model.references || [];
 
 
 	var data = {};
