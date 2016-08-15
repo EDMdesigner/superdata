@@ -288,10 +288,6 @@ describe("memory proxy", function() {
 		});
 
 		describe("proxy behaviour", function() {
-			/* var proxy = createMemoryProxy({
-				idProperty: "id",
-				idType: "number"
-			}); */
 			it("should complete proxyBehaviour tests", function() {
 				proxyBehaviour("memory", memoryProxy);
 			});

@@ -6,7 +6,7 @@ describe("model", function() {
 
 	beforeEach(function() {
 		mockProxy = {
-			read: function(options, callback) {
+			read: function(options, belongsToValues, callback) {
 				setTimeout(function() {
 					callback(null, {
 						items: [],

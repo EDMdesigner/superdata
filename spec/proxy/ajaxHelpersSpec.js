@@ -214,11 +214,7 @@ describe("ajax helpers", function() {
 						});
 
 						expect(request.post).toHaveBeenCalledTimes(1);
-						//setTimeout(function() {
-							//expect(callback).toHaveBeenCalledTimes(1);
-							//done();
-						//}, 100);
-
+						
 					});
 
 
@@ -231,11 +227,7 @@ describe("ajax helpers", function() {
 						});
 						
 						expect(request.put).toHaveBeenCalledTimes(1);
-						//setTimeout(function() {
-							//expect(callback).toHaveBeenCalledTimes(1);
-							//done();
-						//}, 100);
-
+						
 					});
 
 
@@ -248,11 +240,7 @@ describe("ajax helpers", function() {
 						});
 						
 						expect(request.del).toHaveBeenCalledTimes(1);
-						//setTimeout(function() {
-							//expect(callback).toHaveBeenCalledTimes(1);
-							//done();
-						//}, 100);
-
+						
 					});
 
 				});
@@ -281,20 +269,6 @@ describe("ajax helpers", function() {
 							expect(err).toBe("some error message");
 							done();
 						});
-
-						/* setTimeout(function() {
-							expect(request.get).toHaveBeenCalledTimes(3);
-							expect(request.query).toHaveBeenCalledTimes(3);
-							expect(request.accept).toHaveBeenCalledTimes(3);
-							expect(request.timeout).toHaveBeenCalledTimes(3);
-							expect(request.type).toHaveBeenCalledTimes(3);
-							expect(request.send).toHaveBeenCalledTimes(3);
-							expect(request.end).toHaveBeenCalledTimes(3);
-							expect(actConfig.reader.read).not.toHaveBeenCalled();
-							expect(callback).toHaveBeenCalledTimes(1);
-							expect(callback.calls.argsFor(0)[0]).toBe("some error message");
-							done();
-						}, 300); */
 
 					});
 
