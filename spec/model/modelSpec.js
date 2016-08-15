@@ -67,7 +67,7 @@ describe("model", function() {
 				fields: {},
 				proxy: mockProxy,
 				belongsTo: ["projectID"]
-			})
+			});
 		}).toThrowError("options.belongsTo has to contain field names!");
 	});
 
