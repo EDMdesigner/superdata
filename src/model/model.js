@@ -50,8 +50,17 @@ module.exports = function createModel(options) {
 	// - afterChange
 
 	function checkReferences(belongsToValues) {
-		for(var i=0; i<belongsTo.length; i += 1) {
+		for(var i = 0; i < belongsTo.length; i += 1) {
 			if(!belongsToValues[belongsTo[i]]) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	function checkReferenceTypes(belongsToValues) {
+		for(var i = 0; i < belongsTo.length; i += 1) {
+			if(typeof belongsToValues[belongsTo[i]] !== fields[belongsTo[i]].type) {
 				return false;
 			}
 		}
@@ -65,6 +74,9 @@ module.exports = function createModel(options) {
 		}
 		if(!checkReferences(belongsToValues)) {
 			return callback("belongsToValues has to have properties for references given in belongsTo");
+		}
+		if(!checkReferenceTypes(belongsToValues)) {
+			return callback("Each property of belongsToValues has to match type with corresponding property of options.fields");
 		}
 		var filters = {};
 		for(var i=0; i<belongsTo.length; i += 1) {
@@ -102,6 +114,9 @@ module.exports = function createModel(options) {
 		if(!checkReferences(belongsToValues)) {
 			return callback("belongsToValues has to have properties for references given in belongsTo");
 		}
+		if(!checkReferenceTypes(belongsToValues)) {
+			return callback("Each property of belongsToValues has to match type with corresponding property of options.fields");
+		}
 		var filters = {};
 		for(var i=0; i<belongsTo.length; i += 1) {
 			filters[belongsTo[i]] = belongsToValues[belongsTo[i]];
@@ -123,6 +138,9 @@ module.exports = function createModel(options) {
 	function create(modelValues, callback) {
 		if(!checkReferences(modelValues)) {
 			return callback("modelValues has to have properties for references given in belongsTo");
+		}
+		if(!checkReferenceTypes(modelValues)) {
+			return callback("Each property of modelValues contained by belongsTo has to match type with corresponding property of options.fields");
 		}
 		proxy.createOne(modelValues, function(err, result) {
 			if (err) {
