@@ -80,7 +80,13 @@ module.exports = function createStore(options) {
 		afterChange: triggerQueryChanged
 	});
 
+	createProp(store, "belongsToValues", {
+		value: options.belongsToValues || {},
+		beforeChange: function() {
 
+		},
+		afterChange: triggerQueryChanged
+	});
 
 	//var group = "?good question?";
 
@@ -114,11 +120,6 @@ module.exports = function createStore(options) {
 
 	//every load call should have an id.
 	//this way we can set up
-	function query(queryObj, callback) {
-		model.list(queryObj, function(err, result) {
-			callback(err, result);
-		});
-	}
 
 	function load() {
 		var queryObj = {
@@ -130,7 +131,7 @@ module.exports = function createStore(options) {
 
 		load.before(queryObj);
 
-		query(queryObj, function(err, result) {
+		model.list(queryObj, store.belongsToValues, function(err, result) {
 			if (err) {
 				return load.after(err);
 			}

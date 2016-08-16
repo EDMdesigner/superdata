@@ -14,7 +14,7 @@ describe("store", function() {
 					});
 				}, 1);
 			},
-			list: function(query, callback) {
+			list: function(query, belongsToValues, callback) {
 				setTimeout(function() {
 					callback(null, {
 						items: [
@@ -169,5 +169,39 @@ describe("store", function() {
 		expect(function() {
 			createStore();
 		}).toThrowError("options.model is mandatory!");
+	});
+
+	describe("belongsTo", function() {
+		beforeEach(function() {
+			mockModel.belongsTo = ["projectID"];
+			store = createStore({
+				model: mockModel,
+				belongsToValues: {
+					projectID: 1
+				}
+			});
+		});
+
+		it("should pass belongsToValues as parameter to model's list function if load function is called", function() {
+			store.load();
+			expect(mockModel.list).toHaveBeenCalledTimes(1);
+			expect(mockModel.list.calls.argsFor(0)[1]).toEqual({
+				projectID: 1
+			});
+		});
+
+		it("should call load function if store.belongsToValues changed with correct value", function(done) {
+			store.belongsToValues = {
+				projectID: 2
+			};
+			setTimeout(function() {
+				expect(mockModel.list).toHaveBeenCalledTimes(1);
+				expect(mockModel.list.calls.argsFor(0)[1]).toEqual({
+					projectID: 2
+				});
+				done();
+			}, 0);
+		});
+
 	});
 });
