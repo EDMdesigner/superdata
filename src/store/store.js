@@ -12,7 +12,7 @@ module.exports = function createStore(options) {
 		throw new Error("options.model is mandatory!");
 	}
 
-	if(Array.isArray(options.model.belongsTo)) {
+	if(Array.isArray(options.model.belongsTo) && options.model.belongsTo.length > 0) {
 		if(!options.belongsToValues) {
 			throw new Error("options.belongsToValues is mandatory if options.model.belongsTo is given!");
 		}
