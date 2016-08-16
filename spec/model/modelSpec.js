@@ -134,12 +134,41 @@ describe("model", function() {
 				model.list({}, {}, function(err) {
 					expect(err).toBe("belongsToValues has to have properties for references given in belongsTo");
 				});
-				model.load({}, {}, function(err) {
+				model.load(null, {}, function(err) {
 					expect(err).toBe("belongsToValues has to have properties for references given in belongsTo");
 				});
 				model.create({}, function(err) {
 					expect(err).toBe("modelValues has to have properties for references given in belongsTo");
 				});
+			});
+
+			it("should call callback with error if projectID's type isn't match to fields.projectID.type", function() {
+				model.list(
+					{},
+					{
+						projectID: "notANumber"
+					},
+					function(err) {
+						expect(err).toBe("Each property of belongsToValues has to match type with corresponding property of options.fields");
+					}
+				);
+				model.load(
+					null,
+					{
+						projectID: "notANumber"
+					},
+					function(err) {
+						expect(err).toBe("Each property of belongsToValues has to match type with corresponding property of options.fields");
+					}
+				);
+				model.create(
+					{
+						projectID: "notANumber"
+					},
+					function(err) {
+						expect(err).toBe("Each property of modelValues contained by belongsTo has to match type with corresponding property of options.fields");
+					}
+				);
 			});
 
 			it("should pass belongsToValues as parameter to proxy's functions", function() {
