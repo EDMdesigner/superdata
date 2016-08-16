@@ -36,11 +36,13 @@ If you throw an exception in the before hook, then you can prevent the store fro
 
 ### belongsToValues property
 
-If store's model use 'belongsTo' to ensure references (see below), 'belongsToValues' option is required to pass when creating store. It has to contain properties for each element of model's 'belongsTo' array.
+If store's model use 'belongsTo' to ensure references (see below), is it possible to pass 'belongsToValues' option when creating store. It has to contain properties for each element of model's 'belongsTo' array.
 
 This way we can pass 'belongsToValues' parameters to referenced models without accessing directly the models.
 
-Passed 'belongsToValues' (when creating store) will be the initial value of store's 'belongsToValues' property. If this property changes, validity check will run and throw exception if there is a missing propery in the new 'belongsToValues' object. If given object is valid, store's 'belongsToValues' property will be changed and store.load() will be called automatically to reload store with new parameters.
+Passed 'belongsToValues' (when creating store) will be the initial value of store's 'belongsToValues' property. If store's 'belongsToValues' property is changed store.load() will be called automatically to reload store with new parameters.
+
+Store.load calls model.list() which has a callback. In case of error it calls callback and pass error as first parameter. You can catch this error message and other error messages during model.list() by adding callback function to store.load.after (it's a callback array, load.after.add(function) will add 'function' to callbacks). You will get an error caused by invalid 'belongsToValues' if set 'belongsToValues' object doesn't have all elements of model.belongsTo array as property.
 
 ```javascript
 var store = superData.store.store({
@@ -48,6 +50,9 @@ var store = superData.store.store({
 	belongsToValues: {
 		projectID: 1
 	}
+});
+store.load.after.add(function(err) {
+	//store.load error handling
 });
 store.load();
 
