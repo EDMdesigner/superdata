@@ -34,6 +34,28 @@ store.load.after.add(function() {
 
 If you throw an exception in the before hook, then you can prevent the store from loading.
 
+### belongsToValues property
+
+If store's model use 'belongsTo' to ensure references (see below), 'belongsToValues' option is required to pass when creating store. It has to contain properties for each element of model's 'belongsTo' array.
+
+This way we can pass 'belongsToValues' parameters to referenced models without accessing directly the models.
+
+Passed 'belongsToValues' (when creating store) will be the initial value of store's 'belongsToValues' property. If this property changes, validity check will run and throw exception if there is a missing propery in the new 'belongsToValues' object. If given object is valid, store's 'belongsToValues' property will be changed and store.load() will be called automatically to reload store with new parameters.
+
+```javascript
+var store = superData.store.store({
+	model: model //let's assume we have a model already, with belongsTo set to ["projectID"]
+	belongsToValues: {
+		projectID: 1
+	}
+});
+store.load();
+
+store.belongsToValues = {
+	projectID: 2
+};
+```
+
 ## Model
 
 When the store is being loaded, then it invokes the models list function (which will use the proxy's read function). This list function will create **modelObjects** based on the data and the description in the model. (So the modelObjects are created on the basis of the model.) You can create a new modelObject by calling the model's create function, wich will use the proxy's createOne function.

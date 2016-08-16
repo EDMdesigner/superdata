@@ -13,12 +13,16 @@ module.exports = function createStore(options) {
 	}
 
 	if(Array.isArray(options.model.belongsTo)) {
-		if(!options.belongsTo) {
-			throw new Error("options.belongsTo is mandatory if options.model.belongsTo is given!");
+		if(!options.belongsToValues) {
+			throw new Error("options.belongsToValues is mandatory if options.model.belongsTo is given!");
 		}
+		checkBelongsToValues(options.belongsToValues);
+	}
+
+	function checkBelongsToValues(belongsToValues) {
 		for(var i=0; i<options.model.belongsTo.length; i += 1) {
-			if(typeof options.belongsTo[options.model.belongsTo[i]] === "undefined") {
-				throw new Error("options.belongsTo has to have property for each element of options.model.belongsTo!");
+			if(typeof belongsToValues[options.model.belongsTo[i]] === "undefined") {
+				throw new Error("belongsToValues has to have property for each element of options.model.belongsTo!");
 			}
 		}
 	}
@@ -91,18 +95,13 @@ module.exports = function createStore(options) {
 		afterChange: triggerQueryChanged
 	});
 
-	createProp(store, "belongsTo", {
-		value: options.belongsTo || {},
-		beforeChange: function() {
-			checkBelongsTo();
+	createProp(store, "belongsToValues", {
+		value: options.belongsToValues || {},
+		beforeChange: function(values) {
+			checkBelongsToValues(values.newValue);
 		},
 		afterChange: triggerQueryChanged
 	});
-
-
-	function checkBelongsTo() {
-
-	}
 
 	//var group = "?good question?";
 
@@ -147,7 +146,7 @@ module.exports = function createStore(options) {
 
 		load.before(queryObj);
 
-		model.list(queryObj, function(err, result) {
+		model.list(queryObj, store.belongsToValues, function(err, result) {
 			if (err) {
 				return load.after(err);
 			}
