@@ -12,21 +12,6 @@ module.exports = function createStore(options) {
 		throw new Error("options.model is mandatory!");
 	}
 
-	if(Array.isArray(options.model.belongsTo) && options.model.belongsTo.length > 0) {
-		if(!options.belongsToValues) {
-			throw new Error("options.belongsToValues is mandatory if options.model.belongsTo is given!");
-		}
-		checkBelongsToValues(options.belongsToValues);
-	}
-
-	function checkBelongsToValues(belongsToValues) {
-		for(var i=0; i<options.model.belongsTo.length; i += 1) {
-			if(typeof belongsToValues[options.model.belongsTo[i]] === "undefined") {
-				throw new Error("belongsToValues has to have property for each element of options.model.belongsTo!");
-			}
-		}
-	}
-
 	var model = options.model;
 	var proxy = model.proxy;
 
@@ -97,8 +82,8 @@ module.exports = function createStore(options) {
 
 	createProp(store, "belongsToValues", {
 		value: options.belongsToValues || {},
-		beforeChange: function(values) {
-			checkBelongsToValues(values.newValue);
+		beforeChange: function() {
+
 		},
 		afterChange: triggerQueryChanged
 	});
@@ -135,7 +120,7 @@ module.exports = function createStore(options) {
 
 	//every load call should have an id.
 	//this way we can set up
-	
+
 	function load() {
 		var queryObj = {
 			find: store.find,

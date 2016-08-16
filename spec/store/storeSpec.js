@@ -169,21 +169,6 @@ describe("store", function() {
 		expect(function() {
 			createStore();
 		}).toThrowError("options.model is mandatory!");
-		expect(function() {
-			mockModel.belongsTo = ["projectID"];
-			createStore({
-				model: mockModel
-			});
-		}).toThrowError("options.belongsToValues is mandatory if options.model.belongsTo is given!");
-		expect(function() {
-			mockModel.belongsTo = ["projectID"];
-			createStore({
-				model: mockModel,
-				belongsToValues: {
-					notProjectID: "value"
-				}
-			});
-		}).toThrowError("belongsToValues has to have property for each element of options.model.belongsTo!");
 	});
 
 	describe("belongsTo", function() {
@@ -218,18 +203,5 @@ describe("store", function() {
 			}, 0);
 		});
 
-		it("should throw error if store.belongsToValues tried to change with incorrect value", function(done) {
-			expect(function() {
-				store.belongsToValues = {
-					notProjectID: "value"
-				};
-			}).toThrowError("belongsToValues has to have property for each element of options.model.belongsTo!");
-			setTimeout(function() {
-				expect(store.belongsToValues).toEqual({
-					projectID: 1
-				});
-				done();
-			}, 0);
-		});
 	});
 });
