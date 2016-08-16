@@ -24,7 +24,7 @@ module.exports = function createModelObject(options) {
 		throw new Error("options.model.idField is mandatory!");
 	}
 
-	if(!options.data[options.model.idField]) {
+	if (typeof options.data[options.model.idField] === "undefined") {
 		throw new Error("options.data has to have a property with same name as value of options.model.idField!");
 	}
 
