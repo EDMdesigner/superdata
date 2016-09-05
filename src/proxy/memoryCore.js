@@ -128,6 +128,17 @@ module.exports = function(dependencies) {
 			return item;
 		}
 
+		function stringToRegExp(string) {
+			var stringSplit = string.split("/");
+
+			stringSplit.splice(0, 1);
+
+			var regexpOptions = stringSplit.splice(stringSplit.length - 1, 1);
+			var pattern = stringSplit.join("/");
+
+			return new RegExp(pattern, regexpOptions);
+		}
+
 		function read(options, filters, callback) {
 			if(!callback) {
 				callback = filters;
@@ -163,30 +174,31 @@ module.exports = function(dependencies) {
 
 			if (find && typeof find === "object") {
 				elements = elements.filter(function(item) {
-					for (var prop in find) {
+					Object.keys(find).forEach(function(prop) {
 						var act = find[prop];
 
 						item = accessProp(item, prop);
 
 						if (typeof act === "string") {
-							var actSplit = act.split("/");
-							
-							actSplit.splice(0, 1);
-							
-							var regexpOptions = actSplit.splice(actSplit.length - 1, 1);
-							var pattern = actSplit.join("/");
-							
-							act = new RegExp(pattern, regexpOptions);
+							act = stringToRegExp(act);
 						}
 
 						if (act instanceof RegExp) {
 							if (!act.test(item)) {
 								return false;
 							}
+						} else if (Array.isArray(act)) {
+							act.map(function(actItem) {
+								return (typeof actItem === "string") ? stringToRegExp(actItem) : actItem;
+							});
+
+							return act.reduce(function(previous, current) {
+								return previous && current.test(item);
+							}, true);
 						} else if (act !== item) {
 							return false;
 						}
-					}
+					});
 					return true;
 				});
 			}
