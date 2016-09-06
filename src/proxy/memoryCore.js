@@ -174,9 +174,15 @@ module.exports = function(dependencies) {
 
 			if (find && typeof find === "object") {
 				elements = elements.filter(function(item) {
-					var filter = true;
+					function convertToRegExp(actItem) {
+						return (typeof actItem === "string") ? stringToRegExp(actItem) : actItem;
+					}
 
-					Object.keys(find).forEach(function(prop) {
+					function testRegExp(previous, current) {
+						return previous && current.test(item);
+					}
+
+					for (var prop in find) {
 						var act = find[prop];
 
 						item = accessProp(item, prop);
@@ -187,24 +193,19 @@ module.exports = function(dependencies) {
 
 						if (act instanceof RegExp) {
 							if (!act.test(item)) {
-								filter = false;
+								return false;
 							}
 						} else if (Array.isArray(act)) {
-							var regExpArray = act.map(function(actItem) {
-								return (typeof actItem === "string") ? stringToRegExp(actItem) : actItem;
-							});
+							var regExpArray = act.map(convertToRegExp);
 
-							var result = regExpArray.reduce(function(previous, current) {
-								return previous && current.test(item);
-							}, true);
+							var result = regExpArray.reduce(testRegExp, true);
 
-							filter = result;
+							return result;
 						} else if (act !== item) {
-							filter = false;
+							return false;
 						}
-					});
-
-					return filter;
+					}
+					return true;
 				});
 			}
 
