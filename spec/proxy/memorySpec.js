@@ -288,7 +288,23 @@ describe("memory proxy", function() {
 		});
 
 		describe("proxy behaviour", function() {
-			it("should complete proxyBehaviour tests", function() {
+			describe("should complete proxyBehaviour tests", function() {
+				var messages = {
+					errorMessages: {
+						NOT_FOUND: "NOT_FOUND",
+						DUPLICATE_KEY: "duplicate key error message"
+					}
+				};
+
+				var createMemoryProxy = memoryProxyCore({
+					messages: messages
+				});
+
+				var memoryProxy = createMemoryProxy({
+					idProperty: "id",
+					idType: "string"
+				});
+
 				proxyBehaviour("memory", memoryProxy);
 			});
 		});
