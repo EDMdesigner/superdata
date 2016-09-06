@@ -174,6 +174,8 @@ module.exports = function(dependencies) {
 
 			if (find && typeof find === "object") {
 				elements = elements.filter(function(item) {
+					var filter = true;
+
 					Object.keys(find).forEach(function(prop) {
 						var act = find[prop];
 
@@ -185,21 +187,24 @@ module.exports = function(dependencies) {
 
 						if (act instanceof RegExp) {
 							if (!act.test(item)) {
-								return false;
+								filter = false;
 							}
 						} else if (Array.isArray(act)) {
-							act.map(function(actItem) {
+							var regExpArray = act.map(function(actItem) {
 								return (typeof actItem === "string") ? stringToRegExp(actItem) : actItem;
 							});
 
-							return act.reduce(function(previous, current) {
+							var result = regExpArray.reduce(function(previous, current) {
 								return previous && current.test(item);
 							}, true);
+
+							filter = result;
 						} else if (act !== item) {
-							return false;
+							filter = false;
 						}
 					});
-					return true;
+
+					return filter;
 				});
 			}
 
