@@ -357,7 +357,7 @@ describe("memory proxy", function() {
 				for(var i = 0; i < notMatchingFilterObjects.length; i += 1) {
 					memoryProxy.read({}, notMatchingFilterObjects[i], responseCallback);
 				}
-				memoryProxy.read("id2", matchingFilterObject, function(err, response) {
+				memoryProxy.read({}, matchingFilterObject, function(err, response) {
 					expect(response).toEqual({
 						items: [
 							{
@@ -410,6 +410,54 @@ describe("memory proxy", function() {
 				}
 				memoryProxy.destroyOneById("id2", matchingFilterObject, function(err, readData) {
 					expect(readData).toBe(data);
+				});
+			});
+
+		});
+
+		describe("with find in array", function() {
+
+			var data;
+			var data2;
+			var data3;
+
+			beforeEach(function() {
+
+				data = {
+					id: "id2",
+					findField: "tag1 tag2 tag3"
+				};
+				data2 = {
+					id: "id3",
+					findField: "tag3 tag2 tag1"
+				};
+				data3 = {
+					id: "id4",
+					findField: "tag2 tag4"
+				};
+				data4 = {
+					id: "id5",
+					findField: "tag5 tag6 tag7 tag8"
+				};
+
+				memoryProxy.createOne(data, callback);
+				memoryProxy.createOne(data2, callback);
+				memoryProxy.createOne(data3, callback);
+				memoryProxy.createOne(data4, callback);
+				
+			});
+
+			it("", function() {
+				memoryProxy.read({
+					find: {
+						findField: "tag1"
+					}
+				},
+				{},
+				function(err, response) {
+					expect(Array.isArray(response.items)).toBe(true);
+					expect(response.items.length).toBe(2);
+					expect(response.count).toBe(2);
 				});
 			});
 

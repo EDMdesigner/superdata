@@ -128,8 +128,11 @@ module.exports = function(dependencies) {
 			return item;
 		}
 
-		function stringToRegExp(string) {
-			var stringSplit = string.split("/");
+		function stringToRegExp(str) {
+			var stringSplit = str.split("/");
+			if(stringSplit.length === 1) {
+				return new RegExp(str, "i");
+			}
 
 			stringSplit.splice(0, 1);
 
