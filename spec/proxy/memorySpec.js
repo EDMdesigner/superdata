@@ -302,7 +302,7 @@ describe("memory proxy", function() {
 
 				var memoryProxy = createMemoryProxy({
 					idProperty: "id",
-					idType: "string"
+					idType: "number"
 				});
 
 				proxyBehaviour("memory", memoryProxy);
