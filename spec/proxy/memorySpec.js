@@ -420,6 +420,7 @@ describe("memory proxy", function() {
 			var data;
 			var data2;
 			var data3;
+			var data4;
 
 			beforeEach(function() {
 
