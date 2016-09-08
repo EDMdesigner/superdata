@@ -93,10 +93,7 @@ describe("memory proxy", function() {
 		it("should throw error if given callback is not a function", function() {
 
 			expect(function() {
-				memoryProxy.read({
-					options: {},
-					callback: "notAFunction"
-				});
+				memoryProxy.read({}, "notAFunction");
 			}).toThrowError("callback should be a function");
 
 			expect(function() {
@@ -139,6 +136,19 @@ describe("memory proxy", function() {
 			expect(function() {
 				memoryProxy.readOneById("notANumber", callback);
 			}).toThrowError("Id notANumber could not be parsed as number");
+
+		});
+
+		describe("read", function() {
+
+			//full read test is in proxyBehaviour.js
+			it("should read data even if options parameter is falsy", function() {
+				memoryProxy.read(null, function(err, response) {
+					expect(response.items.length).toBe(1);
+					expect(response.count).toBe(1);
+					expect(response.items[0]).toEqual({ id: "id1", prop: "some value" });
+				});
+			});
 
 		});
 
@@ -448,7 +458,7 @@ describe("memory proxy", function() {
 				
 			});
 
-			it("", function() {
+			it("has to return elements containing find string", function() {
 				memoryProxy.read({
 					find: {
 						findField: "tag1"
@@ -459,7 +469,75 @@ describe("memory proxy", function() {
 					expect(Array.isArray(response.items)).toBe(true);
 					expect(response.items.length).toBe(2);
 					expect(response.count).toBe(2);
+					expect(response.items[0]).toEqual({ id: "id2", findField: "tag1 tag2 tag3"});
+					expect(response.items[1]).toEqual({ id: "id3", findField: "tag3 tag2 tag1"});
 				});
+
+				memoryProxy.read({
+					find: {
+						findField: "ag1"
+					}
+				},
+				{},
+				function(err, response) {
+					expect(Array.isArray(response.items)).toBe(true);
+					expect(response.items.length).toBe(2);
+					expect(response.count).toBe(2);
+					expect(response.items[0]).toEqual({ id: "id2", findField: "tag1 tag2 tag3"});
+					expect(response.items[1]).toEqual({ id: "id3", findField: "tag3 tag2 tag1"});
+				});
+			});
+
+			it("has to return elements matching find regexp", function() {
+				memoryProxy.read({
+					find: {
+						findField: "/t[a-z]+g2/i"
+					}
+				},
+				{},
+				function(err, response) {
+					expect(Array.isArray(response.items)).toBe(true);
+					expect(response.items.length).toBe(3);
+					expect(response.count).toBe(3);
+					expect(response.items[0]).toEqual({ id: "id2", findField: "tag1 tag2 tag3"});
+					expect(response.items[1]).toEqual({ id: "id3", findField: "tag3 tag2 tag1"});
+					expect(response.items[2]).toEqual({ id: "id4", findField: "tag2 tag4"});
+				});
+				
+			});
+
+			it("has to return elements matching find string array", function() {
+				memoryProxy.read({
+					find: {
+						findField: ["tag1", "tag3"]
+					}
+				},
+				{},
+				function(err, response) {
+					expect(Array.isArray(response.items)).toBe(true);
+					expect(response.items.length).toBe(2);
+					expect(response.count).toBe(2);
+					expect(response.items[0]).toEqual({ id: "id2", findField: "tag1 tag2 tag3"});
+					expect(response.items[1]).toEqual({ id: "id3", findField: "tag3 tag2 tag1"});
+				});
+				
+			});
+
+			it("has to return elements matching find regexp array", function() {
+				memoryProxy.read({
+					find: {
+						findField: ["/t[a-z]+g1/i", "/t[a-z]+g3/i"]
+					}
+				},
+				{},
+				function(err, response) {
+					expect(Array.isArray(response.items)).toBe(true);
+					expect(response.items.length).toBe(2);
+					expect(response.count).toBe(2);
+					expect(response.items[0]).toEqual({ id: "id2", findField: "tag1 tag2 tag3"});
+					expect(response.items[1]).toEqual({ id: "id3", findField: "tag3 tag2 tag1"});
+				});
+				
 			});
 
 		});
