@@ -128,6 +128,20 @@ module.exports = function(dependencies) {
 			return item;
 		}
 
+		function stringToRegExp(str) {
+			var stringSplit = str.split("/");
+			if(stringSplit.length === 1) {
+				return new RegExp(str, "i");
+			}
+
+			stringSplit.splice(0, 1);
+
+			var regexpOptions = stringSplit.splice(stringSplit.length - 1, 1);
+			var pattern = stringSplit.join("/");
+
+			return new RegExp(pattern, regexpOptions);
+		}
+
 		function read(options, filters, callback) {
 			if(!callback) {
 				callback = filters;
@@ -163,26 +177,33 @@ module.exports = function(dependencies) {
 
 			if (find && typeof find === "object") {
 				elements = elements.filter(function(item) {
+					function convertToRegExp(actItem) {
+						return (typeof actItem === "string") ? stringToRegExp(actItem) : actItem;
+					}
+
+					function testRegExp(previous, current) {
+						return previous && current.test(item);
+					}
+
 					for (var prop in find) {
 						var act = find[prop];
 
 						item = accessProp(item, prop);
 
 						if (typeof act === "string") {
-							var actSplit = act.split("/");
-							
-							actSplit.splice(0, 1);
-							
-							var regexpOptions = actSplit.splice(actSplit.length - 1, 1);
-							var pattern = actSplit.join("/");
-							
-							act = new RegExp(pattern, regexpOptions);
+							act = stringToRegExp(act);
 						}
 
 						if (act instanceof RegExp) {
 							if (!act.test(item)) {
 								return false;
 							}
+						} else if (Array.isArray(act)) {
+							var regExpArray = act.map(convertToRegExp);
+
+							var result = regExpArray.reduce(testRegExp, true);
+
+							return result;
 						} else if (act !== item) {
 							return false;
 						}
