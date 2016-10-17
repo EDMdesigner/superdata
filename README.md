@@ -201,6 +201,26 @@ var proxy = superData.proxy.memory({
 });
 ```
 
+### Memory proxy's improved find feature
+
+Using memory proxy you can pass find values as array elements to combine filters. This way you can give negation of search conditions (search words) too.
+
+Calling memory proxy's read function passing a 'find' property in its config object will trigger filtering on proxy's data. Every property of 'find' object refers to properties of data. These properties should contain search strings or regular expressions, but memory proxy can handle search string or regular expression arrays as multiple filter conditions. Starting a filter element with '-' character means negation of matching filter string. That condition matches elements which doesn't contain filter string specified after '-'.
+
+```javascript
+memoryProxy.read({
+	find: {
+		findField: ["word1", "some string 2", "/tag[0-9]+/i", "-word3"]
+	}
+},
+{},
+function(err, response) {
+	//filtered elements in response.items
+});
+```
+
+In the example above, we set filter to data of memory proxy. Filter matches elements having a findField property containing "word1", "some string 2", matching to regular expression "/tag[0-9]+/i" (case-insensitive "tag" followed by numbers) and not containing "word3". Memory proxy's read function calls callback with matching elements in "response" parameter's "items" property.
+
 ### Ajax proxy
 
 The ajax proxy makes HTTP calls to certain urls based on its configuration. You can define query mappings, namely you can define the way how the find, sort, skip and limit properties should be mapped to the query string of the request. You can also define custom query string properties, which will be added to the query string of all of the HTTP calls.
