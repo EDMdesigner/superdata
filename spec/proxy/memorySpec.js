@@ -540,6 +540,36 @@ describe("memory proxy", function() {
 				
 			});
 
+			it("has to except elements starting with '-' character in filter word if string array is given", function() {
+				memoryProxy.read({
+					find: {
+						findField: ["-tag1", "tag2"]
+					}
+				},
+				{},
+				function(err, response) {
+					expect(Array.isArray(response.items)).toBe(true);
+					expect(response.items.length).toBe(1);
+					expect(response.count).toBe(1);
+					expect(response.items[0]).toEqual({ id: "id4", findField: "tag2 tag4"});
+				});
+			});
+
+			it("has to except elements starting with '-' character in filter word if regexp array is given", function() {
+				memoryProxy.read({
+					find: {
+						findField: ["-tag1", "/t[a-z]+g2/i"]
+					}
+				},
+				{},
+				function(err, response) {
+					expect(Array.isArray(response.items)).toBe(true);
+					expect(response.items.length).toBe(1);
+					expect(response.count).toBe(1);
+					expect(response.items[0]).toEqual({ id: "id4", findField: "tag2 tag4"});
+				});
+			});
+
 		});
 
 	});
