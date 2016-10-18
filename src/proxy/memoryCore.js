@@ -178,10 +178,6 @@ module.exports = function(dependencies) {
 			if (find && typeof find === "object") {
 				elements = elements.filter(function(item) {
 					function convertToRegExp(actItem) {
-						if (actItem.charAt(0) === "-") {
-							actItem = "^(?!.*" + actItem.substr(1) + ")";
-						}
-			
 						return (typeof actItem === "string") ? stringToRegExp(actItem) : actItem;
 					}
 
