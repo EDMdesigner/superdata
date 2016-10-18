@@ -203,14 +203,14 @@ var proxy = superData.proxy.memory({
 
 ### Memory proxy's improved find feature
 
-Using memory proxy you can pass find values as array elements to combine filters. This way you can give negation of search conditions (search words) too.
+Using memory proxy you can pass find values as array elements to combine filters.
 
-Calling memory proxy's read function passing a 'find' property in its config object will trigger filtering on proxy's data. Every property of 'find' object refers to properties of data. These properties should contain search strings or regular expressions, but memory proxy can handle search string or regular expression arrays as multiple filter conditions. Starting a filter element with '-' character means negation of matching filter string. That condition matches elements which doesn't contain filter string specified after '-'.
+Calling memory proxy's read function passing a 'find' property in its config object will trigger filtering on proxy's data. Every property of 'find' object refers to properties of data. These properties should contain search strings or regular expressions, but memory proxy can handle search string or regular expression arrays as multiple filter conditions.
 
 ```javascript
 memoryProxy.read({
 	find: {
-		findField: ["word1", "some string 2", "/tag[0-9]+/i", "-word3"]
+		findField: ["word1", "some string 2", "/tag[0-9]+/i"]
 	}
 },
 {},
@@ -219,7 +219,7 @@ function(err, response) {
 });
 ```
 
-In the example above, we set filter to data of memory proxy. Filter matches elements having a findField property containing "word1", "some string 2", matching to regular expression "/tag[0-9]+/i" (case-insensitive "tag" followed by numbers) and not containing "word3". Memory proxy's read function calls callback with matching elements in "response" parameter's "items" property.
+In the example above, we set filter to data of memory proxy. Filter matches elements having a findField property containing "word1", "some string 2" and matching to regular expression "/tag[0-9]+/i" (case-insensitive "tag" followed by numbers). Memory proxy's read function calls callback with matching elements in "response" parameter's "items" property.
 
 ### Ajax proxy
 
