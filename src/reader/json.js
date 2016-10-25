@@ -21,6 +21,7 @@ module.exports = function createReader(config) {
 
 	function read(response) {
 
+		response = response || {};
 		var rootData = !root ? response : response[root];
 
 		var data = {};
