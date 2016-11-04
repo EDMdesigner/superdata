@@ -90,8 +90,7 @@ module.exports = function(dependencies) {
 							}
 							return callback(err);
 						}
-						var body = actConfig.reader.read(result.body);
-
+						var body = actConfig.reader.read(result.body) || {};
 						callback(body.err, body);
 					});
 			} catch (e) {
