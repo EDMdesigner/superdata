@@ -79,6 +79,16 @@ describe("json reader", function() {
 		expect(jsrBase.read(response)).toBe(response);
 	});
 
+	it("config: {} and response parameter is null should return null", function() {
+		expect(jsrBase.read(null)).toBe(null);
+	});	
+
+	it("config: {} and response parameter is undefined or an empty string or false should return an empty object", function() {
+		expect(jsrBase.read()).toEqual({});
+		expect(jsrBase.read("")).toEqual({});
+		expect(jsrBase.read(false)).toEqual({});
+	});	
+
 	it("config: {root: root} should return response[root]", function() {
 		expect(jsrRoot.read(response)).toBe(response[config.root]);
 	});
