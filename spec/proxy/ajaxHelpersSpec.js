@@ -121,12 +121,13 @@ describe("ajax helpers", function() {
 				};
 				var data = "data";
 				var id = "id";
-				var operationConfig = ajaxHelpers.createOperationConfig(config, id, data);
+				var operationConfig = ajaxHelpers.createOperationConfig(config, 3500, id, data);
 
 				expect(operationConfig.prop1).toBe(config.prop1);
 				expect(operationConfig.prop2).toBe(config.prop2);
 				expect(operationConfig.data).toBe(data);
 				expect(operationConfig.id).toBe(id);
+				expect(operationConfig.timeout).toBe(3500);
 
 			});
 
@@ -138,13 +139,19 @@ describe("ajax helpers", function() {
 				};
 				var data;
 				var id = "id";
-				var operationConfig = ajaxHelpers.createOperationConfig(config, id, data);
+				var operationConfig = ajaxHelpers.createOperationConfig(config, 3500, id, data);
 
 				expect(operationConfig.prop1).toBe(config.prop1);
 				expect(operationConfig.prop2).toBe(config.prop2);
 				expect(operationConfig.data).toEqual({});
 				expect(operationConfig.id).toBe(id);
 
+			});
+
+			it("should set timeout property to defaultTimeout if timeout parameter is not truthy", function() {
+				var operationConfig = ajaxHelpers.createOperationConfig({}, null);
+
+				expect(operationConfig.timeout).toBe(3000);
 			});
 
 		});

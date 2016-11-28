@@ -140,7 +140,8 @@ describe("ajax proxy", function() {
 
 			var config = {
 				idProperty: "id",
-				operations: {}
+				operations: {},
+				timeout: 4000
 			};
 			ajaxProxy = createAjaxProxy(config);
 			data = {
@@ -169,6 +170,7 @@ describe("ajax proxy", function() {
 
 					expect(ajaxHelpers.assert).toHaveBeenCalledTimes(1);
 					expect(ajaxHelpers.createOperationConfig).toHaveBeenCalledTimes(1);
+					expect(ajaxHelpers.createOperationConfig.calls.argsFor(0)[1]).toBe(4000);
 					expect(ajaxHelpers.dispatchAjax).toHaveBeenCalledTimes(1);
 					expect(ajaxHelpers.dispatchAjax.calls.argsFor(0)[0]).toEqual({
 						queries: {
@@ -204,6 +206,7 @@ describe("ajax proxy", function() {
 
 				expect(ajaxHelpers.assert).toHaveBeenCalledTimes(1);
 				expect(ajaxHelpers.createOperationConfig).toHaveBeenCalledTimes(1);
+				expect(ajaxHelpers.createOperationConfig.calls.argsFor(0)[1]).toBe(4000);
 				expect(ajaxHelpers.dispatchAjax).toHaveBeenCalledTimes(1);
 				expect(callback).toHaveBeenCalledTimes(1);
 
@@ -221,6 +224,7 @@ describe("ajax proxy", function() {
 
 					expect(ajaxHelpers.assert).toHaveBeenCalledTimes(1);
 					expect(ajaxHelpers.createOperationConfig).toHaveBeenCalledTimes(1);
+					expect(ajaxHelpers.createOperationConfig.calls.argsFor(0)[1]).toBe(4000);
 					expect(ajaxHelpers.dispatchAjax).toHaveBeenCalledTimes(1);
 					expect(callback).toHaveBeenCalledTimes(1);
 
@@ -251,6 +255,7 @@ describe("ajax proxy", function() {
 
 					expect(ajaxHelpers.assert).toHaveBeenCalledTimes(1);
 					expect(ajaxHelpers.createOperationConfig).toHaveBeenCalledTimes(1);
+					expect(ajaxHelpers.createOperationConfig.calls.argsFor(0)[1]).toBe(4000);
 					expect(ajaxHelpers.dispatchAjax).toHaveBeenCalledTimes(1);
 					expect(callback).toHaveBeenCalledTimes(1);
 
@@ -281,6 +286,7 @@ describe("ajax proxy", function() {
 
 					expect(ajaxHelpers.assert).toHaveBeenCalledTimes(1);
 					expect(ajaxHelpers.createOperationConfig).toHaveBeenCalledTimes(1);
+					expect(ajaxHelpers.createOperationConfig.calls.argsFor(0)[1]).toBe(4000);
 					expect(ajaxHelpers.dispatchAjax).toHaveBeenCalledTimes(1);
 					expect(callback).toHaveBeenCalledTimes(1);
 
