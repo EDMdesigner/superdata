@@ -5,6 +5,8 @@
 /*jslint node: true */
 "use strict";
 
+var defaultTimeout = 3000;
+
 module.exports = function(dependencies) {
 
 	if(!dependencies) {
@@ -46,6 +48,7 @@ module.exports = function(dependencies) {
 		}
 
 		var idProperty = config.idProperty;
+		var timeout = config.timeout || defaultTimeout;
 
 		var generateId = config.generateId || (function() {
 			var nextId = 0;
@@ -79,13 +82,12 @@ module.exports = function(dependencies) {
 			removeFields(data, fieldsToBeExcluded);
 
 			checkCallback(callback);
-			var actConfig = createOperationConfig(config.operations.createOne, null, data);
+			var actConfig = createOperationConfig(config.operations.createOne, timeout, null, data);
 
 			if (data.constructor === FormData) {
 				actConfig.formData = true;
 			}
 
-			actConfig.timeout = config.timeout;
 			actConfig.idProperty = idProperty;
 
 			dispatchAjax(actConfig, callback);
@@ -100,7 +102,7 @@ module.exports = function(dependencies) {
 			if (typeof queryMapping === "function") {
 				options = queryMapping(options);
 			}
-			var actConfig = createOperationConfig(config.operations.read);
+			var actConfig = createOperationConfig(config.operations.read, timeout);
 
 			for (var prop in options) {
 				actConfig.queries[prop] = options[prop];
@@ -115,7 +117,7 @@ module.exports = function(dependencies) {
 				filters = undefined;
 			}
 			checkCallback(callback);
-			var actConfig = createOperationConfig(config.operations.readOneById, id);
+			var actConfig = createOperationConfig(config.operations.readOneById, timeout, id);
 			dispatchAjax(actConfig, filters, callback);
 		}
 
@@ -127,7 +129,7 @@ module.exports = function(dependencies) {
 			removeFields(newData, fieldsToBeExcluded);
 
 			checkCallback(callback);
-			var actConfig = createOperationConfig(config.operations.updateOneById, id, newData);
+			var actConfig = createOperationConfig(config.operations.updateOneById, timeout, id, newData);
 			dispatchAjax(actConfig, filters, callback);
 		}
 
@@ -137,7 +139,7 @@ module.exports = function(dependencies) {
 				filters = undefined;
 			}
 			checkCallback(callback);
-			var actConfig = createOperationConfig(config.operations.destroyOneById, id);
+			var actConfig = createOperationConfig(config.operations.destroyOneById, timeout, id);
 			dispatchAjax(actConfig, filters, callback);
 		}
 

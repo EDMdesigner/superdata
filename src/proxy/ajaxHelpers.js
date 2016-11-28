@@ -20,7 +20,7 @@ module.exports = function(dependencies) {
 	var request = dependencies.request;
 	var createReader = dependencies.createReader;
 	
-	function createOperationConfig(config, id, data) {
+	function createOperationConfig(config, timeout, id, data) {
 		var newConfig = {};
 
 		for (var prop in config) {
@@ -34,6 +34,7 @@ module.exports = function(dependencies) {
 		}
 
 		newConfig.id = id;
+		newConfig.timeout = newConfig.timeout || timeout || defaultTimeout;
 
 		return newConfig;
 	}
