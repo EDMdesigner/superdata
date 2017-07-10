@@ -2,7 +2,7 @@
 "use strict";
 var ko = require("knockout");
 
-var superData = require("superdata");
+var superData = require("../../../src/superData");
 
 // var createProxy = superData.proxy.ajax;
 var createRestProxy = superData.proxy.rest;
