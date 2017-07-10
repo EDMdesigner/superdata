@@ -44,7 +44,7 @@ jspm_packages
 # proportion of contributors will probably not be using SublimeText
 *.sublime-project
 
-**/*.build.js
+**/*.built.js
 dist
 tmp
 junitresults.xml
