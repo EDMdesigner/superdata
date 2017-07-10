@@ -46,7 +46,7 @@ superGulp.taskTemplates.initFrontendTasks({
 		copy: {
 			dev: [
 				{files: ["./examples/*.html", "!./examples/localStorageTest.html"], dest: "./dist/examples"},
-				{files: "./node_modules/knockout/build/output/knockout-latest.debug.js", dest: "./dist/examples/lib"}
+				{files: "./node_modules/knockout/build/output/knockout-latest.debug.js", dest: "./dist/lib"}
 			]
 		},
 		js: {
@@ -70,7 +70,8 @@ superGulp.taskTemplates.initFrontendTasks({
 					destFolder: "./examples/ServerWithMemoryProxy/public/"
 				}
 			]
-		}
+		},
+		sass: []
 	}
 });
 
