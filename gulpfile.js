@@ -45,28 +45,18 @@ superGulp.taskTemplates.initFrontendTasks({
 	tasks: {
 		copy: {
 			dev: [
-				{files: ["./examples/*.html"], dest: "./dist/examples"},
-				{files: "./node_modules/knockout/build/output/knockout-latest.debug.js", dest: "./dist/lib"}
+				{ files: ["./examples/*.html"], dest: "./dist/examples" },
+				{ files: "./node_modules/knockout/build/output/knockout-latest.debug.js", dest: "./dist/lib" }
 			]
 		},
 		js: {
 			common: [
-				{entries: "./src/superData.js", outputFileName: "superdata.js"}
+				{ entries: "./src/superData.js", outputFileName: "superdata.js" }
 			],
 			dev: [
 				{
-					entries: ["./examples/infiniteLoader.js"],
-					outputFileName: "infiniteLoader.js",
-					destFolder: "./dist/examples"
-				},
-				{
 					entries: ["./examples/localStorageTest.js"],
 					outputFileName: "localStorageTest.js",
-					destFolder: "./dist/examples"
-				},
-				{
-					entries: ["./examples/pagination.js"],
-					outputFileName: "pagination.js",
 					destFolder: "./dist/examples"
 				},
 				{
@@ -84,16 +74,3 @@ superGulp.taskTemplates.initFrontendTasks({
 		sass: []
 	}
 });
-
-// var examplesConfigs = {
-// 	serverWithMemoryProxy: {
-// 		entries: ["./examples/ServerWithMemoryProxy/public/main.js"],
-// 		outputFileName: "main.built.js",
-// 		destFolder: "./examples/ServerWithMemoryProxy/public"
-// 	},
-// 	knob: {
-// 		entries: ["./src/knob/components.js"],
-// 		outputFileName: "components.built.js",
-// 		destFolder: "./src/knob"
-// 	}
-// };
