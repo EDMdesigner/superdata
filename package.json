@@ -45,7 +45,8 @@
     "express": "*",
     "express-logger": "*",
     "knob-js": "^1.0.0-rc.5",
-    "knockout": "^3.4.0"
+    "knockout": "^3.4.0",
+    "normalize.css": "^7.0.0"
   },
   "dependencies": {
     "edm-supergulp": "^0.1.14",

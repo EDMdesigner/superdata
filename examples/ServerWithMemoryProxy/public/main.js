@@ -1,7 +1,7 @@
-/*jslint node: true */
 "use strict";
-var ko = require("knockout");
 
+var ko = require("knockout");
+var knob = require("knob-js");
 var superData = require("../../../src/superData");
 
 // var createProxy = superData.proxy.ajax;
@@ -9,10 +9,37 @@ var createRestProxy = superData.proxy.rest;
 var createModel = superData.model.model;
 var createStore = superData.store.store;
 
-// queries: {
-// 	token: "34oirfgdsnTOKENawern4o",
-// 	user: "Lali"
-// }
+var theme = {
+	theme: "default",
+	colors: {
+		primary: "#666",
+		secondary: "#f4f4f4",
+
+		info: {
+			background: "#25aaf2"
+		},
+		success: {
+			background: "#54c059"
+		},
+		warning: {
+			background: "#f5a500"
+		},
+		error: {
+			background: "#ee483b"
+		},
+
+		white: "#fff",
+
+		lightGray: "#e6e6e6",
+		mediumGray: "#cacaca",
+		darkGray: "#8a8a8a",
+
+		black: "#000",
+		transparent: "transparent"
+	}
+};
+
+knob.init(theme);
 
 var proxy = createRestProxy({
 	idProperty: "id",
@@ -22,36 +49,6 @@ var proxy = createRestProxy({
 		count: "count"
 	}
 });
-
-// var proxy = createProxy({
-// 	idProperty: "id",
-// 	operations: {
-// 		read: {
-// 			route: "http://localhost:7357/user",
-// 			method: "GET",
-// 			reader: {
-// 				root: "items",
-// 				count: "count"
-// 			}
-// 		},
-// 		createOne: {
-// 			route: "http://localhost:7357/user",
-// 			method: "POST"
-// 		},
-// 		readOneById: {
-// 			route: "http://localhost:7357/user/:id",
-// 			method: "GET"
-// 		},
-// 		updateOneById: {
-// 			route: "http://localhost:7357/user/:id",
-// 			method: "PUT"
-// 		},
-// 		destroyOneById: {
-// 			route: "http://localhost:7357/user/:id",
-// 			method: "DELETE"
-// 		}
-// 	}
-// });
 
 var model = createModel({
 	fields: {
@@ -136,55 +133,6 @@ if (seed) {
 }
 
 store.limit = 100;
-//*/
-
-
-// var createItemVm = require("./itemVm");
-// ko.components.register("list-item", {
-// 	viewModel: {
-// 		createViewModel: function(params, componentInfo) {
-// 			return createItemVm(params);
-// 		}
-// 	},
-// 	template: require("./itemTemplate.html")
-// });
-
-// var createInfiniteLoader = require("../../../src/ko-components/lists/infiniteList.js");
-// var createPagedList = require("../../../src/ko-components/lists/pagedList.js");
-
-// ko.components.register("paged-list", {
-// 	viewModel: {
-// 		createViewModel: function(params, componentInfo) {
-// 			return createPagedList(params);
-// 		}
-// 	},
-// 	template: require("../../../src/ko-components/lists/pagedList.html")
-// });
-
-
-
-/*
-var list = createInfiniteLoader({
-	store: store,
-
-	fields: ["id", "email", "name", "title"],
-
-	labels: {
-		email: "E-mail",
-		name: "Név",
-		title: "Beosztás"
-	},
-
-	sorters: {
-		id: 1,
-		email: 0,
-		name: 0
-	},
-
-	numOfItems: 10,
-	numOfItemsToLoad: 10
-});
-//*/
 
 var pagedListConfig = {
 	store: store,
@@ -216,10 +164,5 @@ var pagedListConfig = {
 		beforeCurrent: 1
 	}
 };
-
-/*
-var list = createPagedList(pagedListConfig);
-//*/
-
 
 ko.applyBindings(pagedListConfig);

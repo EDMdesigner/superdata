@@ -46,7 +46,15 @@ superGulp.taskTemplates.initFrontendTasks({
 		copy: {
 			dev: [
 				{ files: ["./examples/*.html"], dest: "./dist/examples" },
-				{ files: "./node_modules/knockout/build/output/knockout-latest.debug.js", dest: "./dist/lib" }
+				{
+					files: [
+						"./node_modules/knob-js/dist/knob.js",
+						"./node_modules/knob-js/dist/knob.min.css",
+						"./node_modules/normalize.css/normalize.css",
+						"./node_modules/knockout/build/output/knockout-latest.debug.js"
+					],
+					dest: "./dist/lib"
+				}
 			]
 		},
 		js: {
