@@ -8,6 +8,7 @@ var createStore = require("../src/store/store");
 
 var proxy = createProxy({
 	idProperty: "id",
+	idType: "number",
 	generateId: (function() {
 		var nextId = 0;
 		return function() {

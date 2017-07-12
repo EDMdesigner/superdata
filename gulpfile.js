@@ -45,7 +45,7 @@ superGulp.taskTemplates.initFrontendTasks({
 	tasks: {
 		copy: {
 			dev: [
-				{files: ["./examples/*.html", "!./examples/localStorageTest.html"], dest: "./dist/examples"},
+				{files: ["./examples/*.html"], dest: "./dist/examples"},
 				{files: "./node_modules/knockout/build/output/knockout-latest.debug.js", dest: "./dist/lib"}
 			]
 		},
@@ -60,8 +60,18 @@ superGulp.taskTemplates.initFrontendTasks({
 					destFolder: "./dist/examples"
 				},
 				{
+					entries: ["./examples/localStorageTest.js"],
+					outputFileName: "localStorageTest.js",
+					destFolder: "./dist/examples"
+				},
+				{
 					entries: ["./examples/pagination.js"],
 					outputFileName: "pagination.js",
+					destFolder: "./dist/examples"
+				},
+				{
+					entries: ["./examples/test.js"],
+					outputFileName: "test.js",
 					destFolder: "./dist/examples"
 				},
 				{
@@ -75,42 +85,7 @@ superGulp.taskTemplates.initFrontendTasks({
 	}
 });
 
-//
-// // Watch
-// // ==================================================
-// function createWatchTask(config) {
-// 	var taskToRun = config.taskToRun;
-// 	return function () {
-// 		gulp.watch([
-// 			"./src/**/*.js",
-// 			"./examples/**/*.js",
-// 			"./src/**/*.html",
-// 			"./examples/**/*.html",
-// 			"./src/**/*.json"
-// 		],
-// 		[taskToRun])
-// 		.on("change", function (event) {
-// 			log(event);
-// 		});
-// 	};
-// }
-//
-//
-// function log (event) {
-// 	console.log("File " + event.path + " was " + event.type + ", running tasks...");
-// }
-//
 // var examplesConfigs = {
-// 	infiniteLoader: {
-// 		entries: ["./examples/infiniteLoader.js"],
-// 		outputFileName: "infiniteLoader.built.js",
-// 		destFolder: "./examples"
-// 	},
-// 	pagination: {
-// 		entries: ["./examples/pagination.js"],
-// 		outputFileName: "pagination.built.js",
-// 		destFolder: "./examples"
-// 	},
 // 	serverWithMemoryProxy: {
 // 		entries: ["./examples/ServerWithMemoryProxy/public/main.js"],
 // 		outputFileName: "main.built.js",
@@ -122,20 +97,3 @@ superGulp.taskTemplates.initFrontendTasks({
 // 		destFolder: "./src/knob"
 // 	}
 // };
-//
-// for (var prop in examplesConfigs) {
-// 	var actConfig = examplesConfigs[prop];
-// 	var actBrowserifyTaskName = "browserify-examples-" + prop;
-// 	gulp.task(actBrowserifyTaskName, ["jsonlint"], createBrowserifyTask(actConfig));
-// 	gulp.task("watch-examples-" + prop, createWatchTask({taskToRun: actBrowserifyTaskName}));
-// }
-//
-// gulp.task("watch:js", function() {
-// 	gulp.watch(jsFiles, ["jshint", "jscs"]);
-// });
-//
-// gulp.task("watch-test", function() {
-// 	gulp.watch(jsFiles, ["jasmine"]);
-// });
-//
-// gulp.task("test", ["jsonlint", "jshint", "jscs", "istanbul"]);

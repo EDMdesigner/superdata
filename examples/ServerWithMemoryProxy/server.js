@@ -31,6 +31,7 @@ app.use("/user", createCRUDRouter({
 }));
 
 app.use(express.static("./public"));
+app.use("/dist", express.static(__dirname + "/../../dist"));
 
 
 app.listen(port, function() {
