@@ -1,7 +1,24 @@
-<h1>Yo</h1>
-<!-- <paged-list params="store: store, fields: ['id', 'email', 'name', 'title'], search: 'name', sort: ['id', 'name']">
-	<div data-bind="component: {name: 'list-item', params: $data}"></div>
-</paged-list> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>superdata - server with memoryProxy example</title>
+	<link rel="stylesheet" type="text/css" href="/dist/lib/normalize.css">
+	<link rel="stylesheet" type="text/css" href="/dist/lib/knob.min.css">
+</head>
+<body>
+	<h1>Yo</h1>
+	<knob-paged-list params="store: store, fields: ['id', 'email', 'name', 'title'], search: 'name', sort: [{ label: 'By id', value: 'id' }, { label: 'By name', value: 'name' }]">
+		<div>
+			<span data-bind="text: model.data.id"></span>
+			<span data-bind="text: model.data.email"></span>
+			<span data-bind="text: model.data.name"></span>
+			<span data-bind="text: model.data.title"></span>
+		</div>
+	</knob-paged-list>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
-<script src="main.built.js"></script>
+	<script src="/dist/lib/knockout-latest.debug.js"></script>
+	<script src="/dist/lib/knob.js"></script>
+	<script src="main.built.js"></script>
+</body>
+</html>

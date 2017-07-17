@@ -19,7 +19,7 @@ pipeline {
                 branch "master"
             }
             steps {
-                sh 'gulp js:prod'
+                sh 'gulp build:prod'
 
                 sh 'npm set init.author.name "edmdesigner-bot"'
                 sh 'npm set init.author.email "info@edmdesigner.com"'
