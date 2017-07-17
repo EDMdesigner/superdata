@@ -72,6 +72,7 @@ module.exports = function(dependencies) {
 			try {
 				var req = request
 					[actConfig.method](actRoute)
+					.withCredentials()
 					.query(actConfig.queries)
 					.accept(actConfig.accept)
 					.timeout(timeout);
