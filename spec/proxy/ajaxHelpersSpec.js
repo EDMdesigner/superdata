@@ -17,6 +17,7 @@ describe("ajax helpers", function() {
 			query: query,
 			accept: accept,
 			timeout: timeout,
+			withCredentials: withCredentials,
 			type: type,
 			send: send,
 			end: end
@@ -40,6 +41,9 @@ describe("ajax helpers", function() {
 			return obj;
 		}
 		function timeout() {
+			return obj;
+		}
+		function withCredentials() {
 			return obj;
 		}
 		function type() {
@@ -68,6 +72,7 @@ describe("ajax helpers", function() {
 		spyOn(obj,"query").and.callThrough();
 		spyOn(obj,"accept").and.callThrough();
 		spyOn(obj,"timeout").and.callThrough();
+		spyOn(obj, "withCredentials").and.callThrough();
 		spyOn(obj,"type").and.callThrough();
 		spyOn(obj,"send").and.callThrough();
 		spyOn(obj,"end").and.callThrough();
@@ -204,6 +209,7 @@ describe("ajax helpers", function() {
 						expect(request.query).toHaveBeenCalledTimes(1);
 						expect(request.accept).toHaveBeenCalledTimes(1);
 						expect(request.timeout).toHaveBeenCalledTimes(1);
+						expect(request.withCredentials).toHaveBeenCalledTimes(1);
 						expect(request.type).toHaveBeenCalledTimes(1);
 						expect(request.send).toHaveBeenCalledTimes(1);
 						expect(request.end).toHaveBeenCalledTimes(1);
@@ -269,6 +275,7 @@ describe("ajax helpers", function() {
 							expect(request.query).toHaveBeenCalledTimes(3);
 							expect(request.accept).toHaveBeenCalledTimes(3);
 							expect(request.timeout).toHaveBeenCalledTimes(3);
+							expect(request.withCredentials).toHaveBeenCalledTimes(3);
 							expect(request.type).toHaveBeenCalledTimes(3);
 							expect(request.send).toHaveBeenCalledTimes(3);
 							expect(request.end).toHaveBeenCalledTimes(3);
