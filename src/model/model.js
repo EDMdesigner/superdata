@@ -142,7 +142,13 @@ module.exports = function createModel(options) {
 		if(!checkReferenceTypes(modelValues)) {
 			return callback("Each property of modelValues contained by belongsTo has to match type with corresponding property of options.fields");
 		}
-		proxy.createOne(modelValues, function(err, result) {
+
+		var filters = {};
+		for(var i = 0; i < belongsTo.length; i += 1) {
+			filters[belongsTo[i]] = modelValues[belongsTo[i]];
+		}
+
+		proxy.createOne(modelValues, filters, function(err, result) {
 			if (err) {
 				return callback(err);
 			}
