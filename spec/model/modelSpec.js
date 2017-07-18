@@ -23,7 +23,7 @@ describe("model", function() {
 					});
 				}, 1);
 			},
-			createOne: function(data, callback) {
+			createOne: function(data, filters, callback) {
 				data.id = 1;
 				setTimeout(function() {
 					callback(null, data);

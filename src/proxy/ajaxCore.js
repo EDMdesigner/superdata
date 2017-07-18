@@ -78,7 +78,12 @@ module.exports = function(dependencies) {
 
 		prepareOperationsConfig(config.operations);
 
-		function createOne(data, callback) {
+		function createOne(data, filters, callback) {
+			if(!callback) {
+				callback = filters;
+				filters = undefined;
+			}
+
 			removeFields(data, fieldsToBeExcluded);
 
 			checkCallback(callback);
@@ -90,7 +95,7 @@ module.exports = function(dependencies) {
 
 			actConfig.idProperty = idProperty;
 
-			dispatchAjax(actConfig, callback);
+			dispatchAjax(actConfig, filters, callback);
 		}
 
 		function read(options, filters, callback) {
