@@ -258,7 +258,12 @@ module.exports = function(dependencies) {
 			callback(null, response);
 		}
 
-		function createOne(data, callback) {
+		function createOne(data, filters, callback) {
+			if(!callback) {
+				callback = filters;
+				filters = undefined;
+			}
+			
 			checkCallback(callback);
 
 			if (typeof data[idProperty] === "undefined") {
