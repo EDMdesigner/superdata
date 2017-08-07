@@ -110,7 +110,8 @@ module.exports = function(dependencies) {
 			var actConfig = createOperationConfig(config.operations.read, timeout);
 
 			for (var prop in options) {
-				actConfig.queries[prop] = options[prop];
+				actConfig.queries[prop] = (typeof options[prop] === "object" ) ? JSON.stringify(options[prop]) : options[prop];
+				// actConfig.queries[prop] = options[prop];
 			}
 			actConfig.method = actConfig.method.toLowerCase();
 			dispatchAjax(actConfig, filters, callback);
