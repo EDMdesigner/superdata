@@ -314,6 +314,31 @@ module.exports = function(dependencies) {
 			callback(null, newData);
 		}
 
+		function patchOneById(id, updateData, filters, callback) {
+			if(!callback) {
+				callback = filters;
+				filters = undefined;
+			}
+			checkCallback(callback);
+
+			var dataIdx = findIndexById(id, filters);
+			if (dataIdx === -1) {
+				return callback(messages.errorMessages.NOT_FOUND);
+			}
+
+			for (var prop in updateData) {
+				if (prop === idProperty) {
+					continue;
+				}
+
+				if (updateData.hasOwnProperty(prop)) {
+					db[dataIdx][prop] = updateData[prop];
+				}
+			}
+
+			callback(null, db[dataIdx]);
+		}
+
 		function destroyOneById(id, filters, callback) {
 			if(!callback) {
 				callback = filters;
@@ -342,6 +367,7 @@ module.exports = function(dependencies) {
 
 			readOneById: readOneById,
 			updateOneById: updateOneById,
+			patchOneById: patchOneById,
 			destroyOneById: destroyOneById
 		});
 	};

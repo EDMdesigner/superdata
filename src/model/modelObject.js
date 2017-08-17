@@ -68,6 +68,7 @@ module.exports = function createModelObject(options) {
 		model: model,
 
 		save: save,
+		patch: patch,
 		destroy: destroy
 	};
 
@@ -135,6 +136,20 @@ module.exports = function createModelObject(options) {
 			}
 
 			writeData(result);
+
+			callback(null, obj);
+		});
+	}
+
+	function patch(updateObj, callback) {
+
+		var id = data[idField];
+		proxy.patchOneById(id, updateObj, belongsToValues, function(err, result) {
+			if (err) {
+				return callback(err);
+			}
+
+			writeData(result);			
 
 			callback(null, obj);
 		});

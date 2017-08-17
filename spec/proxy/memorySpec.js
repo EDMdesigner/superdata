@@ -266,6 +266,46 @@ describe("memory proxy", function() {
 
 		});
 
+
+		describe("patchOneById", function() {
+
+			it("should call callback with new data", function() {
+				var data = {
+					id: "id1",
+					prop: "some new value"
+				};
+				memoryProxy.patchOneById("id1", data, function(err, newData) {
+					expect(newData).toEqual(data);
+				});
+			});
+
+			it("should call callback function", function() {
+				memoryProxy.patchOneById("", {}, callback);
+				expect(callback).toHaveBeenCalledTimes(1);
+			});
+
+			it("should not change original id", function() {
+				var data = {
+					id: "newId",
+					prop: "some new value"
+				};
+				memoryProxy.patchOneById("id1", data, function(err, newData) {
+					expect(newData.id).toBe("id1");
+				});
+				memoryProxy.readOneById("newId", function(err) {
+					expect(err).toBe("not found error message");
+				});
+			});
+
+			it("should call callback with not found error if id doesn't exist", function() {
+				memoryProxy.patchOneById("", {}, function(err) {
+					expect(err).toBe("not found error message");
+				});
+			});
+
+		});
+
+
 		describe("destroyOneById", function() {
 
 			it("should call callback with deleted data", function() {

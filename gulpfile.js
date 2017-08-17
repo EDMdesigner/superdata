@@ -68,6 +68,11 @@ superGulp.taskTemplates.initFrontendTasks({
 					destFolder: "./dist/examples"
 				},
 				{
+					entries: ["./examples/ajaxProxyExample.js"],
+					outputFileName: "ajaxProxyExample.js",
+					destFolder: "./dist/examples"
+				},
+				{
 					entries: ["./examples/test.js"],
 					outputFileName: "test.js",
 					destFolder: "./dist/examples"

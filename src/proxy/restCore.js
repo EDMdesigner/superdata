@@ -37,6 +37,7 @@ module.exports = function(dependencies) {
 		var createOneQuery = queries.createOne || {};
 		var readOneByIdQuery = queries.readOneById || {};
 		var updateOneByIdQuery = queries.updateOneById || {};
+		var patchOneByIdQuery = queries.patchOneById || {};
 		var destroyOneByIdQuery = queries.destroyOneById || {};
 
 		var route = config.route;
@@ -82,6 +83,11 @@ module.exports = function(dependencies) {
 					route: addId(route),
 					method: "PUT",
 					queries: updateOneByIdQuery
+				},
+				patchOneById: {
+					route: addId(route),
+					method: "PATCH",
+					queries: patchOneByIdQuery
 				},
 				destroyOneById: {
 					route: addId(route),

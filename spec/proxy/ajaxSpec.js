@@ -276,6 +276,38 @@ describe("ajax proxy", function() {
 
 		});
 
+		describe("patchOneById", function() {
+			
+			describe("without filters", function() {
+
+				it("should call ajaxHelpers.assert, ajaxHelpers.createOperationConfig, ajaxHelpers.dispatchAjax and callback", function() {
+
+					ajaxProxy.patchOneById(id, data, callback);
+
+					expect(ajaxHelpers.assert).toHaveBeenCalledTimes(1);
+					expect(ajaxHelpers.createOperationConfig).toHaveBeenCalledTimes(1);
+					expect(ajaxHelpers.createOperationConfig.calls.argsFor(0)[1]).toBe(4000);
+					expect(ajaxHelpers.dispatchAjax).toHaveBeenCalledTimes(1);
+					expect(callback).toHaveBeenCalledTimes(1);
+
+				});
+
+			});
+
+			describe("with filters", function() {
+
+				it("should call ajaxHelpers.dispatchAjax with pass filters as parameter", function() {
+
+					ajaxProxy.patchOneById(id, data, filters, callback);
+					expect(ajaxHelpers.dispatchAjax.calls.argsFor(0)[1]).toBe(filters);
+					
+				});
+
+			});
+
+		});
+
+
 		describe("destroyOneById", function() {
 			
 			describe("without filters", function() {
