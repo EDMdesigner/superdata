@@ -46,6 +46,7 @@ describe("localStorage proxy", function() {
 			},
 			createOne: function() {},
 			readOneById: function() {},
+			patchOneById: function() {},
 			updateOneById: function() {},
 			destroyOneById: function() {}
 		};
@@ -66,6 +67,7 @@ describe("localStorage proxy", function() {
 			spyOn(mockMemoryInterface, "createOne").and.callThrough();
 			spyOn(mockMemoryInterface, "readOneById").and.callThrough();
 			spyOn(mockMemoryInterface, "updateOneById").and.callThrough();
+			spyOn(mockMemoryInterface, "patchOneById").and.callThrough();
 			spyOn(mockMemoryInterface, "destroyOneById").and.callThrough();
 
 			spyOn(mockStorageInterface, "getItem").and.callThrough();
@@ -80,6 +82,7 @@ describe("localStorage proxy", function() {
 						createOne: mockMemoryInterface.createOne,
 						readOneById: mockMemoryInterface.readOneById,
 						updateOneById: mockMemoryInterface.updateOneById,
+						patchOneById: mockMemoryInterface.patchOneById,
 						destroyOneById: mockMemoryInterface.destroyOneById
 					};
 				},
@@ -100,6 +103,7 @@ describe("localStorage proxy", function() {
 			expect(typeof localStorageProxy.createOne).toBe("function");
 			expect(typeof localStorageProxy.readOneById).toBe("function");
 			expect(typeof localStorageProxy.updateOneById).toBe("function");
+			expect(typeof localStorageProxy.patchOneById).toBe("function");
 			expect(typeof localStorageProxy.destroyOneById).toBe("function");
 		});
 
@@ -116,6 +120,7 @@ describe("localStorage proxy", function() {
 
 			expect(mockMemoryInterface.readOneById).not.toHaveBeenCalled();
 			expect(mockMemoryInterface.updateOneById).not.toHaveBeenCalled();
+			expect(mockMemoryInterface.patchOneById).not.toHaveBeenCalled();
 			expect(mockMemoryInterface.destroyOneById).not.toHaveBeenCalled();
 		});
 
@@ -126,6 +131,7 @@ describe("localStorage proxy", function() {
 			expect(mockMemoryInterface.read).not.toHaveBeenCalled();
 			expect(mockMemoryInterface.createOne).not.toHaveBeenCalled();
 			expect(mockMemoryInterface.updateOneById).not.toHaveBeenCalled();
+			expect(mockMemoryInterface.patchOneById).not.toHaveBeenCalled();			
 			expect(mockMemoryInterface.destroyOneById).not.toHaveBeenCalled();
 
 			expect(mockStorageInterface.setItem).not.toHaveBeenCalled();
@@ -137,10 +143,24 @@ describe("localStorage proxy", function() {
 			expect(mockMemoryInterface.read).toHaveBeenCalled();
 			expect(mockStorageInterface.setItem).toHaveBeenCalled();
 
+			expect(mockMemoryInterface.patchOneById).not.toHaveBeenCalled();			
 			expect(mockMemoryInterface.readOneById).not.toHaveBeenCalled();
 			expect(mockMemoryInterface.createOne).not.toHaveBeenCalled();
 			expect(mockMemoryInterface.destroyOneById).not.toHaveBeenCalled();
 		});
+
+		it("patchOneById", function() {
+			localStorageProxy.patchOneById();
+			expect(mockMemoryInterface.patchOneById).toHaveBeenCalled();
+			expect(mockMemoryInterface.read).toHaveBeenCalled();
+			expect(mockStorageInterface.setItem).toHaveBeenCalled();
+
+			expect(mockMemoryInterface.updateOneById).not.toHaveBeenCalled();
+			expect(mockMemoryInterface.readOneById).not.toHaveBeenCalled();
+			expect(mockMemoryInterface.createOne).not.toHaveBeenCalled();
+			expect(mockMemoryInterface.destroyOneById).not.toHaveBeenCalled();
+		});
+
 
 		it("destroyOneById", function() {
 			localStorageProxy.destroyOneById();

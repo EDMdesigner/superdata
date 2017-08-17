@@ -139,6 +139,19 @@ module.exports = function(dependencies) {
 			dispatchAjax(actConfig, filters, callback);
 		}
 
+		function patchOneById(id, newData, filters, callback) {
+			if(!callback) {
+				callback = filters;
+				filters = undefined;
+			}
+			removeFields(newData, fieldsToBeExcluded);
+
+			checkCallback(callback);
+			var actConfig = createOperationConfig(config.operations.patchOneById, timeout, id, newData);
+			dispatchAjax(actConfig, filters, callback);
+		}
+
+
 		function destroyOneById(id, filters, callback) {
 			if(!callback) {
 				callback = filters;
@@ -160,6 +173,7 @@ module.exports = function(dependencies) {
 			read: read,
 			createOne: createOne,
 			readOneById: readOneById,
+			patchOneById: patchOneById,
 			updateOneById: updateOneById,
 			destroyOneById: destroyOneById
 		});

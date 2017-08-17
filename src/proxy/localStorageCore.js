@@ -60,6 +60,7 @@ module.exports = function(dependencies) {
 
 			readOneById: memoryProxy.readOneById,
 			updateOneById: createWrapperFunction("updateOneById"),
+			patchOneById: createWrapperFunction("patchOneById"),
 			destroyOneById: createWrapperFunction("destroyOneById")
 		});
 	};

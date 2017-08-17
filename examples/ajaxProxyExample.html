@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>superdata - server with memoryProxy example</title>
+	<link rel="stylesheet" type="text/css" href="../lib/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../lib/knob.min.css">
+</head>
+<body>
+	<knob-paged-list params="store: store, fields: ['id', 'num', 'str'], search: 'num', sort: [{ label: 'By id', value: 'id' }, { label: 'By str', value: 'str' }]">
+		<div>
+			<span data-bind="text: model.data.title"></span>
+			<span data-bind="text: model.data._id"></span>
+			<span data-bind="text: model.data.createdAt"></span>
+			<span data-bind="text: model.data.url"></span>
+		</div>
+	</knob-paged-list>
+
+	<script type='text/javascript' src="../lib/knockout-latest.debug.js"></script>
+	<script src="../lib/knob.js"></script>
+	<script type='text/javascript' src="./ajaxProxyExample.js"></script>
+</body>
+</html>
