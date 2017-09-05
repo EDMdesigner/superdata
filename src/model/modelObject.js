@@ -51,11 +51,9 @@ module.exports = function createModelObject(options) {
 	var proxy = options.model.proxy;
 	var belongsTo = options.model.belongsTo || [];
 
-
-	var data = {};
-	var belongsToValues = {};
-
-	writeData(options.data);
+	var writeOutput = writeData(options.data);
+	var data = writeOutput.data;
+	var belongsToValues = writeOutput.belongsToValues;
 
 	for(var i=0; i<belongsTo.length; i += 1) {
 		if(!data[belongsTo[i]]) {
@@ -74,8 +72,8 @@ module.exports = function createModelObject(options) {
 
 	function writeData(dataToWrite) {
 
-		data = {};
-		belongsToValues = {};
+		var data = {};
+		var belongsToValues = {};
 		for (var prop in fields) {
 			var actField = fields[prop];
 			var actValue = dataToWrite.hasOwnProperty(prop) ? dataToWrite[prop] : actField.defaultValue;
@@ -86,10 +84,15 @@ module.exports = function createModelObject(options) {
 				afterChange: createAfterChangeFunction(prop)
 			});
 		}
+
 		for(var i=0; i<belongsTo.length; i += 1) {
 			belongsToValues[belongsTo[i]]=data[belongsTo[i]];
 		}
 
+		return {
+			data: data,
+			belongsToValues: belongsToValues
+		};
 	}
 
 	function createBeforeChangeFunction(propName) {
@@ -135,7 +138,9 @@ module.exports = function createModelObject(options) {
 				return callback(err);
 			}
 
-			writeData(result);
+			var writeOutput = writeData(result);
+			belongsToValues = writeOutput.belongsToValues;
+			obj.data = writeOutput.data;
 
 			callback(null, obj);
 		});
@@ -149,7 +154,9 @@ module.exports = function createModelObject(options) {
 				return callback(err);
 			}
 
-			writeData(result);			
+			var writeOutput = writeData(result);
+			belongsToValues = writeOutput.belongsToValues;
+			obj.data = writeOutput.data;
 
 			callback(null, obj);
 		});
