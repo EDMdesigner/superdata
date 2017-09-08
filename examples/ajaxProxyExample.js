@@ -40,7 +40,7 @@ var createModel = superData.model.model;
 var createStore = superData.store.store;
 
 
-//* AJAX + MEMORY PROXY
+/* AJAX + MEMORY PROXY
 var proxy = superData.proxy.localStorage({
 	idProperty: "_id",
 	idType: "number",
@@ -77,7 +77,7 @@ var proxy = superData.proxy.localStorage({
 });
 //*/
 
-/* REST PROXY
+//* REST PROXY
 var proxy = superData.proxy.rest({
 	idProperty: "id",
 	route: "http://localhost:7357/user",
@@ -120,7 +120,7 @@ var store = createStore({
 //* seed
 
 
-var seed = true;
+var seed = false;
 function handleResponse(err, result) {
 	result = result;
 	if (err) {
@@ -131,7 +131,7 @@ function handleResponse(err, result) {
 if (seed) {
 	var names = ["Bob", "Rob", "Olga", "Helga"];
 	// var titles = ["CEO", "CTO", "Ninja"];
-	for (var idx = 0; idx < 11; idx += 1) {
+	for (var idx = 0; idx < 1; idx += 1) {
 		var actName = names[idx % 4];
 		store.add({
 			title: idx,
@@ -153,9 +153,16 @@ store.load.after.add(function() {
 
 store.load();
 
-store.model.load(1, null, function(err, obj){
-	// obj.data.url = "updated!";
-	obj.patch({url: "XXXXXXXXXXXXX"}, function(err, result){
+store.model.load("59b005348897c2366aaa66d1", null, function(err, obj){
+	obj.data.url = "updatedert!";
+	obj.patch(function(err, result){
+		console.log(result);
+	});
+});
+
+store.model.load("59b00ffa8897c2366aaa66d2", null, function(err, obj){
+	obj.data.url = "updaterted!2222";
+	obj.save(function(err, result){
 		console.log(result);
 	});
 });

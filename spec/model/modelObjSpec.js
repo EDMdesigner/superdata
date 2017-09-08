@@ -24,6 +24,12 @@ describe("modelObject", function() {
 					callback(null, data);
 				}, 1);
 			},
+			patchOneById: function(id, data, filters, callback) {
+				setTimeout(function() {
+					data.id = id;
+					callback(null, data);
+				}, 1);
+			},
 			destroyOneById: function(id, filters, callback) {
 				setTimeout(function() {
 					callback(null, {
@@ -37,6 +43,7 @@ describe("modelObject", function() {
 
 		spyOn(mockProxy, "readOneById").and.callThrough();
 		spyOn(mockProxy, "updateOneById").and.callThrough();
+		spyOn(mockProxy, "patchOneById").and.callThrough();
 		spyOn(mockProxy, "destroyOneById").and.callThrough();
 		
 		mockModel = {
@@ -46,6 +53,9 @@ describe("modelObject", function() {
 				},
 				projectID: {
 					type: "number"
+				},
+				str: {
+					type: "string"
 				}
 			},
 			idField: "id",
@@ -63,7 +73,7 @@ describe("modelObject", function() {
 			data: mockData
 		});
 	});
-
+/* 
 	it("config", function() {
 		expect(function() {
 			createModelObject();
@@ -146,21 +156,52 @@ describe("modelObject", function() {
 		}).toThrowError("options.model.belongsTo has to contain field names!");
 
 	});
-
-	it("save", function(done) {
-		modelObject.save(function() {
-			expect(mockProxy.updateOneById).toHaveBeenCalled();
+ */
+	it("save without diff", function(done) {
+		modelObject.save(function(err, result) {
+			expect(err).toBe(null);
+			expect(result).toBe(modelObject);
+			expect(mockProxy.updateOneById).toHaveBeenCalledTimes(0);
 			done();
 		});
 	});
 
+	it("save", function(done) {
+		modelObject.data.str = "updated!";
+		modelObject.save(function(err, result) {
+			expect(err).toBe(null);
+			expect(result).toBe(modelObject);
+			expect(mockProxy.updateOneById).toHaveBeenCalledTimes(1);
+			done();
+		});
+	});
+
+	it("patch without diff", function(done) {
+		modelObject.patch(function(err, result) {
+			expect(err).toBe(null);
+			expect(result).toBe(modelObject);
+			expect(mockProxy.patchOneById).toHaveBeenCalledTimes(0);
+			done();
+		});
+	});
+
+	it("patch", function(done) {
+		modelObject.data.str = "updated!";
+		modelObject.patch(function(err, result) {
+			expect(err).toBe(null);
+			expect(result).toBe(modelObject);
+			expect(mockProxy.patchOneById).toHaveBeenCalledTimes(1);
+			done();
+		});
+	});
+/*
 	it("destroy", function(done) {
 		modelObject.destroy(function() {
 			expect(mockProxy.destroyOneById).toHaveBeenCalled();
 			done();
 		});
 	});
-
+ 
 	describe("defaultValue", function() {
 
 		it("has to set default value given in model's 'fields' config option", function() {
@@ -245,5 +286,5 @@ describe("modelObject", function() {
 		});
 
 	});
-
+ */
 });
