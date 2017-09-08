@@ -46,6 +46,7 @@ module.exports = function createModelObject(options) {
 	
 	var model = options.model;
 
+	var diff = {};
 	var fields = options.model.fields;
 	var idField = options.model.idField;
 	var proxy = options.model.proxy;
@@ -111,9 +112,9 @@ module.exports = function createModelObject(options) {
 		};
 	}
 
-	function createAfterChangeFunction() {
-		return function afterChange() {
-			//call the onChange listeners
+	function createAfterChangeFunction(propName) {
+		return function afterChange(prop) {
+			diff[propName] = prop.value;
 		};
 	}
 
@@ -131,6 +132,9 @@ module.exports = function createModelObject(options) {
 	}
 
 	function save(callback) {
+		if (Object.keys(diff).length === 0) {
+			return callback(null, obj);
+		}
 
 		var id = data[idField];
 		proxy.updateOneById(id, data, belongsToValues, function(err, result) {
@@ -141,15 +145,19 @@ module.exports = function createModelObject(options) {
 			var writeOutput = writeData(result);
 			belongsToValues = writeOutput.belongsToValues;
 			obj.data = writeOutput.data;
+			diff = {};
 
 			callback(null, obj);
 		});
 	}
 
-	function patch(updateObj, callback) {
+	function patch(callback) {
+		if (Object.keys(diff).length === 0) {
+			return callback(null, obj);
+		}
 
 		var id = data[idField];
-		proxy.patchOneById(id, updateObj, belongsToValues, function(err, result) {
+		proxy.patchOneById(id, diff, belongsToValues, function(err, result) {
 			if (err) {
 				return callback(err);
 			}
@@ -157,6 +165,7 @@ module.exports = function createModelObject(options) {
 			var writeOutput = writeData(result);
 			belongsToValues = writeOutput.belongsToValues;
 			obj.data = writeOutput.data;
+			diff = {};
 
 			callback(null, obj);
 		});
