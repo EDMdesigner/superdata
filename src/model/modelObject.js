@@ -46,7 +46,6 @@ module.exports = function createModelObject(options) {
 	
 	var model = options.model;
 
-	var diff = {};
 	var fields = options.model.fields;
 	var idField = options.model.idField;
 	var proxy = options.model.proxy;
@@ -70,6 +69,8 @@ module.exports = function createModelObject(options) {
 		patch: patch,
 		destroy: destroy
 	};
+
+	var lastDataValue = JSON.parse(JSON.stringify(obj.data));
 
 	function writeData(dataToWrite) {
 
@@ -112,9 +113,8 @@ module.exports = function createModelObject(options) {
 		};
 	}
 
-	function createAfterChangeFunction(propName) {
-		return function afterChange(prop) {
-			diff[propName] = prop.value;
+	function createAfterChangeFunction() {
+		return function afterChange() {
 		};
 	}
 
@@ -131,10 +131,24 @@ module.exports = function createModelObject(options) {
 		}
 	}
 
-	function save(callback) {
-		if (Object.keys(diff).length === 0) {
-			return callback(null, obj);
+	function createDiff() {
+		var diff = {};
+		for (var prop in obj.data) {
+			if (obj.data.hasOwnProperty(prop)) {
+				if (JSON.stringify(obj.data[prop]) !== JSON.stringify(lastDataValue[prop])) {
+					diff[prop] = obj.data[prop];
+				}
+			}
 		}
+		return diff;
+	}
+
+	function save(callback) {
+		var diff = createDiff();
+
+ 		if (Object.keys(diff).length === 0) {
+			return callback(null, obj);
+		} 
 
 		var id = data[idField];
 		proxy.updateOneById(id, data, belongsToValues, function(err, result) {
@@ -145,14 +159,16 @@ module.exports = function createModelObject(options) {
 			var writeOutput = writeData(result);
 			belongsToValues = writeOutput.belongsToValues;
 			obj.data = writeOutput.data;
-			diff = {};
+			lastDataValue = JSON.parse(JSON.stringify(writeOutput.data));
 
 			callback(null, obj);
 		});
 	}
 
 	function patch(callback) {
-		if (Object.keys(diff).length === 0) {
+		var diff = createDiff();
+
+ 		if (Object.keys(diff).length === 0) {
 			return callback(null, obj);
 		}
 
@@ -165,7 +181,7 @@ module.exports = function createModelObject(options) {
 			var writeOutput = writeData(result);
 			belongsToValues = writeOutput.belongsToValues;
 			obj.data = writeOutput.data;
-			diff = {};
+			lastDataValue = JSON.parse(JSON.stringify(writeOutput.data));
 
 			callback(null, obj);
 		});
