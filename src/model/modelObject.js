@@ -52,23 +52,22 @@ module.exports = function createModelObject(options) {
 	var belongsTo = options.model.belongsTo || [];
 
 	var writeOutput = writeData(options.data);
-	var data = writeOutput.data;
 	var belongsToValues = writeOutput.belongsToValues;
 
-	for(var i=0; i<belongsTo.length; i += 1) {
-		if(!data[belongsTo[i]]) {
-			throw new Error("data has to have properties for references given in belongsTo");
-		}
-	}
-
 	var obj = {
-		data: data,
+		data: writeOutput.data,
 		model: model,
 
 		save: save,
 		patch: patch,
 		destroy: destroy
 	};
+
+	for(var i=0; i<belongsTo.length; i += 1) {
+		if(!obj.data[belongsTo[i]]) {
+			throw new Error("data has to have properties for references given in belongsTo");
+		}
+	}
 
 	var lastDataValue = JSON.parse(JSON.stringify(obj.data));
 
@@ -150,8 +149,8 @@ module.exports = function createModelObject(options) {
 			return callback(null, obj);
 		} 
 
-		var id = data[idField];
-		proxy.updateOneById(id, data, belongsToValues, function(err, result) {
+		var id = obj.data[idField];
+		proxy.updateOneById(id, obj.data, belongsToValues, function(err, result) {
 			if (err) {
 				return callback(err);
 			}
@@ -172,7 +171,7 @@ module.exports = function createModelObject(options) {
 			return callback(null, obj);
 		}
 
-		var id = data[idField];
+		var id = obj.data[idField];
 		proxy.patchOneById(id, diff, belongsToValues, function(err, result) {
 			if (err) {
 				return callback(err);
@@ -190,7 +189,7 @@ module.exports = function createModelObject(options) {
 	//deleted flag?
 	function destroy(callback) {
 
-		var id = data[idField];
+		var id = onj.data[idField];
 		proxy.destroyOneById(id, belongsToValues, function(err) {
 			if (err) {
 				return callback(err);
