@@ -189,7 +189,7 @@ module.exports = function createModelObject(options) {
 	//deleted flag?
 	function destroy(callback) {
 
-		var id = onj.data[idField];
+		var id = obj.data[idField];
 		proxy.destroyOneById(id, belongsToValues, function(err) {
 			if (err) {
 				return callback(err);
