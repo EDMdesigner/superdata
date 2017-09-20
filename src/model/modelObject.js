@@ -46,30 +46,30 @@ module.exports = function createModelObject(options) {
 	
 	var model = options.model;
 
-	var diff = {};
 	var fields = options.model.fields;
 	var idField = options.model.idField;
 	var proxy = options.model.proxy;
 	var belongsTo = options.model.belongsTo || [];
 
 	var writeOutput = writeData(options.data);
-	var data = writeOutput.data;
 	var belongsToValues = writeOutput.belongsToValues;
 
-	for(var i=0; i<belongsTo.length; i += 1) {
-		if(!data[belongsTo[i]]) {
-			throw new Error("data has to have properties for references given in belongsTo");
-		}
-	}
-
 	var obj = {
-		data: data,
+		data: writeOutput.data,
 		model: model,
 
 		save: save,
 		patch: patch,
 		destroy: destroy
 	};
+
+	for(var i=0; i<belongsTo.length; i += 1) {
+		if(!obj.data[belongsTo[i]]) {
+			throw new Error("data has to have properties for references given in belongsTo");
+		}
+	}
+
+	var lastDataValue = JSON.parse(JSON.stringify(obj.data));
 
 	function writeData(dataToWrite) {
 
@@ -112,9 +112,8 @@ module.exports = function createModelObject(options) {
 		};
 	}
 
-	function createAfterChangeFunction(propName) {
-		return function afterChange(prop) {
-			diff[propName] = prop.value;
+	function createAfterChangeFunction() {
+		return function afterChange() {
 		};
 	}
 
@@ -131,13 +130,27 @@ module.exports = function createModelObject(options) {
 		}
 	}
 
-	function save(callback) {
-		if (Object.keys(diff).length === 0) {
-			return callback(null, obj);
+	function createDiff() {
+		var diff = {};
+		for (var prop in obj.data) {
+			if (obj.data.hasOwnProperty(prop)) {
+				if (JSON.stringify(obj.data[prop]) !== JSON.stringify(lastDataValue[prop])) {
+					diff[prop] = obj.data[prop];
+				}
+			}
 		}
+		return diff;
+	}
 
-		var id = data[idField];
-		proxy.updateOneById(id, data, belongsToValues, function(err, result) {
+	function save(callback) {
+		var diff = createDiff();
+
+ 		if (Object.keys(diff).length === 0) {
+			return callback(null, obj);
+		} 
+
+		var id = obj.data[idField];
+		proxy.updateOneById(id, obj.data, belongsToValues, function(err, result) {
 			if (err) {
 				return callback(err);
 			}
@@ -145,18 +158,20 @@ module.exports = function createModelObject(options) {
 			var writeOutput = writeData(result);
 			belongsToValues = writeOutput.belongsToValues;
 			obj.data = writeOutput.data;
-			diff = {};
+			lastDataValue = JSON.parse(JSON.stringify(writeOutput.data));
 
 			callback(null, obj);
 		});
 	}
 
 	function patch(callback) {
-		if (Object.keys(diff).length === 0) {
+		var diff = createDiff();
+
+ 		if (Object.keys(diff).length === 0) {
 			return callback(null, obj);
 		}
 
-		var id = data[idField];
+		var id = obj.data[idField];
 		proxy.patchOneById(id, diff, belongsToValues, function(err, result) {
 			if (err) {
 				return callback(err);
@@ -165,7 +180,7 @@ module.exports = function createModelObject(options) {
 			var writeOutput = writeData(result);
 			belongsToValues = writeOutput.belongsToValues;
 			obj.data = writeOutput.data;
-			diff = {};
+			lastDataValue = JSON.parse(JSON.stringify(writeOutput.data));
 
 			callback(null, obj);
 		});
@@ -174,7 +189,7 @@ module.exports = function createModelObject(options) {
 	//deleted flag?
 	function destroy(callback) {
 
-		var id = data[idField];
+		var id = obj.data[idField];
 		proxy.destroyOneById(id, belongsToValues, function(err) {
 			if (err) {
 				return callback(err);
