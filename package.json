@@ -1,5 +1,5 @@
 {
-  "version": "0.1.32",
+  "version": "0.1.33",
   "name": "superdata",
   "description": "A lightweight data layer module motivated by extjs' data layer. It can be used with any client-side framework.",
   "main": "src/superData.js",
