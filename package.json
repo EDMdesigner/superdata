@@ -49,7 +49,7 @@
     "normalize.css": "^7.0.0"
   },
   "dependencies": {
-    "edm-supergulp": "latest",
+    "edm-supergulp": "0.2.1",
     "form-data": "1.0.0-rc4",
     "gulp": "3.9.1",
     "superagent": "1.7.2"
