@@ -88,6 +88,14 @@ module.exports = function createStore(options) {
 		afterChange: triggerQueryChanged
 	});
 
+	createProp(store, "select", {
+		value: options.select || {},
+		beforeChange: function() {
+
+		},
+		afterChange: triggerQueryChanged
+	});
+
 	//var group = "?good question?";
 
 	//var buffered;
@@ -122,11 +130,13 @@ module.exports = function createStore(options) {
 	//this way we can set up
 
 	function load() {
+		console.log("STORE", store);
 		var queryObj = {
 			find: store.find,
 			sort: store.sort,
 			skip: store.skip,
-			limit: store.limit
+			limit: store.limit,
+			select: store.select
 		};
 
 		load.before(queryObj);

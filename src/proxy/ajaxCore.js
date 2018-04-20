@@ -99,6 +99,8 @@ module.exports = function(dependencies) {
 		}
 
 		function read(options, filters, callback) {
+			options.select = JSON.stringify(options.select);
+			console.log("AJAXXXXX", options.select);
 			if(!callback) {
 				callback = filters;
 				filters = undefined;
@@ -113,7 +115,9 @@ module.exports = function(dependencies) {
 				actConfig.queries[prop] = (typeof options[prop] === "object" ) ? JSON.stringify(options[prop]) : options[prop];
 				// actConfig.queries[prop] = options[prop];
 			}
+			console.log("ACTCONFIG", actConfig);
 			actConfig.method = actConfig.method.toLowerCase();
+			//actConfig.route[0] = actConfig.route[0] + "&select=" + JSON.stringify(options.select); 
 			dispatchAjax(actConfig, filters, callback);
 		}
 
