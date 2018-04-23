@@ -39,10 +39,6 @@ module.exports = function createModel(options) {
 
 	var belongsTo = options.belongsTo || [];
 
-	var select = options.select || [];
-
-	console.log("MODEL OPTIONS", options.select);
-
 	//options.fields should be an array of objects
 	//the objects should describe the fields:
 	// - name
