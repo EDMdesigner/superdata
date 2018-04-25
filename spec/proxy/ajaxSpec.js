@@ -176,7 +176,7 @@ describe("ajax proxy", function() {
 						queries: {
 							option1: "some value",
 							option2: "other value",
-							select: undefined
+							select: "undefined"
 						},
 						method: "get"
 					});
