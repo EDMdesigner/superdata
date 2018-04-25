@@ -175,8 +175,7 @@ describe("ajax proxy", function() {
 					expect(ajaxHelpers.dispatchAjax.calls.argsFor(0)[0]).toEqual({
 						queries: {
 							option1: "some value",
-							option2: "other value",
-							select: "undefined"
+							option2: "other value"
 						},
 						method: "get"
 					});

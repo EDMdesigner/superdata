@@ -99,7 +99,6 @@ module.exports = function(dependencies) {
 		}
 
 		function read(options, filters, callback) {
-			options.select = String(options.select);
 			if(!callback) {
 				callback = filters;
 				filters = undefined;
