@@ -145,10 +145,9 @@ module.exports = function createStore(options) {
 				return load.after(err);
 			}
 
-			store.items.length = 0;
-			store.items.length = result.items.length;
+			store.items.splice(0, store.items.length);
 			for (var idx = 0; idx < result.items.length; idx += 1) {
-				store.items[idx] = result.items[idx];
+				store.items.push(result.items[idx]);
 			}
 			store.count = result.count;
 
