@@ -20,13 +20,9 @@ pipeline {
             }
             steps {
                 sh 'gulp build:prod'
-
-                sh 'npm set init.author.name "edmdesigner-bot"'
-                sh 'npm set init.author.email "info@edmdesigner.com"'
-                withCredentials([string(credentialsId: 'edmdesigner-bot', variable: 'NPM_AUTH_TOKEN')]) {
-                    sh 'echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc'
+                withNPM(npmrcConfig:'npmrc-global') {
+                    sh 'npm publish'
                 }
-                sh 'npm publish'
             }
         }
     }
